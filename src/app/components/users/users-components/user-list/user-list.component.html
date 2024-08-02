@@ -1,0 +1,72 @@
+<mat-card class="w-100">
+    <mat-card-content>
+      <!-- <h4 class="mb-20">List of Users</h4> -->
+
+      <div class="d-flex justify-content-end">
+        <a id="add-btn" (click)="addUser()">+ Add User</a>
+      </div>
+
+      <br>
+      <mat-progress-bar *ngIf="isFetching" mode="indeterminate"></mat-progress-bar>
+  
+      <div class="table-responsive">
+        <table mat-table [dataSource]="dataSource" class="text-nowrap w-100">
+  
+          <!-- Id Column -->
+          <ng-container matColumnDef="id">
+            <th mat-header-cell *matHeaderCellDef> # </th>
+            <td mat-cell class="fw-medium" *matCellDef="let user"> {{ dataSource.indexOf(user) + 1 }} </td>
+          </ng-container>
+  
+          <!-- Name/Email Column -->
+          <ng-container matColumnDef="username">
+            <th mat-header-cell *matHeaderCellDef> Name </th>
+            <td mat-cell *matCellDef="let user">
+              <p class="mb-0 fw-medium">{{ user.username }}</p>
+              <p class="mb-0 fw-normal op-5"><a [href]="'mailto:' + user.email">{{ user.email }}</a></p>
+            </td>
+          </ng-container>
+
+          <!-- Phone Number Column -->
+          <ng-container matColumnDef="phoneNumber">
+            <th mat-header-cell *matHeaderCellDef> Phone Number </th>
+            <td mat-cell *matCellDef="let user">
+              <p class="mb-0 fw-medium op-5"><a [href]="'tel:' + user.phoneNumber">{{ user.phoneNumber }}</a></p>
+            </td>
+          </ng-container>
+
+          <!-- Branch/Country Column -->
+          <ng-container matColumnDef="shop">
+            <th mat-header-cell *matHeaderCellDef> Shop </th>
+            <td mat-cell *matCellDef="let user">
+              <p class="mb-0 fw-medium">{{ user.branch }}</p>
+              <p class="mb-0 fw-normal op-5">{{ user.country }}</p>
+            </td>
+          </ng-container>
+  
+          <!-- Role Column -->
+          <ng-container matColumnDef="role">
+            <th mat-header-cell *matHeaderCellDef> Role </th>
+            <td mat-cell *matCellDef="let user">
+              <p class="mb-0 fw-medium op-5">{{ user.role }}</p>
+            </td>
+          </ng-container>
+  
+          <!-- Action Column -->
+          <ng-container matColumnDef="action">
+            <th mat-header-cell *matHeaderCellDef> Action </th>
+            <td mat-cell *matCellDef="let user">
+              <!-- <p class="mb-0 fw-medium"></p> -->
+              <div class="action">
+                <a class="edit" (click)="editUser(user)">Edit</a>
+                <a class="delete" (click)="deleteUser(user)">Delete</a>
+            </div>
+            </td>
+          </ng-container>
+  
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+      </div>
+    </mat-card-content>
+  </mat-card>
