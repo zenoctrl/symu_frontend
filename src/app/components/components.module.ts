@@ -18,7 +18,24 @@ import { SnackbarComponent } from './snackbar/snackbar.component';
 import { SliderComponent } from './slider/slider.component';
 import { SlideToggleComponent } from './slide-toggle/slide-toggle.component';
 import { ButtonsComponent } from './buttons/buttons.component';
-import { TooltipsComponent } from './tooltips/tooltips.component'
+import { TooltipsComponent } from './tooltips/tooltips.component';
+import { LoginComponent } from './login/login.component';
+import { UsersComponent } from './users/users.component';
+import { StockComponent } from './stock/stock.component';
+import { UserListComponent } from './users/users-components/user-list/user-list.component';
+import { UserModalComponent } from './users/users-components/user-modal/user-modal.component';
+import { ShopsOutletsComponent } from './shops-outlets/shops-outlets.component';
+import { PhoneListComponent } from './stock/stock-components/phone-list/phone-list.component';
+import { PhoneModalComponent } from './stock/stock-components/phone-modal/phone-modal.component';
+import { SetupsComponent } from './setups/setups.component';
+import { CountriesComponent } from './setups/setups-components/countries/countries.component';
+import { RegionsComponent } from './setups/setups-components/regions/regions.component';
+import { BranchesComponent } from './setups/setups-components/branches/branches.component';
+import { CountryModalComponent } from './setups/setups-components/countries/country-modal/country-modal.component';
+import { BranchModalComponent } from './setups/setups-components/branches/branch-modal/branch-modal.component';
+import { RegionModalComponent } from './setups/setups-components/regions/region-modal/region-modal.component';
+import { PhoneModelsComponent } from './setups/setups-components/phone-models/phone-models.component';
+import { ModelModalComponent } from './setups/setups-components/phone-models/model-modal/model-modal.component';
 
 
 @NgModule({
@@ -58,6 +75,25 @@ import { TooltipsComponent } from './tooltips/tooltips.component'
     SliderComponent,
     SlideToggleComponent,
     ButtonsComponent,
+  ],
+  declarations: [
+    LoginComponent,
+    UsersComponent,
+    StockComponent,
+    UserListComponent,
+    UserModalComponent,
+    ShopsOutletsComponent,
+    PhoneListComponent,
+    PhoneModalComponent,
+    SetupsComponent,
+    CountriesComponent,
+    RegionsComponent,
+    BranchesComponent,
+    CountryModalComponent,
+    BranchModalComponent,
+    RegionModalComponent,
+    PhoneModelsComponent,
+    ModelModalComponent
   ]
 })
 export class ComponentsModule { }

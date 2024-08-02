@@ -1,0 +1,57 @@
+<main>
+    <h1 mat-dialog-title>{{ data.title }}</h1>
+    <div id="form" mat-dialog-content>
+        <div class="mt-20" *ngIf="successMessage || errorMessage">
+          <div *ngIf="errorMessage" class="alert alert-danger alert-text-danger d-flex fs-14 align-items-center rounded mb-16" role="alert">
+            <i-feather name="alert-circle" class="text-danger feather-base me-12"></i-feather>
+            {{ errorMessage }}
+          </div>
+          <div *ngIf="successMessage" class="alert alert-success alert-text-success d-flex fs-14 align-items-center rounded mb-16" role="alert">
+            <i-feather name="alert-circle" class="text-success feather-base me-12"></i-feather>
+            {{ successMessage }}
+          </div>
+        </div>
+
+        <div id="view">
+            <!-- <zxing-scanner [formats]="['CODE_128']" (scanSuccess)="scanSuccessHandler($event)"></zxing-scanner> -->
+        </div>
+
+        <div class="mt-20" *ngIf="!successMessage && !scanning">
+            <mat-form-field class="me-24 fs-16" appearance="outline">
+                <mat-label>IMEI</mat-label>
+                <input type="text" matInput [(ngModel)]="data.phone.imei">
+            </mat-form-field>
+
+            <mat-form-field class="me-24 fs-16" appearance="outline">
+                <mat-label>Model</mat-label>
+                <input type="text" matInput [(ngModel)]="data.phone.model">
+            </mat-form-field>
+
+            <mat-form-field class="me-24 fs-16" appearance="outline">
+                <mat-label>Memory</mat-label>
+                <input type="text" matInput [(ngModel)]="data.phone.memory">
+            </mat-form-field>
+
+            <mat-form-field class="me-24 fs-16" appearance="outline">
+                <mat-label>Price</mat-label>
+                <input type="text" matInput [(ngModel)]="data.phone.price">
+            </mat-form-field>
+
+            <mat-form-field class="me-24 fs-16" appearance="outline">
+                <mat-label>Currency</mat-label>
+                <mat-select [(ngModel)]="data.phone.currency">
+                  <mat-option *ngFor="let currency of currencies" [value]="currency.code">
+                    {{ currency.name }}
+                  </mat-option>
+                </mat-select>
+            </mat-form-field>
+
+        </div>
+    </div>
+    <div mat-dialog-actions align="center" *ngIf="!successMessage">
+        <button id="cancel" mat-button (click)="onClose()">Cancel</button>
+        <button id="save" mat-button *ngIf="loading"><mat-progress-spinner mode="indeterminate" diameter="25"></mat-progress-spinner></button>
+        <button id="save" mat-button disabled *ngIf="!loading && (!data.phone.imei || !data.phone.model || !data.phone.memory || !data.phone.price || !data.phone.currency)">Save</button>
+        <button id="save" mat-button *ngIf="!loading && (data.phone.imei && data.phone.model && data.phone.memory && data.phone.price && data.phone.currency)" (click)="save()" cdkFocusInitial>Save</button>
+    </div>
+</main>
