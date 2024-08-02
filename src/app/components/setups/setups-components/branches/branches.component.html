@@ -1,0 +1,65 @@
+<mat-card class="w-100">
+    <mat-card-content>
+      <!-- <h4 class="mb-20">List of Regions</h4> -->
+
+      <div class="d-flex justify-content-end">
+        <a id="add-btn" (click)="addBranch()">+ Add Branch</a>
+      </div>
+
+      <br>
+      <mat-progress-bar *ngIf="isFetching" mode="indeterminate"></mat-progress-bar>
+  
+      <div class="table-responsive">
+        <table mat-table [dataSource]="dataSource" class="text-nowrap w-100">
+  
+          <!-- Id Column -->
+          <ng-container matColumnDef="id">
+            <th mat-header-cell *matHeaderCellDef> # </th>
+            <td mat-cell class="fw-medium" *matCellDef="let branch"> {{ dataSource.indexOf(branch) + 1 }} </td>
+          </ng-container>
+  
+          <!-- Name Column -->
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef> Name </th>
+            <td mat-cell *matCellDef="let branch">
+              <p class="mb-0 fw-medium">{{ branch.name }}</p>
+            </td>
+          </ng-container>
+
+          <!-- Country Code Column -->
+          <ng-container matColumnDef="region">
+            <th mat-header-cell *matHeaderCellDef> Region </th>
+            <td mat-cell *matCellDef="let branch">
+              <p class="mb-0 fw-medium">{{ branch.region }}</p>
+              <p class="mb-0 fw-normal op-5">{{ branch.country }}</p>
+            </td>
+          </ng-container>
+
+          <!-- Status Column -->
+          <ng-container matColumnDef="status">  
+            <th mat-header-cell *matHeaderCellDef> Status </th>
+            <td mat-cell *matCellDef="let branch">
+              <p class="mb-0 fw-medium">
+                <span class="mb-0 fw-medium rounded-pill badge badge-success" *ngIf="branch.status === 'ACTIVE'">{{ branch.status }}</span>
+                <span class="mb-0 fw-medium rounded-pill badge badge-danger" *ngIf="branch.status === 'INACTIVE'">{{ branch.status }}</span>
+              </p>
+            </td>
+          </ng-container>
+  
+          <!-- Action Column -->
+          <ng-container matColumnDef="action">
+            <th mat-header-cell *matHeaderCellDef> Action </th>
+            <td mat-cell *matCellDef="let branch">
+              <div class="action">
+                <a class="edit" (click)="editBranch(branch)">Edit</a>
+                <a class="delete" (click)="deleteBranch(branch)">Delete</a>
+            </div>
+            </td>
+          </ng-container>
+  
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+      </div>
+    </mat-card-content>
+  </mat-card>

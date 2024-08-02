@@ -1,0 +1,64 @@
+<mat-card class="w-100">
+    <mat-card-content>
+      <!-- <h4 class="mb-20">List of Countries</h4> -->
+
+      <div class="d-flex justify-content-end">
+        <a id="add-btn" (click)="addDeviceModel()">+ Add Model</a>
+      </div>
+
+      <br>
+      <mat-progress-bar *ngIf="isFetching" mode="indeterminate"></mat-progress-bar>
+  
+      <div class="table-responsive">
+        <table mat-table [dataSource]="dataSource" class="text-nowrap w-100">
+  
+          <!-- Id Column -->
+          <ng-container matColumnDef="id">
+            <th mat-header-cell *matHeaderCellDef> # </th>
+            <td mat-cell class="fw-medium" *matCellDef="let model"> {{ dataSource.indexOf(model) + 1 }} </td>
+          </ng-container>
+  
+          <!-- Name Column -->
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef> Product Name </th>
+            <td mat-cell *matCellDef="let model">
+              <p class="mb-0 fw-medium">{{ model.name }}</p>
+            </td>
+          </ng-container>
+
+          <!-- Memory Column -->
+          <ng-container matColumnDef="memory">
+            <th mat-header-cell *matHeaderCellDef> Memory </th>
+            <td mat-cell *matCellDef="let model">
+              <p class="mb-0 fw-medium op-5">{{ model.memory }}</p>
+            </td>
+          </ng-container>
+
+          <!-- Status Column -->
+          <ng-container matColumnDef="status">  
+            <th mat-header-cell *matHeaderCellDef> Status </th>
+            <td mat-cell *matCellDef="let model">
+              <p class="mb-0 fw-medium">
+                <span class="mb-0 fw-medium rounded-pill badge badge-success" *ngIf="model.status === 'AVAILABLE'">{{ model.status }}</span>
+                <span class="mb-0 fw-medium rounded-pill badge badge-primary" *ngIf="model.status === 'OUT OF STOCK'">{{ model.status }}</span>
+              </p>
+            </td>
+          </ng-container>
+  
+          <!-- Action Column -->
+          <ng-container matColumnDef="action">
+            <th mat-header-cell *matHeaderCellDef> Action </th>
+            <td mat-cell *matCellDef="let model">
+              <div class="action">
+                <a class="edit" (click)="editDeviceModel(model)">Edit</a>
+                <a class="delete" (click)="deleteDeviceModel(model)">Delete</a>
+            </div>
+            </td>
+          </ng-container>
+  
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+      </div>
+    </mat-card-content>
+  </mat-card>
