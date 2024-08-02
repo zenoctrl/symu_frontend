@@ -1,0 +1,33 @@
+<main>
+    <div class="card">
+        <div class="card-body">
+          <div id="logo" class="d-flex align-items-center justify-content-center">
+            <img class="logo-img" src="assets/images/logo.png" alt=""> <span class="ms-16 fw-medium fs-26">Symu</span>
+          </div>
+
+          <div *ngIf="error" class="alert alert-danger alert-text-danger d-flex fs-14 align-items-center rounded mb-16" role="alert">
+            <i-feather name="alert-circle" class="text-danger feather-base me-12"></i-feather>
+            {{ error }}
+          </div>
+      
+          <mat-form-field class="me-24 fs-16" appearance="outline">
+            <mat-label>Email Address</mat-label>
+            <input type="email" matInput [(ngModel)]="email">
+          </mat-form-field>
+    
+          <mat-form-field class="me-24 fs-16" appearance="outline">
+            <mat-label>Password</mat-label>
+            <input type="password" matInput [(ngModel)]="password">
+          </mat-form-field>
+
+          <div class="buttons">
+            <button class="button" mat-button disabled *ngIf="!loading && (!email || !password)">Login</button>
+            <button class="button" mat-button *ngIf="!loading && (email && password)" (click)="login()">Login</button>
+            <button class="button is-loading" mat-button *ngIf="loading">
+              <mat-progress-spinner mode="indeterminate" diameter="25"></mat-progress-spinner>
+            </button>
+          </div>
+    
+        </div>
+    </div>
+</main>
