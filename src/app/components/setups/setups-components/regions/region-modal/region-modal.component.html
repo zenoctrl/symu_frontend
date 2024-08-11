@@ -14,14 +14,14 @@
         <div class="mt-20" *ngIf="!successMessage">
             <mat-form-field class="me-24 fs-16" appearance="outline">
                 <mat-label>Name</mat-label>
-                <input type="text" matInput [(ngModel)]="data.region.name">
+                <input type="text" matInput [(ngModel)]="data.region.regionName">
             </mat-form-field>
 
             <mat-form-field class="me-24 fs-16" appearance="outline">
                 <mat-label>Country</mat-label>
-                <mat-select [(ngModel)]="data.region.country">
-                  <mat-option *ngFor="let country of countries" [value]="country.name">
-                    {{ country.name }}
+                <mat-select [(ngModel)]="data.region.regionCountryCode">
+                  <mat-option *ngFor="let country of countries" [value]="country.code">
+                    {{ country.countryName }}
                   </mat-option>
                 </mat-select>
             </mat-form-field>
@@ -40,7 +40,7 @@
     <div mat-dialog-actions align="center" *ngIf="!successMessage">
         <button id="cancel" mat-button (click)="onClose()">Cancel</button>
         <button id="save" mat-button *ngIf="loading"><mat-progress-spinner mode="indeterminate" diameter="25"></mat-progress-spinner></button>
-        <button id="save" mat-button disabled *ngIf="!loading && (!data.region.name || !data.region.country|| !data.region.status)">Save</button>
-        <button id="save" mat-button *ngIf="!loading && (data.region.name && data.region.country && data.region.status)" (click)="save()" cdkFocusInitial>Save</button>
+        <button id="save" mat-button disabled *ngIf="!loading && (!data.region.regionName || !data.region.regionCountryCode|| !data.region.status)">Save</button>
+        <button id="save" mat-button *ngIf="!loading && (data.region.regionName && data.region.regionCountryCode && data.region.status)" (click)="save()" cdkFocusInitial>Save</button>
     </div>
 </main>

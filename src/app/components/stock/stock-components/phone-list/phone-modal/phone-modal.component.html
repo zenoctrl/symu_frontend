@@ -1,0 +1,135 @@
+<main>
+    <h1 mat-dialog-title>{{ data.title }}</h1>
+    <div id="form" mat-dialog-content>
+        <div class="mt-20" *ngIf="successMessage || errorMessage">
+          <div *ngIf="errorMessage" class="alert alert-danger alert-text-danger d-flex fs-14 align-items-center rounded mb-16" role="alert">
+            <i-feather name="alert-circle" class="text-danger feather-base me-12"></i-feather>
+            {{ errorMessage }}
+          </div>
+          <div *ngIf="successMessage" class="alert alert-success alert-text-success d-flex fs-14 align-items-center rounded mb-16" role="alert">
+            <i-feather name="alert-circle" class="text-success feather-base me-12"></i-feather>
+            {{ successMessage }}
+          </div>
+        </div>
+
+        <div id="view">
+            <!-- <zxing-scanner [formats]="['CODE_128']" (scanSuccess)="scanSuccessHandler($event)"></zxing-scanner> -->
+        </div>
+
+        <div class="mt-20" *ngIf="!successMessage && !scanning">
+            <mat-form-field class="me-24 fs-16" appearance="outline">
+                <mat-label>IMEI</mat-label>
+                <input type="text" matInput [(ngModel)]="data.phone.stockImei" *ngIf="data.title === 'Add Phone' || data.title === 'Edit Phone'">
+                <input type="text" matInput [(ngModel)]="data.phone.stockImei" *ngIf="data.title !== 'Add Phone' && data.title !== 'Edit Phone'" readonly>
+            </mat-form-field>
+
+            <mat-form-field class="me-24 fs-16" appearance="outline">
+                <mat-label>Model</mat-label>
+                <mat-select [(ngModel)]="data.phone.stockMemory" (selectionChange)="selectModel()" *ngIf="data.title === 'Add Phone' || data.title === 'Edit Phone'">
+                  <mat-option *ngFor="let model of models" [value]="model.modelName">
+                    {{ model.modelName }}
+                  </mat-option>
+                </mat-select>
+                <input type="text" matInput [(ngModel)]="data.phone.stockMemory" *ngIf="data.title !== 'Add Phone' && data.title !== 'Edit Phone'" readonly>
+            </mat-form-field>
+
+            <div *ngIf="data.title == 'Add Phone'">
+              <mat-form-field class="me-24 fs-16" appearance="outline">
+                <mat-label>Country</mat-label>
+                <mat-select [(ngModel)]="data.phone.stockCountryCode" (selectionChange)="selectCountry()">
+                  <mat-option *ngFor="let country of countries" [value]="country.code">
+                    {{ country.countryName }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+
+              <mat-form-field class="me-24 fs-16" appearance="outline" *ngIf="data.phone.stockCountryCode">
+                  <mat-label>Region</mat-label>
+                  <mat-select [(ngModel)]="data.phone.stockRegionCode" (selectionChange)="filterBranches()">
+                    <mat-option *ngFor="let region of _regions" [value]="region.code">
+                      {{ region.regionName }}
+                    </mat-option>
+                  </mat-select>
+              </mat-form-field>
+
+              <mat-form-field class="me-24 fs-16" appearance="outline" *ngIf="data.phone.stockRegionCode">
+                  <mat-label>Branch</mat-label>
+                  <mat-select [(ngModel)]="data.phone.stockBranchCode">
+                    <mat-option *ngFor="let branch of _branches" [value]="branch.code">
+                      {{ branch.name }}
+                    </mat-option>
+                  </mat-select>
+              </mat-form-field>
+            </div>
+
+            <div *ngIf="data.title === 'Update Price'">
+
+              <mat-form-field class="me-24 fs-16" appearance="outline">
+                <mat-label>Buying Price (Amount in {{ data.phone.stockBaseCurrency }})</mat-label>
+                <input type="text" matInput [(ngModel)]="data.phone.stockBuyingPrice">
+              </mat-form-field>
+
+              <mat-form-field class="me-24 fs-16" appearance="outline">
+                <mat-label>Selling Price (Amount in {{ data.phone.stockBaseCurrency }})</mat-label>
+                <input type="text" matInput [(ngModel)]="data.phone.stockSellingPrice">
+              </mat-form-field>
+
+            </div>
+
+            <div *ngIf="data.title === 'Post Sale'">
+
+              <mat-form-field class="me-24 fs-16" appearance="outline">
+                  <mat-label>Dealership</mat-label>
+                  <mat-select [(ngModel)]="data.phone.tradingName">
+                    <mat-option *ngFor="let dealer of data.dealers" [value]="dealer.dealerName">
+                      {{ dealer.dealerName }}
+                    </mat-option>
+                  </mat-select>
+              </mat-form-field>
+
+              <mat-form-field class="me-24 fs-16" appearance="outline" *ngIf="data.phone.tradingName">
+                <mat-label>Customer Name</mat-label>
+                <input type="text" matInput [(ngModel)]="data.phone.customerName">
+              </mat-form-field>
+
+              <mat-form-field class="me-24 fs-16" appearance="outline" *ngIf="data.phone.customerName">
+                <mat-label>Customer Phone number</mat-label>
+                <input type="text" matInput [(ngModel)]="data.phone.customerPhoneNumber">
+              </mat-form-field>
+
+              <mat-form-field class="me-24 fs-16" appearance="outline" *ngIf="data.phone.customerPhoneNumber">
+                <mat-label>Customer ID Number</mat-label>
+                <input type="text" matInput [(ngModel)]="data.phone.customerNationalId">
+              </mat-form-field>
+
+            </div>
+
+            <div *ngIf="data.title === 'Complete Sale'">
+
+              <mat-form-field class="me-24 fs-16" appearance="outline">
+                <mat-label>Agent Name</mat-label>
+                <input type="text" matInput [(ngModel)]="data.phone.agentName">
+              </mat-form-field>
+
+              <mat-form-field class="me-24 fs-16" appearance="outline">
+                <mat-label>Agent Phone number</mat-label>
+                <input type="text" matInput [(ngModel)]="data.phone.agentPhoneNumber">
+              </mat-form-field>
+
+              <mat-form-field class="me-24 fs-16" appearance="outline">
+                <mat-label>Agent ID Number</mat-label>
+                <input type="text" matInput [(ngModel)]="data.phone.agentNationalId">
+              </mat-form-field>
+
+            </div>
+            
+
+        </div>
+    </div>
+    <div mat-dialog-actions align="center" *ngIf="!successMessage">
+        <button id="cancel" mat-button (click)="onClose()">Cancel</button>
+        <button id="save" mat-button *ngIf="loading"><mat-progress-spinner mode="indeterminate" diameter="25"></mat-progress-spinner></button>
+        <button id="save" mat-button disabled *ngIf="!loading && (!data.phone.stockImei || !data.phone.stockMemory || !data.phone.stockCountryCode || !data.phone.stockRegionCode || !data.phone.stockBranchCode)">Save</button>
+        <button id="save" mat-button *ngIf="!loading && ((data.phone.stockImei && data.phone.stockMemory && data.phone.stockCountryCode && data.phone.stockRegionCode && data.phone.stockBranchCode))" (click)="save()" cdkFocusInitial>Save</button>
+    </div>
+</main>

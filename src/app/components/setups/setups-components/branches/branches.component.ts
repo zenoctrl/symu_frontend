@@ -12,10 +12,13 @@ import { Region } from '../regions/regions.component';
 import { Country } from '../countries/countries.component';
 
 export interface Branch {
-  id?: string;
+  code?: string;
   name?: string;
-  region?: string;
-  country?: string;
+  shortDesc?: string;
+  desc?: string;
+  regionCode?: string;
+  countryCode?: string;
+  companyCode?: string;
   status?: string;
 }
 
@@ -56,15 +59,20 @@ export class BranchesComponent {
 
   getBranches() {
     this.isFetching = true;
-    const endpoint: string = ENVIRONMENT.endpoints.branches.getAll;
+    const endpoint: string =
+      ENVIRONMENT.endpoints.branches.getAll + '?companyCode=1';
     this.data.get(ENVIRONMENT.baseUrl + endpoint).subscribe(
       (res: any) => {
-        setTimeout(() => {
-          this.isFetching = false;
-          this.dataSource = res;
-        }, 500);
+        this.isFetching = false;
+        if (res.statusCode == 0) {
+          sessionStorage.setItem('branches', JSON.stringify(res.data));
+          this.dataSource = res.data;
+        } else {
+        }
       },
-      (error: any) => {}
+      (error: any) => {
+        this.isFetching = false;
+      }
     );
   }
 
@@ -82,7 +90,8 @@ export class BranchesComponent {
   }
 
   deleteBranch(branch: Branch) {
-    const endpoint: string = `${ENVIRONMENT.endpoints.branches.delete}/${branch.id}`;
+    return;
+    const endpoint: string = `${ENVIRONMENT.endpoints.branches.delete}/${branch.code}`;
     this.data.delete(ENVIRONMENT.baseUrl + endpoint).subscribe((res: any) => {
       this.openSnackBar('Branch deleted successfully.', 'Close');
       this.getBranches();
@@ -96,26 +105,10 @@ export class BranchesComponent {
   }
 
   getRegions() {
-    const endpoint: string = ENVIRONMENT.endpoints.regions.getAll;
-    this.data.get(ENVIRONMENT.baseUrl + endpoint).subscribe(
-      (res: any) => {
-        this.regions = res;
-      },
-      (error: any) => {
-        this.getRegions();
-      }
-    );
+    this.regions = JSON.parse(sessionStorage.getItem('regions') || '{}');
   }
 
   getCountries() {
-    const endpoint: string = ENVIRONMENT.endpoints.countries.getAll;
-    this.data.get(ENVIRONMENT.baseUrl + endpoint).subscribe(
-      (res: any) => {
-        this.countries = res;
-      },
-      (error: any) => {
-        this.getCountries();
-      }
-    );
+    this.countries = JSON.parse(sessionStorage.getItem('countries') || '{}');
   }
 }

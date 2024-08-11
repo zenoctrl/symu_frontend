@@ -14,22 +14,22 @@
         <div class="mt-20" *ngIf="!successMessage">
             <mat-form-field class="me-24 fs-16" appearance="outline">
                 <mat-label>Name</mat-label>
-                <input type="text" matInput [(ngModel)]="data.country.name">
+                <input type="text" matInput [(ngModel)]="data.country.countryName">
             </mat-form-field>
 
             <mat-form-field class="me-24 fs-16" appearance="outline">
                 <mat-label>Country Code</mat-label>
-                <input type="email" matInput [(ngModel)]="data.country.code">
+                <input type="text" matInput [(ngModel)]="data.country.countryCountryCode">
             </mat-form-field>
 
             <mat-form-field class="me-24 fs-16" appearance="outline">
                 <mat-label>Currency</mat-label>
-                <input type="email" matInput [(ngModel)]="data.country.currency">
+                <input type="text" matInput [(ngModel)]="data.country.countryShortDesc">
             </mat-form-field>
 
             <mat-form-field class="me-24 fs-16" appearance="outline">
                 <mat-label>Currency Code</mat-label>
-                <input type="email" matInput [(ngModel)]="data.country.currencyCode">
+                <input type="text" matInput [(ngModel)]="data.country.countryCurrencyCode">
             </mat-form-field>
 
         </div>
@@ -37,7 +37,7 @@
     <div mat-dialog-actions align="center" *ngIf="!successMessage">
         <button id="cancel" mat-button (click)="onClose()">Cancel</button>
         <button id="save" mat-button *ngIf="loading"><mat-progress-spinner mode="indeterminate" diameter="25"></mat-progress-spinner></button>
-        <button id="save" mat-button disabled *ngIf="!loading && (!data.country.name || !data.country.code || !data.country.currency || !data.country.currencyCode)">Save</button>
-        <button id="save" mat-button *ngIf="!loading && (data.country.name && data.country.code && data.country.currency && data.country.currencyCode)" (click)="save()" cdkFocusInitial>Save</button>
+        <button id="save" mat-button disabled *ngIf="!loading && (!data.country.countryName || !data.country.countryCountryCode || !data.country.countryShortDesc || !data.country.countryCurrencyCode)">Save</button>
+        <button id="save" mat-button *ngIf="!loading && (data.country.countryName && data.country.countryCountryCode && data.country.countryShortDesc && data.country.countryCurrencyCode)" (click)="save()" cdkFocusInitial>Save</button>
     </div>
 </main>

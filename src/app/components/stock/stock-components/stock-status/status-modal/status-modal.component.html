@@ -14,22 +14,13 @@
         <div class="mt-20" *ngIf="!successMessage">
 
             <mat-form-field class="me-24 fs-16" appearance="outline">
-                <mat-label>Product Name</mat-label>
-                <input type="text" matInput [(ngModel)]="data.deviceModel.name">
+                <mat-label>Description</mat-label>
+                <input type="text" matInput [(ngModel)]="data.stockStatus.statusName">
             </mat-form-field>
 
             <mat-form-field class="me-24 fs-16" appearance="outline">
-                <mat-label>Device Memory</mat-label>
-                <input type="text" matInput [(ngModel)]="data.deviceModel.memory">
-            </mat-form-field>
-
-            <mat-form-field class="me-24 fs-16" appearance="outline">
-                <mat-label>Status</mat-label>
-                <mat-select [(ngModel)]="data.deviceModel.status">
-                  <mat-option *ngFor="let status of statuses" [value]="status">
-                    {{ status }}
-                  </mat-option>
-                </mat-select>
+                <mat-label>Short Description (Tag)</mat-label>
+                <input type="text" matInput [(ngModel)]="data.stockStatus.statusShortDesc">
             </mat-form-field>
 
         </div>
@@ -37,7 +28,7 @@
     <div mat-dialog-actions align="center" *ngIf="!successMessage">
         <button id="cancel" mat-button (click)="onClose()">Cancel</button>
         <button id="save" mat-button *ngIf="loading"><mat-progress-spinner mode="indeterminate" diameter="25"></mat-progress-spinner></button>
-        <button id="save" mat-button disabled *ngIf="!loading && (!data.deviceModel.name || !data.deviceModel.memory || !data.deviceModel.status)">Save</button>
-        <button id="save" mat-button *ngIf="!loading && (data.deviceModel.name && data.deviceModel.memory && data.deviceModel.status)" (click)="save()" cdkFocusInitial>Save</button>
+        <button id="save" mat-button disabled *ngIf="!loading && (!data.stockStatus.statusName || !data.stockStatus.statusShortDesc)">Save</button>
+        <button id="save" mat-button *ngIf="!loading && (data.stockStatus.statusName && data.stockStatus.statusShortDesc)" (click)="save()" cdkFocusInitial>Save</button>
     </div>
 </main>

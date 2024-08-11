@@ -14,31 +14,13 @@
         <div class="mt-20" *ngIf="!successMessage">
 
             <mat-form-field class="me-24 fs-16" appearance="outline">
-                <mat-label>Name</mat-label>
-                <input type="text" matInput [(ngModel)]="data.branch.name">
+                <mat-label>Product Name</mat-label>
+                <input type="text" matInput [(ngModel)]="data.deviceModel.modelName">
             </mat-form-field>
 
             <mat-form-field class="me-24 fs-16" appearance="outline">
-                <mat-label>Country</mat-label>
-                <mat-select [(ngModel)]="data.branch.countryCode" (selectionChange)="filterRegions()">
-                  <mat-option *ngFor="let country of countries" [value]="country.code">
-                    {{ country.countryName }}
-                  </mat-option>
-                </mat-select>
-            </mat-form-field>
-
-            <mat-form-field class="me-24 fs-16" appearance="outline" *ngIf="data.branch.countryCode">
-                <mat-label>Region</mat-label>
-                <mat-select [(ngModel)]="data.branch.regionCode">
-                  <mat-option *ngFor="let region of regions" [value]="region?.code">
-                    {{ region?.regionName }}
-                  </mat-option>
-                </mat-select>
-            </mat-form-field>
-
-            <mat-form-field class="me-24 fs-16" appearance="outline">
-                <mat-label>Branch Status</mat-label>
-                <mat-select [(ngModel)]="data.branch.status">
+                <mat-label>Status</mat-label>
+                <mat-select [(ngModel)]="data.deviceModel.modelStatus">
                   <mat-option *ngFor="let status of statuses" [value]="status">
                     {{ status }}
                   </mat-option>
@@ -50,7 +32,7 @@
     <div mat-dialog-actions align="center" *ngIf="!successMessage">
         <button id="cancel" mat-button (click)="onClose()">Cancel</button>
         <button id="save" mat-button *ngIf="loading"><mat-progress-spinner mode="indeterminate" diameter="25"></mat-progress-spinner></button>
-        <button id="save" mat-button disabled *ngIf="!loading && (!data.branch.name || !data.branch.countryCode || !data.branch.regionCode|| !data.branch.status)">Save</button>
-        <button id="save" mat-button *ngIf="!loading && (data.branch.name && data.branch.countryCode && data.branch.regionCode && data.branch.status)" (click)="save()" cdkFocusInitial>Save</button>
+        <button id="save" mat-button disabled *ngIf="!loading && (!data.deviceModel.modelName || !data.deviceModel.modelStatus)">Save</button>
+        <button id="save" mat-button *ngIf="!loading && (data.deviceModel.modelName && data.deviceModel.modelStatus)" (click)="save()" cdkFocusInitial>Save</button>
     </div>
 </main>

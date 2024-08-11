@@ -1,77 +1,40 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { DataService } from 'src/app/services/data.service';
-import { v4 as uuidv4 } from 'uuid';
-import { Region } from '../regions.component';
 import { ENVIRONMENT } from 'src/app/environments/environments';
-import { Country } from '../../countries/countries.component';
+import { StockStatus } from '../stock-status.component';
 
 @Component({
-  selector: 'app-region-modal',
-  templateUrl: './region-modal.component.html',
-  styleUrls: ['./region-modal.component.scss'],
+  selector: 'app-status-modal',
+  templateUrl: './status-modal.component.html',
+  styleUrls: ['./status-modal.component.scss'],
 })
-export class RegionModalComponent {
+export class StatusModalComponent {
   loading!: boolean;
   successMessage!: string;
   errorMessage!: string;
-  countries: Country[] = [];
-  statuses: string[] = ['ACTIVE', 'INACTIVE'];
 
   constructor(
-    public dialogRef: MatDialogRef<RegionModalComponent>,
+    public dialogRef: MatDialogRef<StatusModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private _data: DataService
-  ) {
-    this.getCountries();
-  }
+  ) {}
 
   save() {
-    this.data.region.regionCompanyCode = JSON.parse(
-      sessionStorage.getItem('user') || '{}'
-    ).userCompanyCode;
-    if (this.data.region.id === undefined) {
-      this.createRegion(this.data.region);
+    if (this.data.stockStatus.statusCode === undefined) {
+      this.createStockStatus(this.data.stockStatus);
     } else {
-      this.updateRegion(this.data.region);
+      this.updateStockStatus(this.data.stockStatus);
     }
   }
 
-  createRegion(region: Region) {
+  createStockStatus(stockStatus: StockStatus) {
     this.loading = true;
-    const endpoint: string = ENVIRONMENT.endpoints.regions.create;
-    this._data.post(ENVIRONMENT.baseUrl + endpoint, region).subscribe(
+    const endpoint: string = ENVIRONMENT.endpoints.stockStatus.create;
+    this._data.post(ENVIRONMENT.baseUrl + endpoint, stockStatus).subscribe(
       (res: any) => {
-        this.loading = false;
         if (res.statusCode == 0) {
-          this.successMessage = 'Region added successfully.';
-          setTimeout(() => {
-            this.successMessage = '';
-            this.dialogRef.close('saved');
-          }, 500);
-        } else {
-          this.errorMessage = res.message;
-        }
-      },
-      (error: any) => {
-        this.loading = false;
-        if (error.error.message !== undefined) {
-          this.errorMessage = error.error.message;
-        } else {
-          this.errorMessage = 'Internal server error. Please try again.';
-        }
-      }
-    );
-  }
-
-  updateRegion(region: Region) {
-    this.loading = true;
-    const endpoint: string = ENVIRONMENT.endpoints.regions.update;
-    this._data.put(ENVIRONMENT.baseUrl + endpoint, region).subscribe(
-      (res: any) => {
-        this.loading = false;
-        if (res.statusCode == 0) {
-          this.successMessage = 'Region updated successfully.';
+          this.successMessage = 'Status added successfully.';
           setTimeout(() => {
             this.successMessage = '';
             this.dialogRef.close('saved');
@@ -81,7 +44,31 @@ export class RegionModalComponent {
         }
       },
       (error: any) => {
-        this.loading = false;
+        if (error.error.message !== undefined) {
+          this.errorMessage = error.error.message;
+        } else {
+          this.errorMessage = 'Internal server error. Please try again.';
+        }
+      }
+    );
+  }
+
+  updateStockStatus(stockStatus: StockStatus) {
+    this.loading = true;
+    const endpoint: string = `${ENVIRONMENT.endpoints.stockStatus.update}`;
+    this._data.post(ENVIRONMENT.baseUrl + endpoint, stockStatus).subscribe(
+      (res: any) => {
+        if (res.statusCode == 0) {
+          this.successMessage = 'Status updated successfully.';
+          setTimeout(() => {
+            this.successMessage = '';
+            this.dialogRef.close('saved');
+          }, 1500);
+        } else {
+          this.errorMessage = res.message;
+        }
+      },
+      (error: any) => {
         if (error.error.message !== undefined) {
           this.errorMessage = error.error.message;
         } else {
@@ -93,9 +80,5 @@ export class RegionModalComponent {
 
   onClose() {
     this.dialogRef.close();
-  }
-
-  getCountries() {
-    this.countries = JSON.parse(sessionStorage.getItem('countries') || '{}');
   }
 }

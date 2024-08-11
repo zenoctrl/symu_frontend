@@ -30,8 +30,8 @@
           <ng-container matColumnDef="region">
             <th mat-header-cell *matHeaderCellDef> Region </th>
             <td mat-cell *matCellDef="let branch">
-              <p class="mb-0 fw-medium">{{ branch.region }}</p>
-              <p class="mb-0 fw-normal op-5">{{ branch.country }}</p>
+              <p class="mb-0 fw-medium">{{ branch.regionEntity.regionName }}</p>
+              <p class="mb-0 fw-normal op-5">{{ branch.countryEntity.countryName }}</p>
             </td>
           </ng-container>
 

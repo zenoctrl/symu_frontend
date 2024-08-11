@@ -1,0 +1,121 @@
+{
+  "users": [
+    {
+      "id": "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d",
+      "username": "Azron Otieno",
+      "email": "azroneo@gmail.com",
+      "role": "SUPER ADMIN",
+      "phoneNumber": "+254 712 345 678",
+      "country": "KENYA",
+      "branch": "Nairobi",
+      "password": "p@$$w0rd"
+    },
+    {
+      "id": "9b2deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d",
+      "username": "Wangari Maathai",
+      "email": "wm@test.com",
+      "role": "ADMIN",
+      "phoneNumber": "+254 712 345 678",
+      "country": "UGANDA",
+      "branch": "Nairobi",
+      "password": "p@$$w0rd"
+    },
+    {
+      "id": "9b3deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d",
+      "username": "Tom Mboya",
+      "email": "tm@test.com",
+      "role": "SHOP MANAGER",
+      "phoneNumber": "+254 712 345 678",
+      "country": "UGANDA",
+      "branch": "Nairobi",
+      "password": "p@$$w0rd"
+    },
+    {
+      "id": "40dde585-2b21-4223-b354-f743629800d7",
+      "username": "Henry Odero",
+      "email": "ho@test.com",
+      "phoneNumber": "0712345678",
+      "role": "SUPER ADMIN",
+      "country": "KENYA",
+      "branch": "Shop 2"
+    }
+  ],
+  "phones": [
+    {
+      "id": "7b2deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d",
+      "imei": "350032341935386",
+      "model": "SAMSUNG - A042FDS",
+      "memory": "3GB/32GB",
+      "price": "24000",
+      "currency": "KES"
+    },
+    {
+      "id": "059cbeb6-fe00-48ff-b688-b83a956f2814",
+      "imei": "350032341935394",
+      "model": "Samsung - S22",
+      "memory": "32GB/256GB",
+      "price": "65000",
+      "currency": "KES"
+    }
+  ],
+  "countries": [
+    {
+      "id": "6aefb7c3-43e1-4163-af8b-e78ba0042f07",
+      "name": "Kenya",
+      "code": "254",
+      "currency": "Kenyan Shillings",
+      "currencyCode": "KES"
+    },
+    {
+      "id": "3e874f40-551b-4902-b3a3-4acd07b5aaf9",
+      "name": "Uganda",
+      "code": "256",
+      "currency": "Ugandan Shillings",
+      "currencyCode": "UGX"
+    },
+    {
+      "id": "43dafc2b-11fc-40db-b539-e91fefdb3ef2",
+      "name": "Rwanda",
+      "code": "250",
+      "currency": "Rwandan Franc",
+      "currencyCode": "RWF"
+    }
+  ],
+  "regions": [
+    {
+      "id": "6b045049-7931-4a0d-af17-792d0ca65fbc",
+      "name": "Nairobi",
+      "country": "Kenya",
+      "status": "ACTIVE"
+    },
+    {
+      "id": "98a27b6a-d623-4b7d-aa00-3d36084d358d",
+      "name": "Kisumu",
+      "country": "Kenya",
+      "status": "ACTIVE"
+    },
+    {
+      "id": "f49393c2-1dd3-4334-92cd-25ed71734255",
+      "name": "Kigali",
+      "country": "Rwanda",
+      "status": "ACTIVE"
+    }
+  ],
+  "branches": [
+    {
+      "id": "79e32151-b6cd-401d-919c-e7b8c726986a",
+      "name": "Moi Avenue",
+      "country": "Kenya",
+      "region": "Nairobi",
+      "status": "ACTIVE"
+    },
+    {
+      "id": "8d1632d6-3617-4fa6-8cb7-60d265dc1008",
+      "name": "Cookie Hse, Shop 201",
+      "country": "Kenya",
+      "region": "Nairobi",
+      "status": "ACTIVE"
+    }
+  ],
+  "phone-models": []
+}

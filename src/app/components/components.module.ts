@@ -24,9 +24,8 @@ import { UsersComponent } from './users/users.component';
 import { StockComponent } from './stock/stock.component';
 import { UserListComponent } from './users/users-components/user-list/user-list.component';
 import { UserModalComponent } from './users/users-components/user-modal/user-modal.component';
-import { ShopsOutletsComponent } from './shops-outlets/shops-outlets.component';
 import { PhoneListComponent } from './stock/stock-components/phone-list/phone-list.component';
-import { PhoneModalComponent } from './stock/stock-components/phone-modal/phone-modal.component';
+import { PhoneModalComponent } from './stock/stock-components/phone-list/phone-modal/phone-modal.component';
 import { SetupsComponent } from './setups/setups.component';
 import { CountriesComponent } from './setups/setups-components/countries/countries.component';
 import { RegionsComponent } from './setups/setups-components/regions/regions.component';
@@ -34,9 +33,10 @@ import { BranchesComponent } from './setups/setups-components/branches/branches.
 import { CountryModalComponent } from './setups/setups-components/countries/country-modal/country-modal.component';
 import { BranchModalComponent } from './setups/setups-components/branches/branch-modal/branch-modal.component';
 import { RegionModalComponent } from './setups/setups-components/regions/region-modal/region-modal.component';
-import { PhoneModelsComponent } from './setups/setups-components/phone-models/phone-models.component';
-import { ModelModalComponent } from './setups/setups-components/phone-models/model-modal/model-modal.component';
-
+import { PhoneModelsComponent } from './stock/stock-components/phone-models/phone-models.component';
+import { ModelModalComponent } from './stock/stock-components/phone-models/model-modal/model-modal.component';
+import { StockStatusComponent } from './stock/stock-components/stock-status/stock-status.component';
+import { StatusModalComponent } from './stock/stock-components/stock-status/status-modal/status-modal.component';
 
 @NgModule({
   imports: [
@@ -58,7 +58,7 @@ import { ModelModalComponent } from './setups/setups-components/phone-models/mod
     AlertsComponent,
     GridListComponent,
     TooltipsComponent,
-    FormsModule
+    FormsModule,
   ],
   exports: [
     AlertsComponent,
@@ -82,7 +82,6 @@ import { ModelModalComponent } from './setups/setups-components/phone-models/mod
     StockComponent,
     UserListComponent,
     UserModalComponent,
-    ShopsOutletsComponent,
     PhoneListComponent,
     PhoneModalComponent,
     SetupsComponent,
@@ -93,7 +92,9 @@ import { ModelModalComponent } from './setups/setups-components/phone-models/mod
     BranchModalComponent,
     RegionModalComponent,
     PhoneModelsComponent,
-    ModelModalComponent
-  ]
+    ModelModalComponent,
+    StockStatusComponent,
+    StatusModalComponent,
+  ],
 })
-export class ComponentsModule { }
+export class ComponentsModule {}

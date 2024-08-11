@@ -19,10 +19,10 @@
           </ng-container>
   
           <!-- Name Column -->
-          <ng-container matColumnDef="name">
+          <ng-container matColumnDef="regionName">
             <th mat-header-cell *matHeaderCellDef> Name </th>
             <td mat-cell *matCellDef="let region">
-              <p class="mb-0 fw-medium">{{ region.name }}</p>
+              <p class="mb-0 fw-medium">{{ region.regionName }}</p>
             </td>
           </ng-container>
 
@@ -30,7 +30,7 @@
           <ng-container matColumnDef="country">
             <th mat-header-cell *matHeaderCellDef> Country </th>
             <td mat-cell *matCellDef="let region">
-              <p class="mb-0 fw-medium op-5">{{ region.country }}</p>
+              <p class="mb-0 fw-medium op-5">{{ region.countryEntity.countryName }}</p>
             </td>
           </ng-container>
 

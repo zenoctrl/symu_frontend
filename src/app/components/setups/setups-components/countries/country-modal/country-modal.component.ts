@@ -1,7 +1,6 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { DataService } from 'src/app/services/data.service';
-import { v4 as uuidv4 } from 'uuid';
 import { Country } from '../countries.component';
 import { ENVIRONMENT } from 'src/app/environments/environments';
 
@@ -22,8 +21,8 @@ export class CountryModalComponent {
   ) {}
 
   save() {
-    if (this.data.country.id === undefined) {
-      this.data.country.id = uuidv4();
+    this.data.country.companyCode = 1;
+    if (this.data.country.code === undefined) {
       this.createCountry(this.data.country);
     } else {
       this.updateCountry(this.data.country);
@@ -33,29 +32,55 @@ export class CountryModalComponent {
   createCountry(country: Country) {
     this.loading = true;
     const endpoint: string = ENVIRONMENT.endpoints.countries.create;
-    this._data
-      .post(ENVIRONMENT.baseUrl + endpoint, country)
-      .subscribe((res: any) => {
-        this.successMessage = 'Country added successfully.';
-        setTimeout(() => {
-          this.successMessage = '';
-          this.dialogRef.close('saved');
-        }, 1500);
-      });
+    this._data.post(ENVIRONMENT.baseUrl + endpoint, country).subscribe(
+      (res: any) => {
+        this.loading = false;
+        if (res.statusCode == 0) {
+          this.successMessage = 'Country added successfully.';
+          setTimeout(() => {
+            this.successMessage = '';
+            this.dialogRef.close('saved');
+          }, 1500);
+        } else {
+          this.errorMessage = res.message;
+        }
+      },
+      (error: any) => {
+        this.loading = false;
+        if (error.error.message !== undefined) {
+          this.errorMessage = error.error.message;
+        } else {
+          this.errorMessage = 'Internal server error. Please try again.';
+        }
+      }
+    );
   }
 
   updateCountry(country: Country) {
     this.loading = true;
-    const endpoint: string = `${ENVIRONMENT.endpoints.countries.update}/${country.id}`;
-    this._data
-      .put(ENVIRONMENT.baseUrl + endpoint, country)
-      .subscribe((res: any) => {
-        this.successMessage = 'Country updated successfully.';
-        setTimeout(() => {
-          this.successMessage = '';
-          this.dialogRef.close('saved');
-        }, 1500);
-      });
+    const endpoint: string = ENVIRONMENT.endpoints.countries.update;
+    this._data.post(ENVIRONMENT.baseUrl + endpoint, country).subscribe(
+      (res: any) => {
+        this.loading = false;
+        if (res.statusCode == 0) {
+          this.successMessage = 'Country updated successfully.';
+          setTimeout(() => {
+            this.successMessage = '';
+            this.dialogRef.close('saved');
+          }, 1500);
+        } else {
+          this.errorMessage = res.message;
+        }
+      },
+      (error: any) => {
+        this.loading = false;
+        if (error.error.message !== undefined) {
+          this.errorMessage = error.error.message;
+        } else {
+          this.errorMessage = 'Internal server error. Please try again.';
+        }
+      }
+    );
   }
 
   onClose() {

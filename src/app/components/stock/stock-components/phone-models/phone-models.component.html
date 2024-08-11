@@ -22,15 +22,7 @@
           <ng-container matColumnDef="name">
             <th mat-header-cell *matHeaderCellDef> Product Name </th>
             <td mat-cell *matCellDef="let model">
-              <p class="mb-0 fw-medium">{{ model.name }}</p>
-            </td>
-          </ng-container>
-
-          <!-- Memory Column -->
-          <ng-container matColumnDef="memory">
-            <th mat-header-cell *matHeaderCellDef> Memory </th>
-            <td mat-cell *matCellDef="let model">
-              <p class="mb-0 fw-medium op-5">{{ model.memory }}</p>
+              <p class="mb-0 fw-medium">{{ model.modelName }}</p>
             </td>
           </ng-container>
 
@@ -39,8 +31,8 @@
             <th mat-header-cell *matHeaderCellDef> Status </th>
             <td mat-cell *matCellDef="let model">
               <p class="mb-0 fw-medium">
-                <span class="mb-0 fw-medium rounded-pill badge badge-success" *ngIf="model.status === 'AVAILABLE'">{{ model.status }}</span>
-                <span class="mb-0 fw-medium rounded-pill badge badge-primary" *ngIf="model.status === 'OUT OF STOCK'">{{ model.status }}</span>
+                <span class="mb-0 fw-medium rounded-pill badge badge-success" *ngIf="model.modelStatus === 'AVAILABLE'">{{ model.modelStatus }}</span>
+                <span class="mb-0 fw-medium rounded-pill badge badge-primary" *ngIf="model.modelStatus === 'OUT OF STOCK'">{{ model.modelStatus }}</span>
               </p>
             </td>
           </ng-container>

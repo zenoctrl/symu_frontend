@@ -1,51 +1,44 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { DataService } from 'src/app/services/data.service';
-import { Branch } from '../branches.component';
 import { ENVIRONMENT } from 'src/app/environments/environments';
-import { Country } from '../../countries/countries.component';
-import { Region } from '../../regions/regions.component';
+import { DeviceModel } from '../phone-models.component';
 
 @Component({
-  selector: 'app-branch-modal',
-  templateUrl: './branch-modal.component.html',
-  styleUrls: ['./branch-modal.component.scss'],
+  selector: 'app-model-modal',
+  templateUrl: './model-modal.component.html',
+  styleUrls: ['./model-modal.component.scss'],
 })
-export class BranchModalComponent {
+export class ModelModalComponent {
   loading!: boolean;
   successMessage!: string;
   errorMessage!: string;
-  statuses: string[] = ['ACTIVE', 'INACTIVE'];
-  regions!: Region[];
-  countries!: Country[];
+  statuses: string[] = ['AVAILABLE', 'OUT OF STOCK'];
 
   constructor(
-    public dialogRef: MatDialogRef<BranchModalComponent>,
+    public dialogRef: MatDialogRef<ModelModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private _data: DataService
-  ) {
-    this.getCountries();
-    this.getRegions();
-  }
+  ) {}
 
   save() {
-    if (this.data.branch.code === undefined) {
-      this.createBranch(this.data.branch);
+    if (this.data.deviceModel.code === undefined) {
+      this.createDeviceModel(this.data.deviceModel);
     } else {
-      this.updateBranch(this.data.branch);
+      this.updateDeviceModel(this.data.deviceModel);
     }
   }
 
-  createBranch(branch: Branch) {
+  createDeviceModel(deviceModel: DeviceModel) {
     this.loading = true;
-    const endpoint: string = ENVIRONMENT.endpoints.branches.create;
+    const endpoint: string = ENVIRONMENT.endpoints.phoneModels.create;
     this._data
-      .post(ENVIRONMENT.baseUrl + endpoint, branch)
+      .post(ENVIRONMENT.baseUrl + endpoint, deviceModel)
       .subscribe(
         (res: any) => {
-          this.loading = false;
+          
           if (res.statusCode == 0) {
-            this.successMessage = 'Branch added successfully.';
+            this.successMessage = 'Model added successfully.';
             setTimeout(() => {
               this.successMessage = '';
               this.dialogRef.close('saved');
@@ -53,9 +46,9 @@ export class BranchModalComponent {
           } else {
             this.errorMessage = res.message;
           }
+          
         },
         (error: any) => {
-          this.loading = false;
           if (error.error.message !== undefined) {
             this.errorMessage = error.error.message;
           } else {
@@ -65,14 +58,13 @@ export class BranchModalComponent {
       );
   }
 
-  updateBranch(branch: Branch) {
+  updateDeviceModel(deviceModel: DeviceModel) {
     this.loading = true;
-    const endpoint: string = ENVIRONMENT.endpoints.branches.update;
-    this._data.put(ENVIRONMENT.baseUrl + endpoint, branch).subscribe(
+    const endpoint: string = `${ENVIRONMENT.endpoints.phoneModels.update}`;
+    this._data.post(ENVIRONMENT.baseUrl + endpoint, deviceModel).subscribe(
       (res: any) => {
-        this.loading = false;
         if (res.statusCode == 0) {
-          this.successMessage = 'Branch updated successfully.';
+          this.successMessage = 'Model updated successfully.';
           setTimeout(() => {
             this.successMessage = '';
             this.dialogRef.close('saved');
@@ -82,7 +74,6 @@ export class BranchModalComponent {
         }
       },
       (error: any) => {
-        this.loading = false;
         if (error.error.message !== undefined) {
           this.errorMessage = error.error.message;
         } else {
@@ -95,20 +86,4 @@ export class BranchModalComponent {
   onClose() {
     this.dialogRef.close();
   }
-
-  filterRegions() {
-    this.regions = this.regions.filter(
-      (region: Region) =>
-        region.regionCountryCode === this.data.branch.countryCode
-    );
-  }
-
-  getRegions() {
-    this.regions = JSON.parse(sessionStorage.getItem('regions') || '{}');
-  }
-
-  getCountries() {
-    this.countries = JSON.parse(sessionStorage.getItem('countries') || '{}');
-  }
-
 }

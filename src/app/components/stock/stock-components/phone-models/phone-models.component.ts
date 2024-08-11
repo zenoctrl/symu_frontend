@@ -10,10 +10,9 @@ import { ENVIRONMENT } from 'src/app/environments/environments';
 import { ModelModalComponent } from './model-modal/model-modal.component';
 
 export interface DeviceModel {
-  id?: string;
-  name?: string;
-  memory?: string;
-  status?: string;
+  code?: string;
+  modelName?: string;
+  modelStatus?: string;
 }
 
 @Component({
@@ -25,7 +24,6 @@ export class PhoneModelsComponent {
   displayedColumns: string[] = [
     'id',
     'name',
-    'memory',
     'status',
     'action',
   ];
@@ -58,12 +56,15 @@ export class PhoneModelsComponent {
     const endpoint: string = ENVIRONMENT.endpoints.phoneModels.getAll;
     this.data.get(ENVIRONMENT.baseUrl + endpoint).subscribe(
       (res: any) => {
-        setTimeout(() => {
-          this.isFetching = false;
-          this.dataSource = res;
-        }, 500);
+        this.isFetching = false;
+        if (res.statusCode == 0) {
+          sessionStorage.setItem('models', JSON.stringify(res.data));
+          this.dataSource = res.data;
+        } else {
+
+        }
       },
-      (error: any) => {}
+      (error: any) => { this.isFetching = false; }
     );
   }
 
@@ -81,7 +82,8 @@ export class PhoneModelsComponent {
   }
 
   deleteDeviceModel(deviceModel: DeviceModel) {
-    const endpoint: string = `${ENVIRONMENT.endpoints.phoneModels.delete}/${deviceModel.id}`;
+    return;
+    const endpoint: string = `${ENVIRONMENT.endpoints.phoneModels.delete}/${deviceModel.code}`;
     this.data.delete(ENVIRONMENT.baseUrl + endpoint).subscribe((res: any) => {
       this.openSnackBar('Model deleted successfully.', 'Close');
       this.getDeviceModels();

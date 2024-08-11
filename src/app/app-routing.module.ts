@@ -18,6 +18,10 @@ import { TooltipsComponent } from './components/tooltips/tooltips.component';
 import { ProductComponent } from './dashboard/dashboard-components/product/product.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { FullComponent } from './layouts/full/full.component';
+import { LoginComponent } from './components/login/login.component';
+import { UsersComponent } from './components/users/users.component';
+import { StockComponent } from './components/stock/stock.component';
+import { SetupsComponent } from './components/setups/setups.component';
 
 const routes: Routes = [
   {
@@ -26,6 +30,10 @@ const routes: Routes = [
     children: [
       {path:"", redirectTo:"/home", pathMatch:"full"},
       {path:"home", component:DashboardComponent},
+      {path: "stock", component: StockComponent},
+      {path: "users", component: UsersComponent },
+      {path: "admin", component: SetupsComponent},
+
       {path:"alerts", component:AlertsComponent},
       {path:"forms", component:FormsComponent},
       {path:"table", component:ProductComponent},
@@ -44,6 +52,8 @@ const routes: Routes = [
       {path:"button", component:ButtonsComponent},
     ]
   },
+
+  {path: "login", component: LoginComponent},
 
   {path:"", redirectTo:"/home", pathMatch:"full"},
   {path:"**", redirectTo:"/home", pathMatch:"full"},

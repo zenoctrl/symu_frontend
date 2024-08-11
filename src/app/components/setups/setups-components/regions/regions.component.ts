@@ -8,11 +8,15 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { DataService } from 'src/app/services/data.service';
 import { ENVIRONMENT } from 'src/app/environments/environments';
 import { RegionModalComponent } from './region-modal/region-modal.component';
+import { Country } from '../countries/countries.component';
 
 export interface Region {
-  id?: string;
-  name?: string;
-  country?: string;
+  code?: string;
+  regionCompCode?: string;
+  regionCountryCode?: string;
+  regionShortDesc?: string;
+  regionName?: string;
+  regionDesc?: string;
   status?: string;
 }
 
@@ -24,7 +28,7 @@ export interface Region {
 export class RegionsComponent {
   displayedColumns: string[] = [
     'id',
-    'name',
+    'regionName',
     'country',
     'status',
     'action',
@@ -32,12 +36,14 @@ export class RegionsComponent {
   dataSource!: Region[];
   region!: Region;
   isFetching!: boolean;
+  countries: Country[] = [];
 
   constructor(
     public dialog: MatDialog,
     private data: DataService,
     public snackBar: MatSnackBar
   ) {
+    this.countries = JSON.parse(sessionStorage.getItem('countries') || '{}');
     this.getRegions();
   }
 
@@ -56,15 +62,20 @@ export class RegionsComponent {
 
   getRegions() {
     this.isFetching = true;
-    const endpoint: string = ENVIRONMENT.endpoints.regions.getAll;
+    const endpoint: string = `${ENVIRONMENT.endpoints.regions.getAll}?companyCode=1`;
     this.data.get(ENVIRONMENT.baseUrl + endpoint).subscribe(
       (res: any) => {
-        setTimeout(() => {
-          this.isFetching = false;
-          this.dataSource = res;
-        }, 500);
+        this.isFetching = false;
+        if (res.statusCode == 0) {
+          sessionStorage.setItem('regions', JSON.stringify(res.data));
+          this.dataSource = res.data;
+        } else {
+          
+        }
       },
-      (error: any) => {}
+      (error: any) => {
+        this.isFetching = false;
+      }
     );
   }
 
@@ -82,7 +93,8 @@ export class RegionsComponent {
   }
 
   deleteRegion(region: Region) {
-    const endpoint: string = `${ENVIRONMENT.endpoints.regions.delete}/${region.id}`;
+    return;
+    const endpoint: string = `${ENVIRONMENT.endpoints.regions.delete}/${region.code}`;
     this.data.delete(ENVIRONMENT.baseUrl + endpoint).subscribe((res: any) => {
       this.openSnackBar('Region deleted successfully.', 'Close');
       this.getRegions();
