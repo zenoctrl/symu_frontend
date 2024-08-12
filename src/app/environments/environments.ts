@@ -2,7 +2,7 @@ export const ENVIRONMENT = {
   baseUrl: 'https://symuapi-production.up.railway.app/symu',
   endpoints: {
     users: {
-      getAll: '/users',
+      getAll: '/user/getAllUsers',
       create: '/user/createOrUpdateUser',
       update: '/user/createOrUpdateUser',
       delete: '',
@@ -10,6 +10,9 @@ export const ENVIRONMENT = {
       logout: 'user/logout',
       forgotPassword: '',
       resetPassword: '',
+      roles: {
+        getAll: '/role/getAllRoles',
+      },
     },
     countries: {
       getAll: '/country/getAllCountries',
@@ -63,6 +66,7 @@ export const ENVIRONMENT = {
         postSale: '/stock/stockPostSale',
         closeSale: '/stock/stockCloseSale',
       },
+      queryReceipt: '/receipt/getAllByReceiptStockCode',
     },
     dealership: {
       getAll: '/dealership/getAllByCompanyCode',

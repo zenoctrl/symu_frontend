@@ -15,16 +15,6 @@ import { Branch } from 'src/app/components/setups/setups-components/branches/bra
   styleUrls: ['./phone-modal.component.scss'],
 })
 export class PhoneModalComponent {
-  currencies: { name: string; code: string }[] = [
-    {
-      name: 'Ugandan Shilling',
-      code: 'UGX',
-    },
-    {
-      name: 'Kenyan Shilling',
-      code: 'KES',
-    },
-  ];
   models!: DeviceModel[];
   loading!: boolean;
   successMessage!: string;
@@ -36,6 +26,8 @@ export class PhoneModalComponent {
   _regions!: Region[];
   _branches!: Branch[];
   user: any;
+  fetchingReceipt: any;
+  receipt: any;
 
   constructor(
     public dialogRef: MatDialogRef<PhoneModalComponent>,
@@ -51,11 +43,19 @@ export class PhoneModalComponent {
     // }
     this.getUser();
     this.getModels();
-    this.getLocations();
+    
+    if (this.data.title === 'Add Phone') {
+      this.getLocations();
+    }
+
+    
+    if (this.data.title === 'Receipt') {
+      this.fetchReceipt(this.data.phone);
+    }
   }
 
   save() {
-    this.data.phone.stockCompanyCode = 1;
+    this.data.phone.stockCompanyCode = this.user.userCompanyCode;
     this.data.phone.stockCreatedBy = this.user.code;
     if (this.data.phone.code === undefined) {
       this.data.phone.stockStatusCode = 1;
@@ -112,20 +112,20 @@ export class PhoneModalComponent {
   }
 
   updatePhone(phone: any) {
-     const payload = {
-       code: this.data.phone.code,
-       stockCompanyCode: 1,
-       stockCountryCode: this.data.phone.stockCountryCode,
-       stockRegionCode: this.data.phone.stockRegionCode,
-       stockBranchCode: this.data.phone.stockBranchCode,
-       stockImei: this.data.phone.stockImei,
-       stockModelCode: this.data.phone.stockModelCode,
-       stockMemory: this.data.phone.stockMemory,
-       stockBaseCurrency: this.data.phone.stockBaseCurrency,
-       stockStatusCode: 1, // set to pending price addition (maintained)
-       stockCreatedBy: this.data.phone.stockCreatedBy,
-       stockUpdatedBy: this.user.code, 
-     };
+    const payload = {
+      code: this.data.phone.code,
+      stockCompanyCode: 1,
+      stockCountryCode: this.data.phone.stockCountryCode,
+      stockRegionCode: this.data.phone.stockRegionCode,
+      stockBranchCode: this.data.phone.stockBranchCode,
+      stockImei: this.data.phone.stockImei,
+      stockModelCode: this.data.phone.stockModelCode,
+      stockMemory: this.data.phone.stockMemory,
+      stockBaseCurrency: this.data.phone.stockBaseCurrency,
+      stockStatusCode: 1, // set to pending price addition (maintained)
+      stockCreatedBy: this.data.phone.stockCreatedBy,
+      stockUpdatedBy: this.user.code,
+    };
     this.loading = true;
     const endpoint: string = ENVIRONMENT.endpoints.stock.phone.update;
     this._data.post(ENVIRONMENT.baseUrl + endpoint, payload).subscribe(
@@ -237,13 +237,35 @@ export class PhoneModalComponent {
           this.successMessage = 'Sale completed successfully.';
           setTimeout(() => {
             this.successMessage = '';
-            this.dialogRef.close('completed');
+            this.dialogRef.close('posted');
           }, 1500);
         } else {
         }
       },
       (error: any) => {
         this.loading = false;
+        if (error.error.message !== undefined) {
+          this.errorMessage = error.error.message;
+        } else {
+          this.errorMessage = 'Internal server error. Please try again.';
+        }
+      }
+    );
+  }
+
+  fetchReceipt(phone: any) {
+    this.fetchingReceipt = true;
+    const endpoint: string = `${ENVIRONMENT.endpoints.stock.queryReceipt}?stockCode=${phone.code}`;
+    this._data.get(ENVIRONMENT.baseUrl + endpoint).subscribe(
+      (res: any) => {
+        this.fetchingReceipt = false;
+        if (res.statusCode == 0) {
+          this.receipt = res.data[0];
+        } else {
+        }
+      },
+      (error: any) => {
+        this.fetchingReceipt = false;
         if (error.error.message !== undefined) {
           this.errorMessage = error.error.message;
         } else {
@@ -303,5 +325,9 @@ export class PhoneModalComponent {
 
   getUser() {
     this.user = JSON.parse(sessionStorage.getItem('user') || '{}');
+  }
+
+  transformDate(date: string): string {
+    return (new Date(date)).toLocaleString();
   }
 }

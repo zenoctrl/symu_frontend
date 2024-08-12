@@ -37,6 +37,7 @@ import { PhoneModelsComponent } from './stock/stock-components/phone-models/phon
 import { ModelModalComponent } from './stock/stock-components/phone-models/model-modal/model-modal.component';
 import { StockStatusComponent } from './stock/stock-components/stock-status/stock-status.component';
 import { StatusModalComponent } from './stock/stock-components/stock-status/status-modal/status-modal.component';
+import { MatPaginatorModule } from '@angular/material/paginator';
 
 @NgModule({
   imports: [
@@ -59,6 +60,7 @@ import { StatusModalComponent } from './stock/stock-components/stock-status/stat
     GridListComponent,
     TooltipsComponent,
     FormsModule,
+    MatPaginatorModule,
   ],
   exports: [
     AlertsComponent,

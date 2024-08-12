@@ -37,6 +37,7 @@ export class RegionsComponent {
   region!: Region;
   isFetching!: boolean;
   countries: Country[] = [];
+  user: any;
 
   constructor(
     public dialog: MatDialog,
@@ -44,6 +45,7 @@ export class RegionsComponent {
     public snackBar: MatSnackBar
   ) {
     this.countries = JSON.parse(sessionStorage.getItem('countries') || '{}');
+    this.getUser();
     this.getRegions();
   }
 
@@ -62,7 +64,7 @@ export class RegionsComponent {
 
   getRegions() {
     this.isFetching = true;
-    const endpoint: string = `${ENVIRONMENT.endpoints.regions.getAll}?companyCode=1`;
+    const endpoint: string = `${ENVIRONMENT.endpoints.regions.getAll}?companyCode=${this.user.userCompanyCode}`;
     this.data.get(ENVIRONMENT.baseUrl + endpoint).subscribe(
       (res: any) => {
         this.isFetching = false;
@@ -70,7 +72,6 @@ export class RegionsComponent {
           sessionStorage.setItem('regions', JSON.stringify(res.data));
           this.dataSource = res.data;
         } else {
-          
         }
       },
       (error: any) => {
@@ -105,5 +106,9 @@ export class RegionsComponent {
     this.snackBar.open(message, action, {
       duration: 2000,
     });
+  }
+
+  getUser() {
+    this.user = JSON.parse(sessionStorage.getItem('user') || '{}');
   }
 }

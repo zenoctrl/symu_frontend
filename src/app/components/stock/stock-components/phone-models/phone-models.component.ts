@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import {
   MatDialog,
   MAT_DIALOG_DATA,
@@ -8,6 +8,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { DataService } from 'src/app/services/data.service';
 import { ENVIRONMENT } from 'src/app/environments/environments';
 import { ModelModalComponent } from './model-modal/model-modal.component';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatTableDataSource } from '@angular/material/table';
 
 export interface DeviceModel {
   code?: string;
@@ -21,14 +23,10 @@ export interface DeviceModel {
   styleUrls: ['./phone-models.component.scss'],
 })
 export class PhoneModelsComponent {
-  displayedColumns: string[] = [
-    'id',
-    'name',
-    'status',
-    'action',
-  ];
-  dataSource!: DeviceModel[];
+  displayedColumns: string[] = ['id', 'name', 'status', 'action'];
+  dataSource = new MatTableDataSource<DeviceModel[]>();
   isFetching!: boolean;
+  @ViewChild('paginator') paginator!: MatPaginator;
 
   constructor(
     public dialog: MatDialog,
@@ -36,6 +34,10 @@ export class PhoneModelsComponent {
     public snackBar: MatSnackBar
   ) {
     this.getDeviceModels();
+  }
+
+  ngAfterViewInit(): void {
+    this.dataSource.paginator = this.paginator;
   }
 
   addDeviceModel() {
@@ -60,11 +62,13 @@ export class PhoneModelsComponent {
         if (res.statusCode == 0) {
           sessionStorage.setItem('models', JSON.stringify(res.data));
           this.dataSource = res.data;
+          this.dataSource.paginator = this.paginator;
         } else {
-
         }
       },
-      (error: any) => { this.isFetching = false; }
+      (error: any) => {
+        this.isFetching = false;
+      }
     );
   }
 

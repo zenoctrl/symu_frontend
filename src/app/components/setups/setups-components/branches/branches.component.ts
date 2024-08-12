@@ -32,13 +32,16 @@ export class BranchesComponent {
   dataSource!: Branch[];
   branch!: Branch;
   isFetching!: boolean;
-  regions!: Region[]; countries!: Country[];
+  regions!: Region[];
+  countries!: Country[];
+  user: any;
 
   constructor(
     public dialog: MatDialog,
     private data: DataService,
     public snackBar: MatSnackBar
   ) {
+    this.getUser();
     this.getBranches();
     this.getRegions();
     this.getCountries();
@@ -46,7 +49,12 @@ export class BranchesComponent {
 
   addBranch() {
     const dialogRef = this.dialog.open(BranchModalComponent, {
-      data: { branch: {}, title: 'Add Branch', countries: this.countries, regions: this.regions },
+      data: {
+        branch: {},
+        title: 'Add Branch',
+        countries: this.countries,
+        regions: this.regions,
+      },
       disableClose: true,
     });
 
@@ -60,7 +68,7 @@ export class BranchesComponent {
   getBranches() {
     this.isFetching = true;
     const endpoint: string =
-      ENVIRONMENT.endpoints.branches.getAll + '?companyCode=1';
+      `${ENVIRONMENT.endpoints.branches.getAll}?companyCode=${this.user.userCompanyCode}`;
     this.data.get(ENVIRONMENT.baseUrl + endpoint).subscribe(
       (res: any) => {
         this.isFetching = false;
@@ -78,7 +86,12 @@ export class BranchesComponent {
 
   editBranch(branch: Branch) {
     const dialogRef = this.dialog.open(BranchModalComponent, {
-      data: { branch: branch, title: 'Edit Branch', countries: this.countries, regions: this.regions },
+      data: {
+        branch: branch,
+        title: 'Edit Branch',
+        countries: this.countries,
+        regions: this.regions,
+      },
       disableClose: true,
     });
 
@@ -110,5 +123,9 @@ export class BranchesComponent {
 
   getCountries() {
     this.countries = JSON.parse(sessionStorage.getItem('countries') || '{}');
+  }
+
+  getUser() {
+    this.user = JSON.parse(sessionStorage.getItem('user') || '{}');
   }
 }

@@ -18,29 +18,21 @@
             <td mat-cell class="fw-medium" *matCellDef="let user"> {{ dataSource.indexOf(user) + 1 }} </td>
           </ng-container>
   
-          <!-- Name/Email Column -->
+          <!-- Name/ID Column -->
           <ng-container matColumnDef="username">
             <th mat-header-cell *matHeaderCellDef> Name </th>
             <td mat-cell *matCellDef="let user">
-              <p class="mb-0 fw-medium">{{ user.username }}</p>
-              <p class="mb-0 fw-normal op-5"><a [href]="'mailto:' + user.email">{{ user.email }}</a></p>
+              <p class="mb-0 fw-medium">{{ user.userFirstName + ' ' + user.userLastName }}</p>
+              <p class="mb-0 fw-medium OP-5">{{ user.userId }}</p>
             </td>
           </ng-container>
 
-          <!-- Phone Number Column -->
-          <ng-container matColumnDef="phoneNumber">
-            <th mat-header-cell *matHeaderCellDef> Phone Number </th>
+          <!-- Contact Column -->
+          <ng-container matColumnDef="contacts">
+            <th mat-header-cell *matHeaderCellDef> Contact </th>
             <td mat-cell *matCellDef="let user">
-              <p class="mb-0 fw-medium op-5"><a [href]="'tel:' + user.phoneNumber">{{ user.phoneNumber }}</a></p>
-            </td>
-          </ng-container>
-
-          <!-- Branch/Country Column -->
-          <ng-container matColumnDef="shop">
-            <th mat-header-cell *matHeaderCellDef> Shop </th>
-            <td mat-cell *matCellDef="let user">
-              <p class="mb-0 fw-medium">{{ user.branch }}</p>
-              <p class="mb-0 fw-normal op-5">{{ user.country }}</p>
+              <p class="mb-0 fw-medium"><a [href]="'tel:+' + user.userPhone">+{{ user.userPhone }}</a></p>
+              <p class="mb-0 fw-normal op-5"><a [href]="'mailto:' + user.userEmail">{{ user.userEmail }}</a></p>
             </td>
           </ng-container>
   
@@ -48,7 +40,10 @@
           <ng-container matColumnDef="role">
             <th mat-header-cell *matHeaderCellDef> Role </th>
             <td mat-cell *matCellDef="let user">
-              <p class="mb-0 fw-medium op-5">{{ user.role }}</p>
+              <p class="mb-0 fw-medium">{{ user.roleModel.roleName }}</p>
+              <p class="mb-0 fw-medium op-5" *ngIf="user.roleModel.roleName.toLowerCase().includes('admin')">{{ user.countryEntity.countryName }}</p>
+              <p class="mb-0 fw-medium op-5" *ngIf="user.roleModel.roleName.toLowerCase().includes('regional') || user.roleModel.roleName.toLowerCase() == 'sales manager'">{{ user.regionEntity ?  user.regionEntity.regionName + ', ' + user.countryEntity.countryName : user.countryEntity.countryName }}</p>
+              <p class="mb-0 fw-medium op-5" *ngIf="user.roleModel.roleName.toLowerCase().includes('shop') || user.roleModel.roleName.toLowerCase().includes('field')">{{ user.branchEntity.name + ', ' + user.countryEntity.countryName }}</p>
             </td>
           </ng-container>
   

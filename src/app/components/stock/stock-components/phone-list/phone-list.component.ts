@@ -59,7 +59,7 @@ export class PhoneListComponent {
 
   getPhones() {
     this.isFetching = true;
-    const endpoint: string = ENVIRONMENT.endpoints.stock.phone.getAll + '?companyCode=1';
+    const endpoint: string = `${ENVIRONMENT.endpoints.stock.phone.getAll}?companyCode=${this.user.userCompanyCode}`;
     this.data.get(ENVIRONMENT.baseUrl + endpoint).subscribe(
       (res: any) => {
         this.isFetching = false;
@@ -130,7 +130,7 @@ export class PhoneListComponent {
   }
 
   getDealerships() {
-    const endpoint: string = ENVIRONMENT.endpoints.dealership.getAll + '?companyCode=1';
+    const endpoint: string = `${ENVIRONMENT.endpoints.dealership.getAll}?companyCode=${this.user.userCompanyCode}`;
     this.data.get(ENVIRONMENT.baseUrl + endpoint).subscribe(
       (res: any) => {
         if (res.statusCode == 0) {

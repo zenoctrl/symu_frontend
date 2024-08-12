@@ -23,14 +23,16 @@ export interface User {
 })
 export class UserListComponent {
 
-  displayedColumns: string[] = ['id', 'username', 'phoneNumber', 'shop', 'role', 'action'];
-  dataSource!: User[]; user!: User;
+  displayedColumns: string[] = ['id', 'username', 'contacts', 'role', 'action'];
+  dataSource!: any[]; user: any; roles!: any[];
   isFetching!: boolean;
 
   constructor( public dialog: MatDialog, private data: DataService, public snackBar: MatSnackBar ) { }
 
   ngOnInit(): void {
+    this.getUser();
     this.getUsers();
+    this.getRoles();
   }
 
   addUser() {
@@ -46,21 +48,29 @@ export class UserListComponent {
     });
   }
 
+  getUser() {
+    this.user = JSON.parse(sessionStorage.getItem('user') || '{}');
+  }
+
   getUsers() {
     this.isFetching = true;
-    const endpoint: string = ENVIRONMENT.endpoints.users.getAll;
+    const endpoint: string = `${ENVIRONMENT.endpoints.users.getAll}?companyCode=${this.user.userCompanyCode}`;
     this.data.get(ENVIRONMENT.baseUrl + endpoint).subscribe(
       (res: any) => {
-        setTimeout(() => {
-          this.isFetching = false;
-          this.dataSource = res;
-        }, 500);
+        this.isFetching = false;
+        if (res.statusCode == 0) {
+          sessionStorage.setItem('users', JSON.stringify(res.data));
+          this.dataSource = res.data;
+        } else {
+        }
       },
-      (error: any) => {}
+      (error: any) => {
+        this.isFetching = false;
+      }
     );
   }
 
-  editUser(user: User) {
+  editUser(user: any) {
     const dialogRef = this.dialog.open(UserModalComponent, {
       data: {user: user, title: 'Edit User'},
       disableClose: true
@@ -73,8 +83,9 @@ export class UserListComponent {
     });
   }
 
-  deleteUser(user: User) {
-    const endpoint: string = `${ENVIRONMENT.endpoints.users.delete}/${user.id}`;
+  deleteUser(user: any) {
+    return
+    const endpoint: string = `${ENVIRONMENT.endpoints.users.delete}/${user.code}`;
     this.data.delete(ENVIRONMENT.baseUrl + endpoint).subscribe(
       (res: any) => {
         this.openSnackBar("User deleted successfully.", "Close");
@@ -87,6 +98,23 @@ export class UserListComponent {
     this.snackBar.open(message, action, {
       duration: 2000,
     });
+  }
+
+  getRoles() {
+    const endpoint: string = ENVIRONMENT.endpoints.users.roles.getAll;
+    this.data.get(ENVIRONMENT.baseUrl + endpoint).subscribe(
+      (res: any) => {
+        if (res.statusCode == 0) {
+          sessionStorage.setItem('roles', JSON.stringify(res.data));
+          this.roles = res.data;
+        } else {
+          this.getRoles();
+        }
+      },
+      (error: any) => {
+        this.getRoles();
+      }
+    );
   }
 
 }

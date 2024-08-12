@@ -1,60 +1,137 @@
 <main>
-    <h1 mat-dialog-title>{{ data.title }}</h1>
-    <div id="form" mat-dialog-content>
-        <div class="mt-20" *ngIf="successMessage || errorMessage">
-          <div *ngIf="errorMessage" class="alert alert-danger alert-text-danger d-flex fs-14 align-items-center rounded mb-16" role="alert">
-            <i-feather name="alert-circle" class="text-danger feather-base me-12"></i-feather>
-            {{ errorMessage }}
-          </div>
-          <div *ngIf="successMessage" class="alert alert-success alert-text-success d-flex fs-14 align-items-center rounded mb-16" role="alert">
-            <i-feather name="alert-circle" class="text-success feather-base me-12"></i-feather>
-            {{ successMessage }}
-          </div>
-        </div>
-        <div class="mt-20" *ngIf="!successMessage">
-            <mat-form-field class="me-24 fs-16" appearance="outline">
-                <mat-label>Full Name</mat-label>
-                <input type="text" matInput [(ngModel)]="data.user.username">
-            </mat-form-field>
-
-            <mat-form-field class="me-24 fs-16" appearance="outline">
-                <mat-label>Email Address</mat-label>
-                <input type="email" matInput [(ngModel)]="data.user.email">
-            </mat-form-field>
-
-            <mat-form-field class="me-24 fs-16" appearance="outline">
-                <mat-label>Phone Number</mat-label>
-                <input type="email" matInput [(ngModel)]="data.user.phoneNumber">
-            </mat-form-field>
-
-            <mat-form-field class="me-24 fs-16" appearance="outline">
-                <mat-label>Role</mat-label>
-                <mat-select [(ngModel)]="data.user.role">
-                  <mat-option *ngFor="let role of roles" [value]="role">
-                    {{ role }}
-                  </mat-option>
-                </mat-select>
-              </mat-form-field>
-
-              <mat-form-field class="me-24 fs-16" appearance="outline">
-                <mat-label>Country</mat-label>
-                <mat-select [(ngModel)]="data.user.country">
-                  <mat-option *ngFor="let country of countries" [value]="country">
-                    {{ country }}
-                  </mat-option>
-                </mat-select>
-              </mat-form-field>
-
-            <mat-form-field class="me-24 fs-16" appearance="outline">
-                <mat-label>Shop</mat-label>
-                <input type="text" matInput [(ngModel)]="data.user.branch">
-            </mat-form-field>
-        </div>
+  <h1 mat-dialog-title>{{ data.title }}</h1>
+  <div id="form" mat-dialog-content>
+    <div class="mt-20" *ngIf="successMessage || errorMessage">
+      <div
+        *ngIf="errorMessage"
+        class="alert alert-danger alert-text-danger d-flex fs-14 align-items-center rounded mb-16"
+        role="alert"
+      >
+        <i-feather
+          name="alert-circle"
+          class="text-danger feather-base me-12"
+        ></i-feather>
+        {{ errorMessage }}
+      </div>
+      <div
+        *ngIf="successMessage"
+        class="alert alert-success alert-text-success d-flex fs-14 align-items-center rounded mb-16"
+        role="alert"
+      >
+        <i-feather
+          name="alert-circle"
+          class="text-success feather-base me-12"
+        ></i-feather>
+        {{ successMessage }}
+      </div>
     </div>
-    <div mat-dialog-actions align="center" *ngIf="!successMessage">
-        <button id="cancel" mat-button (click)="onClose()">Cancel</button>
-        <button id="save" mat-button *ngIf="loading"><mat-progress-spinner mode="indeterminate" diameter="25"></mat-progress-spinner></button>
-        <button id="save" mat-button disabled *ngIf="!loading && (!data.user.username || !data.user.email || !data.user.phoneNumber || !data.user.role || !data.user.country || !data.user.branch)">Save</button>
-        <button id="save" mat-button *ngIf="!loading && (data.user.username && data.user.email && data.user.phoneNumber && data.user.role && data.user.country && data.user.branch)" (click)="save()" cdkFocusInitial>Save</button>
+    <div class="mt-20" *ngIf="!successMessage">
+      <mat-form-field class="me-24 fs-16" appearance="outline">
+        <mat-label>First Name</mat-label>
+        <input type="text" matInput [(ngModel)]="data.user.userFirstName" />
+      </mat-form-field>
+
+      <mat-form-field class="me-24 fs-16" appearance="outline">
+        <mat-label>Last Name</mat-label>
+        <input type="text" matInput [(ngModel)]="data.user.userLastName" />
+      </mat-form-field>
+
+      <mat-form-field class="me-24 fs-16" appearance="outline">
+        <mat-label>Identification Number</mat-label>
+        <input type="text" matInput [(ngModel)]="data.user.userId" />
+      </mat-form-field>
+
+      <mat-form-field class="me-24 fs-16" appearance="outline" *ngIf="data.user.userId">
+        <mat-label>Email Address</mat-label>
+        <input type="email" matInput [(ngModel)]="data.user.userEmail" />
+      </mat-form-field>
+
+      <mat-form-field class="me-24 fs-16" appearance="outline" *ngIf="data.user.userEmail">
+        <mat-label>Phone Number</mat-label>
+        <input type="text" matInput [(ngModel)]="data.user.userPhone" />
+      </mat-form-field>
+
+      <mat-form-field class="me-24 fs-16" appearance="outline" *ngIf="data.user.code === undefined && data.user.userPhone">
+        <mat-label>Password</mat-label>
+        <input type="text" matInput [(ngModel)]="data.user.userPassword" />
+      </mat-form-field>
+
+      <mat-form-field class="me-24 fs-16" appearance="outline" *ngIf="data.user.userPassword">
+        <mat-label>Role</mat-label>
+        <mat-select [(ngModel)]="data.user.userRoleCode">
+          <mat-option *ngFor="let role of roles" [value]="role.code">
+            {{ role.roleName }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field class="me-24 fs-16" appearance="outline" *ngIf="data.user.userRoleCode">
+        <mat-label>Country</mat-label>
+        <mat-select [(ngModel)]="data.user.userCountryCode" (selectionChange)="selectCountry()">
+          <mat-option *ngFor="let country of countries" [value]="country.code">
+            {{ country.countryName }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      
+      <!-- do not show if role is admin & admin asst. -->
+      <mat-form-field class="me-24 fs-16" appearance="outline" *ngIf="data.user.userRoleCode && (data.user.userRoleCode > 3 && data.user.userRoleCode <= 7)">
+        <mat-label>Region</mat-label>
+        <mat-select [(ngModel)]="data.user.userRegionCode" (selectionChange)="filterBranches()">
+          <mat-option *ngFor="let region of _regions" [value]="region.code">
+            {{ region.regionName }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <!-- shop managers & field sales managers are to assigned to a branch -->
+      <mat-form-field class="me-24 fs-16" appearance="outline" *ngIf="data.user.userRegionCode && (data.user.userRoleCode == 4 || data.user.userRoleCode == 5)">
+        <mat-label>Branch</mat-label>
+        <mat-select [(ngModel)]="data.user.userBrnCode">
+          <mat-option *ngFor="let branch of _branches" [value]="branch.code">
+            {{ branch.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
     </div>
+  </div>
+  <div mat-dialog-actions align="center" *ngIf="!successMessage">
+    <button id="cancel" mat-button (click)="onClose()">Cancel</button>
+    <button id="save" mat-button *ngIf="loading">
+      <mat-progress-spinner
+        mode="indeterminate"
+        diameter="25"
+      ></mat-progress-spinner>
+    </button>
+    <button
+      id="save"
+      mat-button
+      disabled
+      *ngIf="
+        !loading &&
+        (!data.user.userFirstName || !data.user.userLastName ||
+          !data.user.userId || !data.user.userEmail ||
+          !data.user.userPhone || !data.user.userPassword ||
+          !data.user.userRoleCode || !data.user.userCountryCode)
+      "
+    >
+      Save
+    </button>
+    <button
+      id="save"
+      mat-button
+      *ngIf="
+        !loading &&
+        (data.user.userFirstName && data.user.userLastName &&
+          data.user.userId && data.user.userEmail &&
+          data.user.userPhone && data.user.userPassword &&
+          data.user.userRoleCode && data.user.userCountryCode)
+      "
+      (click)="save()"
+      cdkFocusInitial
+    >
+      Save
+    </button>
+  </div>
 </main>

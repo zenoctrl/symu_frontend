@@ -17,21 +17,25 @@
         </div>
 
         <div class="mt-20" *ngIf="!successMessage && !scanning">
-            <mat-form-field class="me-24 fs-16" appearance="outline">
+
+            <div *ngIf="data.title !== 'Receipt'">
+              <mat-form-field class="me-24 fs-16" appearance="outline">
                 <mat-label>IMEI</mat-label>
                 <input type="text" matInput [(ngModel)]="data.phone.stockImei" *ngIf="data.title === 'Add Phone' || data.title === 'Edit Phone'">
                 <input type="text" matInput [(ngModel)]="data.phone.stockImei" *ngIf="data.title !== 'Add Phone' && data.title !== 'Edit Phone'" readonly>
-            </mat-form-field>
+              </mat-form-field>
 
-            <mat-form-field class="me-24 fs-16" appearance="outline">
-                <mat-label>Model</mat-label>
-                <mat-select [(ngModel)]="data.phone.stockMemory" (selectionChange)="selectModel()" *ngIf="data.title === 'Add Phone' || data.title === 'Edit Phone'">
-                  <mat-option *ngFor="let model of models" [value]="model.modelName">
-                    {{ model.modelName }}
-                  </mat-option>
-                </mat-select>
-                <input type="text" matInput [(ngModel)]="data.phone.stockMemory" *ngIf="data.title !== 'Add Phone' && data.title !== 'Edit Phone'" readonly>
-            </mat-form-field>
+              <mat-form-field class="me-24 fs-16" appearance="outline">
+                  <mat-label>Model</mat-label>
+                  <mat-select [(ngModel)]="data.phone.stockMemory" (selectionChange)="selectModel()" *ngIf="data.title === 'Add Phone' || data.title === 'Edit Phone'">
+                    <mat-option *ngFor="let model of models" [value]="model.modelName">
+                      {{ model.modelName }}
+                    </mat-option>
+                  </mat-select>
+                  <input type="text" matInput [(ngModel)]="data.phone.stockMemory" *ngIf="data.title !== 'Add Phone' && data.title !== 'Edit Phone'" readonly>
+              </mat-form-field>
+            </div>
+            
 
             <div *ngIf="data.title == 'Add Phone'">
               <mat-form-field class="me-24 fs-16" appearance="outline">
@@ -122,11 +126,67 @@
               </mat-form-field>
 
             </div>
+
+            <div *ngIf="data.title === 'Receipt'">
+              <div *ngIf="fetchingReceipt">
+                <mat-progress-spinner mode="indeterminate" diameter="25"></mat-progress-spinner> Fetching ...
+              </div>
+              <div *ngIf="!fetchingReceipt">
+                <p class="fw-bold" style="text-align: center;">{{ receipt.receiptDealership }}</p>
+                <p style="text-align: center;">{{ transformDate(receipt.receiptCreatedOn) }}</p>
+                <hr>
+                <div>
+                  <table style="width: 100%;">
+                    <tr>
+                      <td>Customer Name</td>
+                      <td style="text-align: right;">{{ receipt.receiptCustomerName }}</td>
+                    </tr>
+                    <tr>
+                      <td>Phone No.</td>
+                      <td style="text-align: right;">{{ receipt.receiptCustomerPhoneNo }}</td>
+                    </tr>
+                    <tr>
+                      <td>ID No.</td>
+                      <td style="text-align: right;">{{ receipt.receiptCustomerIdNo }}</td>
+                    </tr>
+                  </table>
+                </div>
+                <hr>
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Item</th>
+                      <th>Qty</th>
+                      <th>Price</th>
+                      <th>Total</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>{{ receipt.receiptModel  }}</td>
+                      <td style="margin-left: 10px;">{{ receipt.receiStockQuantity  }}</td>
+                      <td style="margin-left: 10px;">{{ receipt.receiptAmount  }}</td>
+                      <td style="margin-left: 10px;">{{ receipt.receiptAmount  }}</td>
+                    </tr>
+                    <tr>
+                      <td colspan="4">{{ receipt.receiStockImei  }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+                <hr>
+                <p class="d-flex"><span>Gross Total</span> <span class="fw-bold" style="margin-left: auto;">{{ data.phone.stockBaseCurrency + ' ' + receipt.receiptAmount }}</span></p>
+                <p style="text-align: center;"><em>Thank You.</em></p>
+              </div>
+            </div>
             
 
         </div>
     </div>
-    <div mat-dialog-actions align="center" *ngIf="!successMessage">
+
+    <div mat-dialog-actions align="center" *ngIf="data.title === 'Receipt'">
+      <button id="cancel" mat-button (click)="onClose()">Close</button>
+    </div>
+    <div mat-dialog-actions align="center" *ngIf="!successMessage && data.title !== 'Receipt'">
         <button id="cancel" mat-button (click)="onClose()">Cancel</button>
         <button id="save" mat-button *ngIf="loading"><mat-progress-spinner mode="indeterminate" diameter="25"></mat-progress-spinner></button>
         <button id="save" mat-button disabled *ngIf="!loading && (!data.phone.stockImei || !data.phone.stockMemory || !data.phone.stockCountryCode || !data.phone.stockRegionCode || !data.phone.stockBranchCode)">Save</button>
