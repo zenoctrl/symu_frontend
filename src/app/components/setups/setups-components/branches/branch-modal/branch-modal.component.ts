@@ -18,17 +18,20 @@ export class BranchModalComponent {
   statuses: string[] = ['ACTIVE', 'INACTIVE'];
   regions!: Region[];
   countries!: Country[];
+  user: any;
 
   constructor(
     public dialogRef: MatDialogRef<BranchModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private _data: DataService
   ) {
+    this.getUser();
     this.getCountries();
     this.getRegions();
   }
 
   save() {
+    this.data.branch.companyCode = this.user.userCompanyCode;
     if (this.data.branch.code === undefined) {
       this.createBranch(this.data.branch);
     } else {
@@ -109,6 +112,10 @@ export class BranchModalComponent {
 
   getCountries() {
     this.countries = JSON.parse(sessionStorage.getItem('countries') || '{}');
+  }
+
+  getUser() {
+    this.user = JSON.parse(sessionStorage.getItem('user') || '{}');
   }
 
 }
