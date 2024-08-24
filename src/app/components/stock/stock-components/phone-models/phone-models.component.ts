@@ -14,7 +14,14 @@ import { MatTableDataSource } from '@angular/material/table';
 export interface DeviceModel {
   code?: string;
   modelName?: string;
+  modelShortDesc?: string;
+  modelDescription?: string;
   modelStatus?: string;
+  modelCompanyCode?: string;
+  modelCountryCode?: string;
+  modelCurrencyCode?: string;
+  modelSellingPrice?: string;
+  countryEntity?: any;
 }
 
 @Component({
@@ -23,7 +30,7 @@ export interface DeviceModel {
   styleUrls: ['./phone-models.component.scss'],
 })
 export class PhoneModelsComponent {
-  displayedColumns: string[] = ['id', 'name', 'status', 'action'];
+  displayedColumns: string[] = ['id', 'name', 'price', 'status', 'action'];
   dataSource = new MatTableDataSource<DeviceModel[]>();
   isFetching!: boolean;
   @ViewChild('paginator') paginator!: MatPaginator;

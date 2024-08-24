@@ -3,6 +3,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { DataService } from 'src/app/services/data.service';
 import { ENVIRONMENT } from 'src/app/environments/environments';
 import { DeviceModel } from '../phone-models.component';
+import { Country } from 'src/app/components/setups/setups-components/countries/countries.component';
 
 @Component({
   selector: 'app-model-modal',
@@ -14,14 +15,22 @@ export class ModelModalComponent {
   successMessage!: string;
   errorMessage!: string;
   statuses: string[] = ['AVAILABLE', 'OUT OF STOCK'];
+  countries: Country[] = []; user: any;
 
   constructor(
     public dialogRef: MatDialogRef<ModelModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private _data: DataService
-  ) {}
+  ) {
+    this.getUser();
+    this.getCountries();
+  }
 
   save() {
+    this.data.deviceModel.modelCompanyCode = this.user.userCompanyCode;
+    this.data.deviceModel.modelShortDesc =
+      this.data.deviceModel.modelDescription = this.data.deviceModel.modelName;
+    
     if (this.data.deviceModel.code === undefined) {
       this.createDeviceModel(this.data.deviceModel);
     } else {
@@ -30,6 +39,7 @@ export class ModelModalComponent {
   }
 
   createDeviceModel(deviceModel: DeviceModel) {
+    deviceModel.modelStatus = 'AVAILABLE'; // default on creation
     this.loading = true;
     const endpoint: string = ENVIRONMENT.endpoints.phoneModels.create;
     this._data
@@ -85,5 +95,31 @@ export class ModelModalComponent {
 
   onClose() {
     this.dialogRef.close();
+  }
+
+  getUser() {
+    this.user = JSON.parse(sessionStorage.getItem('user') || '{}');
+  }
+
+  getCountries() {
+    const endpoint: string = `${ENVIRONMENT.endpoints.countries.getAll}`;
+    this._data.get(ENVIRONMENT.baseUrl + endpoint).subscribe(
+      (res: any) => {
+        if (res.statusCode == 0) {
+          this.countries = res.data;
+        } else {
+          this.getCountries();
+        }
+      },
+      (error: any) => {
+        this.getCountries();
+      }
+    );
+  }
+
+  selectCountry() {
+    this.data.deviceModel.modelCurrencyCode = this.countries.find(
+      (c) => c.code === this.data.deviceModel.modelCountryCode
+    )?.countryCurrencyCode;
   }
 }

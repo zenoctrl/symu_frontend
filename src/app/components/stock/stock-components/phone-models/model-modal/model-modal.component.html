@@ -19,6 +19,20 @@
             </mat-form-field>
 
             <mat-form-field class="me-24 fs-16" appearance="outline">
+                <mat-label>Country</mat-label>
+                <mat-select [(ngModel)]="data.deviceModel.modelCountryCode" (selectionChange)="selectCountry()">
+                  <mat-option *ngFor="let country of countries" [value]="country.code">
+                    {{ country.countryName }}
+                  </mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field class="me-24 fs-16" appearance="outline" *ngIf="data.deviceModel.modelCountryCode">
+                <mat-label>Selling Price ({{ data.deviceModel.modelCurrencyCode }})</mat-label>
+                <input type="text" matInput [(ngModel)]="data.deviceModel.modelSellingPrice">
+            </mat-form-field>
+
+            <mat-form-field class="me-24 fs-16" appearance="outline" *ngIf="data.deviceModel.code">
                 <mat-label>Status</mat-label>
                 <mat-select [(ngModel)]="data.deviceModel.modelStatus">
                   <mat-option *ngFor="let status of statuses" [value]="status">
@@ -32,7 +46,7 @@
     <div mat-dialog-actions align="center" *ngIf="!successMessage">
         <button id="cancel" mat-button (click)="onClose()">Cancel</button>
         <button id="save" mat-button *ngIf="loading"><mat-progress-spinner mode="indeterminate" diameter="25"></mat-progress-spinner></button>
-        <button id="save" mat-button disabled *ngIf="!loading && (!data.deviceModel.modelName || !data.deviceModel.modelStatus)">Save</button>
-        <button id="save" mat-button *ngIf="!loading && (data.deviceModel.modelName && data.deviceModel.modelStatus)" (click)="save()" cdkFocusInitial>Save</button>
+        <button id="save" mat-button disabled *ngIf="!loading && (!data.deviceModel.modelName || !data.deviceModel.modelCountryCode || !data.deviceModel.modelSellingPrice)">Save</button>
+        <button id="save" mat-button *ngIf="!loading && (data.deviceModel.modelName && data.deviceModel.modelCountryCode && data.deviceModel.modelSellingPrice)" (click)="save()" cdkFocusInitial>Save</button>
     </div>
 </main>
