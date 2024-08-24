@@ -8,6 +8,7 @@ import { DeviceModel } from '../../phone-models/phone-models.component';
 import { Country } from 'src/app/components/setups/setups-components/countries/countries.component';
 import { Region } from 'src/app/components/setups/setups-components/regions/regions.component';
 import { Branch } from 'src/app/components/setups/setups-components/branches/branches.component';
+import { StockBatch } from '../../stock-batch/stock-batch.component';
 
 @Component({
   selector: 'app-phone-modal',
@@ -23,11 +24,10 @@ export class PhoneModalComponent {
   countries!: Country[];
   regions!: Region[];
   branches!: Branch[];
-  _regions!: Region[];
-  _branches!: Branch[];
   user: any;
   fetchingReceipt: any;
   receipt: any;
+  batch!: StockBatch;
 
   constructor(
     public dialogRef: MatDialogRef<PhoneModalComponent>,
@@ -42,12 +42,11 @@ export class PhoneModalComponent {
     //   this.scanning = false;
     // }
     this.getUser();
-    this.getModels();
-    
-    if (this.data.title === 'Add Phone') {
-      this.getLocations();
-    }
 
+    if (this.data.title === 'Edit Phone' || this.data.title === 'Post Sale') {
+      this.getModels();
+      this.getBatch();
+    }
     
     if (this.data.title === 'Receipt') {
       this.fetchReceipt(this.data.phone);
@@ -55,10 +54,7 @@ export class PhoneModalComponent {
   }
 
   save() {
-    this.data.phone.stockCompanyCode = this.user.userCompanyCode;
-    this.data.phone.stockCreatedBy = this.user.code;
     if (this.data.phone.code === undefined) {
-      this.data.phone.stockStatusCode = 1;
       this.createPhone(this.data.phone);
     } else {
       if (this.data.title.toLowerCase().includes('edit')) {
@@ -75,7 +71,7 @@ export class PhoneModalComponent {
 
   createPhone(phone: any) {
     const payload = {
-      stockCompanyCode: 1,
+      stockCompanyCode: this.user.userCompanyCode,
       stockCountryCode: this.data.phone.stockCountryCode,
       stockRegionCode: this.data.phone.stockRegionCode,
       stockBranchCode: this.data.phone.stockBranchCode,
@@ -83,8 +79,9 @@ export class PhoneModalComponent {
       stockModelCode: this.data.phone.stockModelCode,
       stockMemory: this.data.phone.stockMemory,
       stockBaseCurrency: this.data.phone.stockBaseCurrency,
-      stockStatusCode: 1, // set to pending price addition
+      stockStatusCode: 2, // set to available (price has been set already on model & batch)
       stockCreatedBy: this.user.code,
+      stockBatchCode: this.data.phone.stockBatchCode,
     };
     this.loading = true;
     const endpoint: string = ENVIRONMENT.endpoints.stock.phone.create;
@@ -114,7 +111,7 @@ export class PhoneModalComponent {
   updatePhone(phone: any) {
     const payload = {
       code: this.data.phone.code,
-      stockCompanyCode: 1,
+      stockCompanyCode: this.user.userCompanyCode,
       stockCountryCode: this.data.phone.stockCountryCode,
       stockRegionCode: this.data.phone.stockRegionCode,
       stockBranchCode: this.data.phone.stockBranchCode,
@@ -122,9 +119,10 @@ export class PhoneModalComponent {
       stockModelCode: this.data.phone.stockModelCode,
       stockMemory: this.data.phone.stockMemory,
       stockBaseCurrency: this.data.phone.stockBaseCurrency,
-      stockStatusCode: 1, // set to pending price addition (maintained)
+      stockStatusCode: 2, // set to available (price has been set already on model & batch)
       stockCreatedBy: this.data.phone.stockCreatedBy,
       stockUpdatedBy: this.user.code,
+      stockBatchCode: this.data.phone.stockBatchCode,
     };
     this.loading = true;
     const endpoint: string = ENVIRONMENT.endpoints.stock.phone.update;
@@ -200,11 +198,11 @@ export class PhoneModalComponent {
       (res: any) => {
         this.loading = false;
         if (res.statusCode == 0) {
-          this.successMessage = 'Sale posted successfully.';
+          this.data.title = "Receipt";
+          this.receipt = res.data;
           setTimeout(() => {
-            this.successMessage = '';
             this.dialogRef.close('posted');
-          }, 1500);
+          }, 5000);
         } else {
         }
       },
@@ -285,46 +283,68 @@ export class PhoneModalComponent {
   }
 
   getModels() {
-    this.models = JSON.parse(sessionStorage.getItem('models') || '{}').filter(
-      (model: DeviceModel) => model.modelStatus == 'AVAILABLE'
+    this.models = JSON.parse(sessionStorage.getItem('models') || '[]').filter(
+      (model: DeviceModel) => model.modelStatus == 'AVAILABLE' && model.modelCountryCode == this.data.phone.stockCountryCode
     );
   }
 
-  getLocations() {
-    this.countries = JSON.parse(sessionStorage.getItem('countries') || '{}');
-    this.regions = JSON.parse(sessionStorage.getItem('regions') || '{}');
-    this.branches = JSON.parse(sessionStorage.getItem('branches') || '{}');
+  getCountries() {
+    this.countries = JSON.parse(sessionStorage.getItem('countries') || '[]');
+    this.regions = JSON.parse(sessionStorage.getItem('regions') || '[]');
+    this.branches = JSON.parse(sessionStorage.getItem('branches') || '[]');
   }
 
   selectModel() {
     this.data.phone.stockModelCode = this.models.find(
       (model: DeviceModel) => model.modelName === this.data.phone.stockMemory
     )?.code;
+    this.getBatch();
+  }
+
+  getBatch() {
+    this.batch = JSON.parse(
+      sessionStorage.getItem('stock-batches') || '[]'
+    ).find(
+      (batch: StockBatch) =>
+        batch.stockModelCode == this.data.phone.stockModelCode
+    );
+    if (this.batch) {
+      this.data.phone.stockBatchCode = this.batch.code;
+      this.errorMessage = '';
+    } else {
+      this.errorMessage = "Selected model has no batch number.";
+    }
+    
   }
 
   selectCountry() {
     this.data.phone.stockBaseCurrency = this.countries.find(
       (country: Country) => country.code === this.data.phone.stockCountryCode
     )?.countryCurrencyCode;
-    this.filterRegions();
-    this.data.phone.stockRegionCode = this.data.phone.stockBranchCode = null;
+    this.data.phone.stockRegionCode = this.data.phone.stockBranchCode = this.data.phone.stockMemory = null;
+    this.getModels();
+    this.getRegions();
   }
 
-  filterRegions() {
-    this._regions = this.regions.filter(
-      (region: Region) =>
-        region.regionCountryCode === this.data.phone.stockCountryCode
+  getRegions() {
+    this.regions = JSON.parse(
+      sessionStorage.getItem('regions') || '[]'
+    ).filter(
+      (region: Region) => region.regionCountryCode === this.data.phone.stockCountryCode
     );
   }
 
-  filterBranches() {
-    this._branches = this.branches.filter(
+  getBranches() {
+    this.branches = JSON.parse(
+      sessionStorage.getItem('branches') || '[]'
+    ).filter(
       (branch: Branch) => branch.regionCode === this.data.phone.stockRegionCode
     );
   }
 
   getUser() {
     this.user = JSON.parse(sessionStorage.getItem('user') || '{}');
+    this.getCountries();
   }
 
   transformDate(date: string): string {

@@ -55,10 +55,9 @@
             <th mat-header-cell *matHeaderCellDef> Actions </th>
             <td mat-cell *matCellDef="let phone">
               <div class="action">
-                <a class="edit" (click)="editPhone(phone, 'Edit Phone')" *ngIf="phone.stockStatusCode == 1">Edit Details</a>
-                <a class="edit" (click)="editPhone(phone, 'Update Price')" *ngIf="phone.stockStatusEntity.statusName.toLowerCase().includes('pending') || phone.stockStatusEntity.statusName.toLowerCase().includes('available')">Update Price</a>
+                <a class="edit" (click)="editPhone(phone, 'Edit Phone')" *ngIf="phone.stockStatusCode <= 2">Edit Details</a>
                 <a class="edit" (click)="editPhone(phone, 'Post Sale')" *ngIf="phone.stockStatusEntity.statusName.toLowerCase().includes('available')">Post Sale</a>
-                <a class="edit" (click)="editPhone(phone, 'Complete Sale')" *ngIf="phone.stockStatusEntity.statusName.toLowerCase().includes('posted')">Complete Sale</a>
+                <!-- <a class="edit" (click)="editPhone(phone, 'Complete Sale')" *ngIf="phone.stockStatusEntity.statusName.toLowerCase().includes('posted')">Complete Sale</a> -->
                 <a class="edit" *ngIf="phone.stockStatusEntity.statusName.toLowerCase().includes('post') || phone.stockStatusEntity.statusName.toLowerCase().includes('sold')" (click)="viewReceipt(phone)">View Receipt</a>
             </div>
             </td>

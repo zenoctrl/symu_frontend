@@ -64,7 +64,9 @@ export class PhoneListComponent {
       (res: any) => {
         this.isFetching = false;
         if (res.statusCode == 0) {
-          this.dataSource = res.data;
+          this.dataSource = res.data.filter((phone: any) =>
+            phone.stockStatusEntity.statusName.toLowerCase().includes('available')
+          );
         } else {
         }
       },
