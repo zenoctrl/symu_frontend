@@ -29,4 +29,8 @@ export class DataService {
     return this.http.delete<any>(url, {headers: headers});
   }
 
+  isAuthenticated() {
+    return sessionStorage.getItem('user');
+  }
+
 }

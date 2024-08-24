@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { AuthGuard } from './guard/auth.guard';
 import { AlertsComponent } from './components/alerts/alerts.component';
 import { ButtonsComponent } from './components/buttons/buttons.component';
 import { ChipsComponent } from './components/chips/chips.component';
@@ -30,9 +31,9 @@ const routes: Routes = [
     children: [
       {path:"", redirectTo:"/login", pathMatch:"full"},
       // {path:"home", component:DashboardComponent},
-      {path: "stock", component: StockComponent},
-      {path: "users", component: UsersComponent },
-      {path: "admin", component: SetupsComponent},
+      {path: "stock", component: StockComponent, canActivate: [AuthGuard]},
+      {path: "users", component: UsersComponent, canActivate: [AuthGuard]},
+      {path: "admin", component: SetupsComponent, canActivate: [AuthGuard]},
 
       // {path:"alerts", component:AlertsComponent},
       // {path:"forms", component:FormsComponent},
