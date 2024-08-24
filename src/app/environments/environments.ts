@@ -57,6 +57,12 @@ export const ENVIRONMENT = {
         update: '/stock-model/createOrUpdateStockModel',
         delete: '',
       },
+      batch: {
+        getAll: '/stock-batch/getAllStockBatch',
+        create: '/stock-batch/createOrUpdateStockBatch',
+        update: '/stock-batch/createOrUpdateStockBatch',
+        delete: '',
+      },
       phone: {
         getAll: '/stock/getAllStock',
         create: '/stock/createOrUpdateStock',
