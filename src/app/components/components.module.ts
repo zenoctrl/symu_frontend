@@ -40,6 +40,9 @@ import { StatusModalComponent } from './stock/stock-components/stock-status/stat
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { StockBatchComponent } from './stock/stock-components/stock-batch/stock-batch.component';
 import { BatchModalComponent } from './stock/stock-components/stock-batch/batch-modal/batch-modal.component';
+import { SalesComponent } from './sales/sales.component';
+import { PostedSalesComponent } from './sales/posted-sales/posted-sales.component';
+import { AfterSalesComponent } from './sales/after-sales/after-sales.component';
 
 @NgModule({
   imports: [
@@ -101,6 +104,9 @@ import { BatchModalComponent } from './stock/stock-components/stock-batch/batch-
     StatusModalComponent,
     StockBatchComponent,
     BatchModalComponent,
+    SalesComponent,
+    PostedSalesComponent,
+    AfterSalesComponent,
   ],
 })
 export class ComponentsModule {}
