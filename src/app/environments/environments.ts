@@ -71,6 +71,7 @@ export const ENVIRONMENT = {
         setPrice: '/stock/updateStockPrice',
         postSale: '/stock/stockPostSale',
         closeSale: '/stock/stockCloseSale',
+        rejectSale: '/stock/stockRejectPostedSale'
       },
       queryReceipt: '/receipt/getAllByReceiptStockCode',
     },
