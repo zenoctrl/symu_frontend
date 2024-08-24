@@ -23,18 +23,19 @@ import { LoginComponent } from './components/login/login.component';
 import { UsersComponent } from './components/users/users.component';
 import { StockComponent } from './components/stock/stock.component';
 import { SetupsComponent } from './components/setups/setups.component';
+import { SalesComponent } from './components/sales/sales.component';
 
 const routes: Routes = [
   {
-    path:"",
-    component:FullComponent,
+    path: '',
+    component: FullComponent,
     children: [
-      {path:"", redirectTo:"/login", pathMatch:"full"},
+      { path: '', redirectTo: '/login', pathMatch: 'full' },
       // {path:"home", component:DashboardComponent},
-      {path: "stock", component: StockComponent, canActivate: [AuthGuard]},
-      {path: "users", component: UsersComponent, canActivate: [AuthGuard]},
-      {path: "admin", component: SetupsComponent, canActivate: [AuthGuard]},
-
+      { path: 'stock', component: StockComponent, canActivate: [AuthGuard] },
+      { path: 'users', component: UsersComponent, canActivate: [AuthGuard] },
+      { path: 'admin', component: SetupsComponent, canActivate: [AuthGuard] },
+      { path: 'sales', component: SalesComponent, canActivate: [AuthGuard] },
       // {path:"alerts", component:AlertsComponent},
       // {path:"forms", component:FormsComponent},
       // {path:"table", component:ProductComponent},
@@ -51,17 +52,17 @@ const routes: Routes = [
       // {path:"slide-toggle", component:SlideToggleComponent},
       // {path:"tooltip", component:TooltipsComponent},
       // {path:"button", component:ButtonsComponent},
-    ]
+    ],
   },
 
-  {path: "login", component: LoginComponent},
+  { path: 'login', component: LoginComponent },
 
-  {path:"", redirectTo:"/login", pathMatch:"full"},
-  {path:"**", redirectTo:"/login", pathMatch:"full"},
+  { path: '', redirectTo: '/login', pathMatch: 'full' },
+  { path: '**', redirectTo: '/login', pathMatch: 'full' },
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forRoot(routes, {useHash: true})],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }
