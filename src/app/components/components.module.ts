@@ -38,6 +38,8 @@ import { ModelModalComponent } from './stock/stock-components/phone-models/model
 import { StockStatusComponent } from './stock/stock-components/stock-status/stock-status.component';
 import { StatusModalComponent } from './stock/stock-components/stock-status/status-modal/status-modal.component';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { StockBatchComponent } from './stock/stock-components/stock-batch/stock-batch.component';
+import { BatchModalComponent } from './stock/stock-components/stock-batch/batch-modal/batch-modal.component';
 
 @NgModule({
   imports: [
@@ -97,6 +99,8 @@ import { MatPaginatorModule } from '@angular/material/paginator';
     ModelModalComponent,
     StockStatusComponent,
     StatusModalComponent,
+    StockBatchComponent,
+    BatchModalComponent,
   ],
 })
 export class ComponentsModule {}

@@ -1,0 +1,27 @@
+main {
+    max-width: 400px;
+}
+
+main > div {
+    border-top: 1px solid #e0e0e0;
+}
+
+#form {
+    padding-top: 0;
+    padding-bottom: 0;
+}   
+
+button {
+    width: 120px;
+    border: 1px solid #03c9d7;
+}
+
+#cancel {
+    background-color: #fff;
+    color: #03c9d7;
+}
+
+#save {
+    background-color: #03c9d7;
+    color: #fff;
+}

@@ -1,0 +1,70 @@
+<mat-card class="w-100">
+    <mat-card-content>
+
+      <div class="d-flex justify-content-end">
+        <a id="add-btn" (click)="addStockBatch()">+ Add Batch</a>
+      </div>
+
+      <br>
+      <mat-progress-bar *ngIf="isFetching" mode="indeterminate"></mat-progress-bar>
+  
+      <div class="table-responsive">
+        <table mat-table [dataSource]="dataSource" class="text-nowrap w-100">
+  
+          <!-- Id Column -->
+          <ng-container matColumnDef="id">
+            <th mat-header-cell *matHeaderCellDef> # </th>
+            <td mat-cell class="fw-medium" *matCellDef="let batch, index as i"> {{ i + 1 }} </td>
+          </ng-container>
+  
+          <!-- Number Column -->
+          <ng-container matColumnDef="number">
+            <th mat-header-cell *matHeaderCellDef> Batch Number </th>
+            <td mat-cell *matCellDef="let batch">
+              <p class="mb-0 fw-medium">{{ batch.batchNo }}</p>
+            </td>
+          </ng-container>
+
+          <!-- Model Column -->
+          <ng-container matColumnDef="model">
+            <th mat-header-cell *matHeaderCellDef> Model </th>
+            <td mat-cell *matCellDef="let batch">
+              <p class="mb-0 fw-medium">{{ batch?.modelEntity?.modelName }}</p>
+            </td>
+          </ng-container>
+
+           <!-- Price Column -->
+          <ng-container matColumnDef="price">
+            <th mat-header-cell *matHeaderCellDef> Price </th>
+            <td mat-cell *matCellDef="let batch">
+              <p class="mb-0 fw-medium">{{ batch?.countryEntity?.countryCurrencyCode + ' ' + batch.batchBuyingPrice }}</p>
+              <p class="mb-0 fw-medium op-5">{{ batch?.countryEntity?.countryName }}</p>
+            </td>
+          </ng-container>
+
+          <!-- Status Column -->
+          <ng-container matColumnDef="status">  
+            <th mat-header-cell *matHeaderCellDef> Status </th>
+            <td mat-cell *matCellDef="let batch">
+              <p class="mb-0 fw-medium">{{ batch.batchStatus }}</p>
+            </td>
+          </ng-container>
+  
+          <!-- Action Column -->
+          <ng-container matColumnDef="action">
+            <th mat-header-cell *matHeaderCellDef> Action </th>
+            <td mat-cell *matCellDef="let batch">
+              <div class="action">
+                <a class="edit" (click)="editStockBatch(batch)">Edit</a>
+                <a class="delete" (click)="deleteDeviceModel(batch)">Delete</a>
+            </div>
+            </td>
+          </ng-container>
+  
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+        <mat-paginator #paginator [pageSize]="10" [pageSizeOptions]="[10, 25]" showFirstLastButtons aria-label="Select page"></mat-paginator>
+      </div>
+    </mat-card-content>
+  </mat-card>
