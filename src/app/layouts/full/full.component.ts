@@ -28,7 +28,10 @@ export class FullComponent {
       shareReplay()
     );
 
-  constructor(private breakpointObserver: BreakpointObserver, private route: Router) {
+  constructor(
+    private breakpointObserver: BreakpointObserver,
+    private route: Router
+  ) {
     this.getUser();
   }
 
@@ -41,25 +44,31 @@ export class FullComponent {
     //   menu: 'Dashboard',
     // },
     {
+      link: '/admin',
+      icon: 'list',
+      menu: 'Admin',
+    },
+    {
       link: '/stock',
       icon: 'table',
       menu: 'Stock',
     },
+    {
+      link: '/sales',
+      icon: 'layers',
+      menu: 'Sales',
+    },
     // {
     //   link: '/users',
     //   icon: 'list',
-    //   menu: 'Users',  
+    //   menu: 'Users',
     // },
     // {
     //   link: '/shop-outlets',
     //   icon: 'list',
     //   menu: 'Shops',
     // },
-    {
-      link: '/admin',
-      icon: 'list',
-      menu: 'Admin',
-    },
+
     // {
     //   link: "/button",
     //   icon: "disc",
