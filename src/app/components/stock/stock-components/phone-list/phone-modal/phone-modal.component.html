@@ -61,9 +61,14 @@
                   </mat-select>
               </mat-form-field>
 
-               <mat-form-field class="me-24 fs-16" appearance="outline" *ngIf="data.phone.stockMemory && batch">
+               <mat-form-field class="me-24 fs-16" appearance="outline" *ngIf="data.phone.stockMemory && batches.length > 0">
                 <mat-label>Batch Number</mat-label>
-                <input type="text" matInput [(ngModel)]="batch.batchNo" readonly>
+                <!-- <input type="text" matInput [(ngModel)]="batch.batchNo" readonly> -->
+                <mat-select [(ngModel)]="data.phone.stockBatchCode">
+                    <mat-option *ngFor="let batch of batches" [value]="batch.code">
+                      {{ batch.batchNo }}
+                    </mat-option>
+                  </mat-select>
               </mat-form-field>
 
             </div>
@@ -192,8 +197,8 @@
     <div mat-dialog-actions align="center" *ngIf="!successMessage && (data.title === 'Add Phone' || data.title === 'Edit Phone')">
         <button id="cancel" mat-button (click)="onClose()">Cancel</button>
         <button id="save" mat-button *ngIf="loading"><mat-progress-spinner mode="indeterminate" diameter="25"></mat-progress-spinner></button>
-        <button id="save" mat-button disabled *ngIf="!loading && (!data.phone.stockImei || !data.phone.stockMemory || !data.phone.stockCountryCode || !data.phone.stockRegionCode || !data.phone.stockBranchCode || !batch)">Save</button>
-        <button id="save" mat-button *ngIf="!loading && ((data.phone.stockImei && data.phone.stockMemory && data.phone.stockCountryCode && data.phone.stockRegionCode && data.phone.stockBranchCode && batch))" (click)="save()" cdkFocusInitial>Save</button>
+        <button id="save" mat-button disabled *ngIf="!loading && (!data.phone.stockImei || !data.phone.stockMemory || !data.phone.stockCountryCode || !data.phone.stockRegionCode || !data.phone.stockBranchCode || !data.phone.stockBatchCode)">Save</button>
+        <button id="save" mat-button *ngIf="!loading && ((data.phone.stockImei && data.phone.stockMemory && data.phone.stockCountryCode && data.phone.stockRegionCode && data.phone.stockBranchCode && data.phone.stockBatchCode))" (click)="save()" cdkFocusInitial>Save</button>
     </div>
     <div mat-dialog-actions align="center" *ngIf="!successMessage && data.title === 'Post Sale'">
         <button id="cancel" mat-button (click)="onClose()">Cancel</button>

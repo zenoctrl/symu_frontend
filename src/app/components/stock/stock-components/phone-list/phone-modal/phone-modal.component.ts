@@ -27,7 +27,7 @@ export class PhoneModalComponent {
   user: any;
   fetchingReceipt: any;
   receipt: any;
-  batch!: StockBatch;
+  batches: StockBatch[] = [];
 
   constructor(
     public dialogRef: MatDialogRef<PhoneModalComponent>,
@@ -303,14 +303,14 @@ export class PhoneModalComponent {
   }
 
   getBatch() {
-    this.batch = JSON.parse(
+    this.batches = JSON.parse(
       sessionStorage.getItem('stock-batches') || '[]'
-    ).find(
+    ).filter(
       (batch: StockBatch) =>
         batch.stockModelCode == this.data.phone.stockModelCode
     );
-    if (this.batch) {
-      this.data.phone.stockBatchCode = this.batch.code;
+    if (this.batches.length > 0) {
+      // this.data.phone.stockBatchCode = this.batch.code;
       this.errorMessage = '';
     } else {
       this.errorMessage = "Selected model has no batch number.";
