@@ -191,6 +191,8 @@ export class PhoneModalComponent {
       customerNationalId: phone.customerNationalId,
       customerName: phone.customerName,
       customerPhoneNumber: phone.customerPhoneNumber,
+      stockSoldBy: this.user.code,
+      stockDealerCode: this.data.dealers.find((d: any) => d.dealerName == phone.tradingName).dealerCode,
     };
     this.loading = true;
     const endpoint: string = ENVIRONMENT.endpoints.stock.phone.postSale;
