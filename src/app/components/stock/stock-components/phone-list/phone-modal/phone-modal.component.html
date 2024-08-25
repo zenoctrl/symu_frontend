@@ -194,6 +194,12 @@
         <button id="save" mat-button disabled *ngIf="!loading && (!data.phone.stockImei || !data.phone.stockMemory || !data.phone.stockCountryCode || !data.phone.stockRegionCode || !data.phone.stockBranchCode || !batch)">Save</button>
         <button id="save" mat-button *ngIf="!loading && ((data.phone.stockImei && data.phone.stockMemory && data.phone.stockCountryCode && data.phone.stockRegionCode && data.phone.stockBranchCode && batch))" (click)="save()" cdkFocusInitial>Save</button>
     </div>
+    <div mat-dialog-actions align="center" *ngIf="!successMessage && data.title === 'Post Sale'">
+        <button id="cancel" mat-button (click)="onClose()">Cancel</button>
+        <button id="save" mat-button *ngIf="loading"><mat-progress-spinner mode="indeterminate" diameter="25"></mat-progress-spinner></button>
+        <button id="save" mat-button disabled *ngIf="!loading && (!data.phone.tradingName || !data.phone.customerName || !data.phone.customerPhoneNumber || !data.phone.customerNationalId)">Save</button>
+        <button id="save" mat-button *ngIf="!loading && (data.phone.tradingName && data.phone.customerName && data.phone.customerPhoneNumber && data.phone.customerNationalId)" (click)="save()" cdkFocusInitial>Save</button>
+    </div>
     <div mat-dialog-actions align="center" *ngIf="!successMessage && data.title === 'Complete Sale'">
         <button id="cancel" mat-button (click)="onClose()">Cancel</button>
         <button id="save" mat-button *ngIf="loading"><mat-progress-spinner mode="indeterminate" diameter="25"></mat-progress-spinner></button>

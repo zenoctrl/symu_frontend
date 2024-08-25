@@ -22,6 +22,8 @@ export class AfterSalesComponent {
     'imei',
     'model',
     'price',
+    'agent',
+    'customer',
     'status',
     'action',
   ];
@@ -44,14 +46,12 @@ export class AfterSalesComponent {
 
   getPhones() {
     this.isFetching = true;
-    const endpoint: string = `${ENVIRONMENT.endpoints.stock.phone.getAll}?companyCode=${this.user.userCompanyCode}`;
+    const endpoint: string = `${ENVIRONMENT.endpoints.stock.phone.getAllStockDetails}?companyCode=${this.user.userCompanyCode}`;
     this.data.get(ENVIRONMENT.baseUrl + endpoint).subscribe(
       (res: any) => {
         this.isFetching = false;
         if (res.statusCode == 0) {
-          this.dataSource = res.data.filter((phone: any) =>
-            phone.stockStatusEntity.statusName.toLowerCase().includes('sold')
-          );
+          this.dataSource = res.data;
         } else {
           this.getPhones();
         }
@@ -77,12 +77,16 @@ export class AfterSalesComponent {
   }
 
   getBranchName(code: string) {
-    return this.branches.find(b => b.code == code)?.name;
+    return this.branches.find((b) => b.code == code)?.name;
   }
 
   updateStatus(phone: any) {
     this.isFetching = true;
-    const endpoint: string = `${ENVIRONMENT.endpoints.stock.phone.updateDefaultStatus}?stockCode=${phone.code}&defaultStatus=${phone.stockDefaulted == 'N' ? 'Y' : 'N'}`;
+    const endpoint: string = `${
+      ENVIRONMENT.endpoints.stock.phone.updateDefaultStatus
+    }?stockCode=${phone.code}&defaultStatus=${
+      phone.stockDefaulted == 'N' ? 'Y' : 'N'
+    }`;
     this.data.get(ENVIRONMENT.baseUrl + endpoint).subscribe(
       (res: any) => {
         this.isFetching = false;
@@ -98,16 +102,9 @@ export class AfterSalesComponent {
     );
   }
 
-  export() {
+  export() {}
 
-  }
+  viewAgent() {}
 
-  viewAgent() {
-
-  }
-
-  viewClient() {
-    
-  }
-
+  viewClient() {}
 }

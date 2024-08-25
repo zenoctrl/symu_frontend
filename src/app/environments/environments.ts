@@ -65,6 +65,7 @@ export const ENVIRONMENT = {
       },
       phone: {
         getAll: '/stock/getAllStock',
+        getAllStockDetails: '/stock/getAllStockDetails',
         create: '/stock/createOrUpdateStock',
         update: '/stock/createOrUpdateStock',
         delete: '',
@@ -72,7 +73,7 @@ export const ENVIRONMENT = {
         postSale: '/stock/stockPostSale',
         closeSale: '/stock/stockCloseSale',
         rejectSale: '/stock/stockRejectPostedSale',
-        updateDefaultStatus: '/stock/updateDefaultStatus'
+        updateDefaultStatus: '/stock/updateDefaultStatus',
       },
       queryReceipt: '/receipt/getAllByReceiptStockCode',
     },
