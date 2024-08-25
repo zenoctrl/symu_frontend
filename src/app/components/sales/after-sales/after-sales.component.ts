@@ -84,9 +84,14 @@ export class AfterSalesComponent {
     this.isFetching = true;
     const endpoint: string = `${
       ENVIRONMENT.endpoints.stock.phone.updateDefaultStatus
-    }?stockCode=${phone.code}&defaultStatus=${
+    }?stockCode=${phone.stockCode}&defaultStatus=${
       phone.stockDefaulted == 'N' ? 'Y' : 'N'
     }`;
+    alert(
+      `Are you sure you want to update default to ${
+        phone.stockDefaulted == 'N' ? 'YES' : 'NO'
+      }?`
+    );
     this.data.get(ENVIRONMENT.baseUrl + endpoint).subscribe(
       (res: any) => {
         this.isFetching = false;

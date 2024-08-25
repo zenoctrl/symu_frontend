@@ -49,8 +49,8 @@
             <th mat-header-cell *matHeaderCellDef> Actions </th>
             <td mat-cell *matCellDef="let phone">
               <div class="action">
-                <a class="edit" *ngIf="phone.stockStatusEntity.statusName.toLowerCase().includes('post') || phone.stockStatusEntity.statusName.toLowerCase().includes('sold')" (click)="viewReceipt(phone)">View Receipt</a>
-                <a class="edit" (click)="editPhone(phone, 'Complete Sale')" *ngIf="phone.stockStatusEntity.statusName.toLowerCase().includes('posted')">Complete Sale</a>
+                <a class="edit" *ngIf="phone.stockStatusEntity.statusName.toLowerCase().includes('post') || phone.stockStatusEntity.statusName.toLowerCase().includes('sold')" (click)="viewReceipt(phone)">Receipt</a>
+                <a class="edit" (click)="editPhone(phone, 'Complete Sale')" *ngIf="phone.stockStatusEntity.statusName.toLowerCase().includes('posted')">Complete</a>
                 <a class="delete" (click)="reject(phone)">Reject</a>
             </div>
             </td>

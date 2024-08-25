@@ -201,9 +201,9 @@ export class PhoneModalComponent {
         if (res.statusCode == 0) {
           this.data.title = "Receipt";
           this.receipt = res.data;
-          setTimeout(() => {
-            this.dialogRef.close('posted');
-          }, 5000);
+          // setTimeout(() => {
+          //   this.dialogRef.close('posted');
+          // }, 5000);
         } else {
         }
       },
@@ -274,8 +274,8 @@ export class PhoneModalComponent {
     );
   }
 
-  onClose() {
-    this.dialogRef.close();
+  onClose(string?:any) {
+    this.dialogRef.close(string);
   }
 
   scanSuccessHandler(result: any) {

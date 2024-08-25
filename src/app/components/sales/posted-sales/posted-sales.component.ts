@@ -91,6 +91,7 @@ export class PostedSalesComponent {
   reject(phone: any) {
     this.isFetching = true;
     const endpoint: string = `${ENVIRONMENT.endpoints.stock.phone.rejectSale}?stockCode=${phone.code}&userCode=${this.user.code}`;
+    alert('Are you sure to want to reject this sale?');
     this.data.post(ENVIRONMENT.baseUrl + endpoint, {}).subscribe(
       (res: any) => {
         this.isFetching = false;
