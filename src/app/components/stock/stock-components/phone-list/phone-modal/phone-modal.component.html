@@ -25,7 +25,7 @@
                 <input type="text" matInput [(ngModel)]="data.phone.stockImei">
               </mat-form-field>
 
-              <mat-form-field class="me-24 fs-16" appearance="outline">
+              <mat-form-field class="me-24 fs-16" appearance="outline" *ngIf="!userAssignedToBranch">
                 <mat-label>Country</mat-label>
                 <mat-select [(ngModel)]="data.phone.stockCountryCode" (selectionChange)="selectCountry()">
                   <mat-option *ngFor="let country of countries" [value]="country.code">
@@ -34,7 +34,7 @@
                 </mat-select>
               </mat-form-field>
 
-              <mat-form-field class="me-24 fs-16" appearance="outline" *ngIf="data.phone.stockCountryCode">
+              <mat-form-field class="me-24 fs-16" appearance="outline" *ngIf="data.phone.stockCountryCode && !userAssignedToBranch">
                   <mat-label>Region</mat-label>
                   <mat-select [(ngModel)]="data.phone.stockRegionCode" (selectionChange)="getBranches()">
                     <mat-option *ngFor="let region of regions" [value]="region.code">
@@ -43,7 +43,7 @@
                   </mat-select>
               </mat-form-field>
 
-              <mat-form-field class="me-24 fs-16" appearance="outline" *ngIf="data.phone.stockRegionCode">
+              <mat-form-field class="me-24 fs-16" appearance="outline" *ngIf="data.phone.stockRegionCode && !userAssignedToBranch">
                   <mat-label>Branch</mat-label>
                   <mat-select [(ngModel)]="data.phone.stockBranchCode">
                     <mat-option *ngFor="let branch of branches" [value]="branch.code">
@@ -63,7 +63,6 @@
 
                <mat-form-field class="me-24 fs-16" appearance="outline" *ngIf="data.phone.stockMemory && batches.length > 0">
                 <mat-label>Batch Number</mat-label>
-                <!-- <input type="text" matInput [(ngModel)]="batch.batchNo" readonly> -->
                 <mat-select [(ngModel)]="data.phone.stockBatchCode">
                     <mat-option *ngFor="let batch of batches" [value]="batch.code">
                       {{ batch.batchNo }}

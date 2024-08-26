@@ -4,6 +4,8 @@ import { Observable } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
 import { User } from 'src/app/components/users/users-components/user-list/user-list.component';
 import { Router } from '@angular/router';
+import { ENVIRONMENT } from 'src/app/environments/environments';
+import { DataService } from 'src/app/services/data.service';
 
 interface sidebarMenu {
   link: string;
@@ -30,7 +32,8 @@ export class FullComponent {
 
   constructor(
     private breakpointObserver: BreakpointObserver,
-    private route: Router
+    private route: Router,
+    private data: DataService
   ) {
     this.getUser();
   }
@@ -57,106 +60,70 @@ export class FullComponent {
       link: '/sales',
       icon: 'layers',
       menu: 'Sales',
-    },
-    // {
-    //   link: '/users',
-    //   icon: 'list',
-    //   menu: 'Users',
-    // },
-    // {
-    //   link: '/shop-outlets',
-    //   icon: 'list',
-    //   menu: 'Shops',
-    // },
-
-    // {
-    //   link: "/button",
-    //   icon: "disc",
-    //   menu: "Buttons",
-    // },
-    // {
-    //   link: "/forms",
-    //   icon: "layout",
-    //   menu: "Forms",
-    // },
-    // {
-    //   link: "/alerts",
-    //   icon: "info",
-    //   menu: "Alerts",
-    // },
-    // {
-    //   link: "/grid-list",
-    //   icon: "file-text",
-    //   menu: "Grid List",
-    // },
-    // {
-    //   link: "/menu",
-    //   icon: "menu",
-    //   menu: "Menus",
-    // },
-    // {
-    //   link: "/table",
-    //   icon: "grid",
-    //   menu: "Tables",
-    // },
-    // {
-    //   link: "/expansion",
-    //   icon: "divide-circle",
-    //   menu: "Expansion Panel",
-    // },
-    // {
-    //   link: "/chips",
-    //   icon: "award",
-    //   menu: "Chips",
-    // },
-    // {
-    //   link: "/tabs",
-    //   icon: "list",
-    //   menu: "Tabs",
-    // },
-    // {
-    //   link: "/progress",
-    //   icon: "bar-chart-2",
-    //   menu: "Progress Bar",
-    // },
-    // {
-    //   link: "/toolbar",
-    //   icon: "voicemail",
-    //   menu: "Toolbar",
-    // },
-    // {
-    //   link: "/progress-snipper",
-    //   icon: "loader",
-    //   menu: "Progress Snipper",
-    // },
-    // {
-    //   link: "/tooltip",
-    //   icon: "bell",
-    //   menu: "Tooltip",
-    // },
-    // {
-    //   link: "/snackbar",
-    //   icon: "slack",
-    //   menu: "Snackbar",
-    // },
-    // {
-    //   link: "/slider",
-    //   icon: "sliders",
-    //   menu: "Slider",
-    // },
-    // {
-    //   link: "/slide-toggle",
-    //   icon: "layers",
-    //   menu: "Slide Toggle",
-    // },
+    }
   ];
 
   getUser() {
     this.user = JSON.parse(sessionStorage.getItem('user') || '{}');
+    const role = this.user.roleModel.roleName;
+    if (!role.toLowerCase().includes('admin')) {
+      this.sidebarMenu = this.sidebarMenu.filter((menu: sidebarMenu) => !menu.link.includes('admin'));
+    }
+    this.getCountries();
+    this.getRegions();
+    this.getBranches();
   }
 
   logout() {
     sessionStorage.clear();
     this.route.navigate(['/login']);
+  }
+
+  getCountries() {
+    const endpoint: string = ENVIRONMENT.endpoints.countries.getAll;
+    this.data.get(ENVIRONMENT.baseUrl + endpoint).subscribe(
+      (res: any) => {
+        if (res.statusCode == 0) {
+          sessionStorage.setItem('countries', JSON.stringify(res.data));
+        } else {
+          this.getCountries();
+        }
+      },
+      (error: any) => {
+        this.getCountries();
+      }
+    );
+  }
+
+  getRegions() {
+    const endpoint: string = ENVIRONMENT.endpoints.regions.getAll;
+    this.data.get(ENVIRONMENT.baseUrl + endpoint).subscribe(
+      (res: any) => {
+        if (res.statusCode == 0) {
+          sessionStorage.setItem('regions', JSON.stringify(res.data));
+        } else {
+          this.getRegions();
+        }
+      },
+      (error: any) => {
+        this.getRegions();
+      }
+    );
+  }
+
+  getBranches() {
+    const endpoint: string = ENVIRONMENT.endpoints.branches.getAll;
+    this.data.get(ENVIRONMENT.baseUrl + endpoint).subscribe(
+      (res: any) => {
+        if (res.statusCode == 0) {
+          sessionStorage.setItem('branches', JSON.stringify(res.data));
+        } else {
+          this.getBranches();
+        }
+      },
+      (error: any) => {
+        this.getBranches();
+      }
+    );
   }
 }

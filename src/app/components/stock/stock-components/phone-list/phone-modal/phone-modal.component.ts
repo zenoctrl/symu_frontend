@@ -28,6 +28,7 @@ export class PhoneModalComponent {
   fetchingReceipt: any;
   receipt: any;
   batches: StockBatch[] = [];
+  userAssignedToBranch!: boolean;
 
   constructor(
     public dialogRef: MatDialogRef<PhoneModalComponent>,
@@ -201,9 +202,6 @@ export class PhoneModalComponent {
         if (res.statusCode == 0) {
           this.data.title = "Receipt";
           this.receipt = res.data;
-          // setTimeout(() => {
-          //   this.dialogRef.close('posted');
-          // }, 5000);
         } else {
         }
       },
@@ -291,8 +289,8 @@ export class PhoneModalComponent {
 
   getCountries() {
     this.countries = JSON.parse(sessionStorage.getItem('countries') || '[]');
-    this.regions = JSON.parse(sessionStorage.getItem('regions') || '[]');
-    this.branches = JSON.parse(sessionStorage.getItem('branches') || '[]');
+    // this.regions = JSON.parse(sessionStorage.getItem('regions') || '[]');
+    // this.branches = JSON.parse(sessionStorage.getItem('branches') || '[]');
   }
 
   selectModel() {
@@ -310,7 +308,6 @@ export class PhoneModalComponent {
         batch.stockModelCode == this.data.phone.stockModelCode
     );
     if (this.batches.length > 0) {
-      // this.data.phone.stockBatchCode = this.batch.code;
       this.errorMessage = '';
     } else {
       this.errorMessage = "Selected model has no batch number.";
@@ -346,6 +343,17 @@ export class PhoneModalComponent {
   getUser() {
     this.user = JSON.parse(sessionStorage.getItem('user') || '{}');
     this.getCountries();
+    const role = this.user.roleModel.roleName;
+    if (
+      role.toLowerCase() == 'shop manager' ||
+      role.toLowerCase() == 'field sales manager'
+    ) {
+      this.userAssignedToBranch = true;
+      this.data.phone.stockCountryCode = this.user.userCountryCode;
+      this.data.phone.stockRegionCode = this.user.userRegionCode;
+      this.data.phone.stockBranchCode = this.user.userBrnCode;
+      this.getModels();
+    }
   }
 
   transformDate(date: string): string {

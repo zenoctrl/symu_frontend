@@ -33,7 +33,7 @@ export class CountriesComponent {
     'action',
   ];
   dataSource!: Country[];
-  user!: Country;
+  user!: any;
   isFetching!: boolean;
 
   constructor(
@@ -101,5 +101,9 @@ export class CountriesComponent {
     this.snackBar.open(message, action, {
       duration: 2000,
     });
+  }
+
+  getUser() {
+    this.user = JSON.parse(sessionStorage.getItem('user') || '{}');
   }
 }

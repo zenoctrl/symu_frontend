@@ -26,12 +26,20 @@ export interface Phone {
 })
 export class PhoneListComponent {
   user: any;
-  displayedColumns: string[] = ['id', 'imei', 'model', 'price', 'status', 'action'];
+  displayedColumns: string[] = [
+    'id',
+    'imei',
+    'model',
+    'price',
+    'status',
+    'action',
+  ];
   dataSource!: any[];
   stockStatuses!: StockStatus[];
   phone!: any;
   isFetching!: boolean;
   dealerships: any[] = [];
+  userHasPrivilege!: boolean;
 
   constructor(
     public dialog: MatDialog,
@@ -64,9 +72,33 @@ export class PhoneListComponent {
       (res: any) => {
         this.isFetching = false;
         if (res.statusCode == 0) {
-          this.dataSource = res.data.filter((phone: any) =>
-            phone.stockStatusEntity.statusName.toLowerCase().includes('available')
-          );
+          const role = this.user.roleModel.roleName;
+          if (
+            role.toLowerCase().includes('admin') ||
+            role.toLowerCase() == 'sales manager'
+          ) {
+            this.dataSource = res.data.filter((phone: any) =>
+              phone.stockStatusEntity.statusName
+                .toLowerCase()
+                .includes('available')
+            );
+          } else if (role.toLowerCase().includes('region')) {
+            this.dataSource = res.data.filter(
+              (phone: any) =>
+                phone.stockStatusEntity.statusName
+                  .toLowerCase()
+                  .includes('available') &&
+                phone.stockRegionCode == this.user.userRegionCode
+            );
+          } else {
+            this.dataSource = res.data.filter(
+              (phone: any) =>
+                phone.stockStatusEntity.statusName
+                  .toLowerCase()
+                  .includes('available') &&
+                phone.stockRegionCode == this.user.userBrnCode
+            );
+          }
         } else {
         }
       },
@@ -95,14 +127,14 @@ export class PhoneListComponent {
   }
 
   viewReceipt(phone: any) {
-     const dialogRef = this.dialog.open(PhoneModalComponent, {
-       data: {
-         phone: phone,
-         title: "Receipt",
-         user: this.user
-       },
-       disableClose: true,
-     });
+    const dialogRef = this.dialog.open(PhoneModalComponent, {
+      data: {
+        phone: phone,
+        title: 'Receipt',
+        user: this.user,
+      },
+      disableClose: true,
+    });
   }
 
   deletePhone(phone: any) {
@@ -127,8 +159,15 @@ export class PhoneListComponent {
   }
 
   getUser() {
-    this.user = JSON.parse(
-      sessionStorage.getItem('user') || '{}');
+    this.user = JSON.parse(sessionStorage.getItem('user') || '{}');
+    const role = this.user.roleModel.roleName
+    if (
+      role.toLowerCase().includes('admin') ||
+      role.toLowerCase() == 'shop manager' ||
+      role.toLowerCase() == 'field sales manager'
+    ) {
+      this.userHasPrivilege = true;
+    }
   }
 
   getDealerships() {

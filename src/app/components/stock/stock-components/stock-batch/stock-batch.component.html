@@ -2,7 +2,7 @@
     <mat-card-content>
 
       <div class="d-flex justify-content-end">
-        <a id="add-btn" (click)="addStockBatch()">+ Add Batch</a>
+        <a id="add-btn" (click)="addStockBatch()" *ngIf="user.roleModel.roleName.toLowerCase().includes('admin')">+ Add Batch</a>
       </div>
 
       <br>
@@ -34,7 +34,7 @@
           </ng-container>
 
            <!-- Price Column -->
-          <ng-container matColumnDef="price">
+          <ng-container matColumnDef="price" *ngIf="user.roleModel.roleName.toLowerCase().includes('admin')">
             <th mat-header-cell *matHeaderCellDef> Buying Price </th>
             <td mat-cell *matCellDef="let batch">
               <p class="mb-0 fw-medium">{{ batch?.countryEntity?.countryCurrencyCode + ' ' + batch.batchBuyingPrice }}</p>
@@ -51,12 +51,12 @@
           </ng-container>
   
           <!-- Action Column -->
-          <ng-container matColumnDef="action">
+          <ng-container matColumnDef="action" *ngIf="user.roleModel.roleName.toLowerCase().includes('admin')">
             <th mat-header-cell *matHeaderCellDef> Action </th>
             <td mat-cell *matCellDef="let batch">
               <div class="action">
                 <a class="edit" (click)="editStockBatch(batch)">Edit</a>
-                <a class="delete" (click)="deleteDeviceModel(batch)">Delete</a>
+                <!-- <a class="delete" (click)="deleteDeviceModel(batch)">Delete</a> -->
             </div>
             </td>
           </ng-container>

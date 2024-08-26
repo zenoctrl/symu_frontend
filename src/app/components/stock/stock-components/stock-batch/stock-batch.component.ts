@@ -33,9 +33,16 @@ export interface StockBatch {
   styleUrls: ['./stock-batch.component.scss'],
 })
 export class StockBatchComponent {
-  displayedColumns: string[] = ['id', 'number', 'model', 'price', 'status', 'action'];
+  displayedColumns: string[] = [
+    'id',
+    'number',
+    'model',
+    'price',
+    'status',
+    'action',
+  ];
   dataSource = new MatTableDataSource<StockBatch[]>();
-  isFetching!: boolean;
+  isFetching!: boolean; user: any;
   @ViewChild('paginator') paginator!: MatPaginator;
 
   constructor(
@@ -43,6 +50,7 @@ export class StockBatchComponent {
     private data: DataService,
     public snackBar: MatSnackBar
   ) {
+    this.getUser();
     this.getAllStockBatch();
   }
 
@@ -108,5 +116,9 @@ export class StockBatchComponent {
     this.snackBar.open(message, action, {
       duration: 2000,
     });
+  }
+
+  getUser() {
+    this.user = JSON.parse(sessionStorage.getItem('user') || '{}');
   }
 }

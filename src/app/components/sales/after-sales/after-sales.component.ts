@@ -92,7 +92,7 @@ export class AfterSalesComponent {
         phone.stockDefaulted == 'N' ? 'YES' : 'NO'
       }?`
     );
-    this.data.get(ENVIRONMENT.baseUrl + endpoint).subscribe(
+    this.data.post(ENVIRONMENT.baseUrl + endpoint, {}).subscribe(
       (res: any) => {
         this.isFetching = false;
         if (res.statusCode == 0) {
@@ -102,6 +102,7 @@ export class AfterSalesComponent {
         }
       },
       (error: any) => {
+        this.isFetching = false;
         this.openSnackBar('Internal Server Error.', 'Close');
       }
     );

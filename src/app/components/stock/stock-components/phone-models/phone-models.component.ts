@@ -32,7 +32,7 @@ export interface DeviceModel {
 export class PhoneModelsComponent {
   displayedColumns: string[] = ['id', 'name', 'price', 'status', 'action'];
   dataSource = new MatTableDataSource<DeviceModel[]>();
-  isFetching!: boolean;
+  isFetching!: boolean; user: any;
   @ViewChild('paginator') paginator!: MatPaginator;
 
   constructor(
@@ -40,6 +40,7 @@ export class PhoneModelsComponent {
     private data: DataService,
     public snackBar: MatSnackBar
   ) {
+    this.getUser();
     this.getDeviceModels();
   }
 
@@ -105,5 +106,9 @@ export class PhoneModelsComponent {
     this.snackBar.open(message, action, {
       duration: 2000,
     });
+  }
+
+  getUser() {
+    this.user = JSON.parse(sessionStorage.getItem('user') || '{}');
   }
 }

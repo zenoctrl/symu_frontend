@@ -1,8 +1,7 @@
 <mat-card class="w-100">
     <mat-card-content>
-      <!-- <h4 class="mb-20">List of Countries</h4> -->
 
-      <div class="d-flex justify-content-end">
+      <div class="d-flex justify-content-end" *ngIf="user.roleModel.roleName.toLowerCase().includes('admin')">
         <a id="add-btn" (click)="addCountry()">+ Add Country</a>
       </div>
 
@@ -51,12 +50,12 @@
           </ng-container>
   
           <!-- Action Column -->
-          <ng-container matColumnDef="action">
+          <ng-container matColumnDef="action" *ngIf="user.roleModel.roleName.toLowerCase().includes('admin')">
             <th mat-header-cell *matHeaderCellDef> Action </th>
             <td mat-cell *matCellDef="let country">
               <div class="action">
                 <a class="edit" (click)="editCountry(country)">Edit</a>
-                <a class="delete" (click)="deleteCountry(country)">Delete</a>
+                <!-- <a class="delete" (click)="deleteCountry(country)">Delete</a> -->
             </div>
             </td>
           </ng-container>
