@@ -1,6 +1,6 @@
 <mat-tab-group>
   <mat-tab label="Posted Sales">
-    <app-posted-sales></app-posted-sales>
+    <app-posted-sales (completeEvent)="handleCompleteEvent()"></app-posted-sales>
   </mat-tab>
   <mat-tab label="After Sales">
     <app-after-sales></app-after-sales>
