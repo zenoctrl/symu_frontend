@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Output, EventEmitter } from '@angular/core';
 import {
   MatDialog,
   MAT_DIALOG_DATA,
@@ -30,6 +30,8 @@ export class PostedSalesComponent {
   isFetching!: boolean;
   dealerships: any[] = [];
   stockStatuses!: StockStatus[];
+
+  @Output() completeEvent = new EventEmitter<any>();
 
   constructor(
     public dialog: MatDialog,
@@ -83,6 +85,7 @@ export class PostedSalesComponent {
 
     dialogRef.afterClosed().subscribe((res) => {
       if (res) {
+        this.completeEvent.emit();
         this.getPhones();
       }
     });
