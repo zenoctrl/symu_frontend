@@ -9,6 +9,7 @@ import { ENVIRONMENT } from 'src/app/environments/environments';
 import { PhoneModalComponent } from '../../stock/stock-components/phone-list/phone-modal/phone-modal.component';
 import { StockStatus } from '../../stock/stock-components/stock-status/stock-status.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Country } from 'src/app/components/setups/setups-components/countries/countries.component';
 
 @Component({
   selector: 'app-posted-sales',
@@ -30,6 +31,7 @@ export class PostedSalesComponent {
   isFetching!: boolean;
   dealerships: any[] = [];
   stockStatuses!: StockStatus[];
+  countries: Country[] = [];
 
   @Output() completeEvent = new EventEmitter<any>();
 
@@ -42,6 +44,7 @@ export class PostedSalesComponent {
     this.getPhones();
     this.getAllStockStatus();
     this.getDealerships();
+    this.getCountries();
   }
 
   getPhones() {
@@ -71,6 +74,14 @@ export class PostedSalesComponent {
   }
 
   editPhone(phone: any, title: string) {
+
+    const country = this.countries.find(
+      (country: Country) => country.code == phone.stockCountryCode
+    );
+
+    if (title.toLowerCase().includes('complete'))
+      phone.agentPhoneNumber = `+${country?.countryCountryCode}`;
+
     const dialogRef = this.dialog.open(PhoneModalComponent, {
       data: {
         phone: phone,
@@ -147,5 +158,9 @@ export class PostedSalesComponent {
     this.snackBar.open(message, action, {
       duration: 2000,
     });
+  }
+
+  getCountries() {
+    this.countries = JSON.parse(sessionStorage.getItem('countries') || '[]');
   }
 }

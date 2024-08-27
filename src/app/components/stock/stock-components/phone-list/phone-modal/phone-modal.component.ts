@@ -221,7 +221,6 @@ export class PhoneModalComponent {
       stockCode: phone.code,
       userCode: this.user.code,
       nextStatusCode: 4, // moved to sold
-      agentNationalId: phone.agentNationalId,
       agentName: phone.agentName,
       agentPhoneNumber: phone.agentPhoneNumber,
     };
@@ -289,8 +288,6 @@ export class PhoneModalComponent {
 
   getCountries() {
     this.countries = JSON.parse(sessionStorage.getItem('countries') || '[]');
-    // this.regions = JSON.parse(sessionStorage.getItem('regions') || '[]');
-    // this.branches = JSON.parse(sessionStorage.getItem('branches') || '[]');
   }
 
   selectModel() {

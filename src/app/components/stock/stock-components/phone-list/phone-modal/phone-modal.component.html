@@ -98,6 +98,11 @@
               </mat-form-field>
 
               <mat-form-field class="me-24 fs-16" appearance="outline" *ngIf="data.phone.tradingName">
+                <mat-label>Customer ID Number</mat-label>
+                <input type="text" matInput [(ngModel)]="data.phone.customerNationalId">
+              </mat-form-field>
+
+              <mat-form-field class="me-24 fs-16" appearance="outline" *ngIf="data.phone.customerNationalId">
                 <mat-label>Customer Name</mat-label>
                 <input type="text" matInput [(ngModel)]="data.phone.customerName">
               </mat-form-field>
@@ -105,11 +110,6 @@
               <mat-form-field class="me-24 fs-16" appearance="outline" *ngIf="data.phone.customerName">
                 <mat-label>Customer Phone number</mat-label>
                 <input type="text" matInput [(ngModel)]="data.phone.customerPhoneNumber">
-              </mat-form-field>
-
-              <mat-form-field class="me-24 fs-16" appearance="outline" *ngIf="data.phone.customerPhoneNumber">
-                <mat-label>Customer ID Number</mat-label>
-                <input type="text" matInput [(ngModel)]="data.phone.customerNationalId">
               </mat-form-field>
 
             </div>
@@ -124,11 +124,6 @@
               <mat-form-field class="me-24 fs-16" appearance="outline">
                 <mat-label>Agent Phone number</mat-label>
                 <input type="text" matInput [(ngModel)]="data.phone.agentPhoneNumber">
-              </mat-form-field>
-
-              <mat-form-field class="me-24 fs-16" appearance="outline">
-                <mat-label>Agent ID Number</mat-label>
-                <input type="text" matInput [(ngModel)]="data.phone.agentNationalId">
               </mat-form-field>
 
             </div>
@@ -206,7 +201,7 @@
     <div mat-dialog-actions align="center" *ngIf="!successMessage && data.title === 'Complete Sale'">
         <button id="cancel" mat-button (click)="onClose()">Cancel</button>
         <button id="save" mat-button *ngIf="loading"><mat-progress-spinner mode="indeterminate" diameter="25"></mat-progress-spinner></button>
-        <button id="save" mat-button disabled *ngIf="!loading && (!data.phone.agentName || !data.phone.agentPhoneNumber || !data.phone.agentNationalId)">Save</button>
-        <button id="save" mat-button *ngIf="!loading && ((data.phone.agentName && data.phone.agentPhoneNumber && data.phone.agentNationalId))" (click)="save()" cdkFocusInitial>Save</button>
+        <button id="save" mat-button disabled *ngIf="!loading && (!data.phone.agentName || !data.phone.agentPhoneNumber)">Save</button>
+        <button id="save" mat-button *ngIf="!loading && ((data.phone.agentName && data.phone.agentPhoneNumber))" (click)="save()" cdkFocusInitial>Save</button>
     </div>
 </main>

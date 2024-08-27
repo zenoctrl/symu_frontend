@@ -9,6 +9,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { DataService } from 'src/app/services/data.service';
 import { ENVIRONMENT } from 'src/app/environments/environments';
 import { StockStatus } from '../stock-status/stock-status.component';
+import { Country } from 'src/app/components/setups/setups-components/countries/countries.component';
 
 export interface Phone {
   id?: string;
@@ -40,6 +41,7 @@ export class PhoneListComponent {
   isFetching!: boolean;
   dealerships: any[] = [];
   userHasPrivilege!: boolean;
+  countries: Country[] = [];
 
   constructor(
     public dialog: MatDialog,
@@ -50,6 +52,7 @@ export class PhoneListComponent {
     this.getPhones();
     this.getAllStockStatus();
     this.getDealerships();
+    this.getCountries();
   }
 
   addPhone() {
@@ -107,6 +110,14 @@ export class PhoneListComponent {
   }
 
   editPhone(phone: any, title: string) {
+
+    const country = this.countries.find(
+      (country: Country) => country.code == phone.stockCountryCode
+    );
+
+    if (title.toLowerCase().includes('post')) 
+      phone.customerPhoneNumber = `+${country?.countryCountryCode}`;
+    
     const dialogRef = this.dialog.open(PhoneModalComponent, {
       data: {
         phone: phone,
@@ -184,5 +195,9 @@ export class PhoneListComponent {
         this.getDealerships();
       }
     );
+  }
+
+  getCountries() {
+    this.countries = JSON.parse(sessionStorage.getItem('countries') || '[]');
   }
 }

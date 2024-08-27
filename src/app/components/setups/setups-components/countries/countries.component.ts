@@ -41,6 +41,7 @@ export class CountriesComponent {
     private data: DataService,
     public snackBar: MatSnackBar
   ) {
+    this.getUser();
     this.getCountries();
   }
 
