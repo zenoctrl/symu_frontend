@@ -66,12 +66,23 @@ export class FullComponent {
   getUser() {
     this.user = JSON.parse(sessionStorage.getItem('user') || '{}');
     const role = this.user.roleModel.roleName;
+    
     if (!role.toLowerCase().includes('admin')) {
       this.sidebarMenu = this.sidebarMenu.filter((menu: sidebarMenu) => !menu.link.includes('admin'));
     }
-    this.getCountries();
-    this.getRegions();
-    this.getBranches();
+
+    if (sessionStorage.getItem('countries') == null) {
+      this.getCountries();
+    }
+
+    if (sessionStorage.getItem('regions') == null) {
+      this.getRegions();
+    }
+
+    if (sessionStorage.getItem('branches') == null) {
+      this.getBranches();
+    }
+    
   }
 
   logout() {
@@ -96,7 +107,7 @@ export class FullComponent {
   }
 
   getRegions() {
-    const endpoint: string = ENVIRONMENT.endpoints.regions.getAll;
+    const endpoint: string = `${ENVIRONMENT.endpoints.regions.getAll}?companyCode=${this.user.userCompanyCode}`;
     this.data.get(ENVIRONMENT.baseUrl + endpoint).subscribe(
       (res: any) => {
         if (res.statusCode == 0) {
@@ -112,7 +123,7 @@ export class FullComponent {
   }
 
   getBranches() {
-    const endpoint: string = ENVIRONMENT.endpoints.branches.getAll;
+    const endpoint: string = `${ENVIRONMENT.endpoints.branches.getAll}?companyCode=${this.user.userCompanyCode}`;
     this.data.get(ENVIRONMENT.baseUrl + endpoint).subscribe(
       (res: any) => {
         if (res.statusCode == 0) {
