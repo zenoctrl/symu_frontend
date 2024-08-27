@@ -81,17 +81,19 @@ export class AfterSalesComponent {
   }
 
   updateStatus(phone: any) {
-    this.isFetching = true;
+    const confirmed = confirm(
+      `Are you sure you want to update default to ${
+        phone.stockDefaulted == 'N' ? 'YES' : 'NO'
+      }?`
+    );
+    if (!confirmed) return;
+
     const endpoint: string = `${
       ENVIRONMENT.endpoints.stock.phone.updateDefaultStatus
     }?stockCode=${phone.stockCode}&defaultStatus=${
       phone.stockDefaulted == 'N' ? 'Y' : 'N'
     }`;
-    alert(
-      `Are you sure you want to update default to ${
-        phone.stockDefaulted == 'N' ? 'YES' : 'NO'
-      }?`
-    );
+    this.isFetching = true;
     this.data.post(ENVIRONMENT.baseUrl + endpoint, {}).subscribe(
       (res: any) => {
         this.isFetching = false;
@@ -108,9 +110,33 @@ export class AfterSalesComponent {
     );
   }
 
-  export() {}
-
   viewAgent() {}
 
-  viewClient() {}
+  viewClient() {} 
+
+  export(data: any) {
+    const csv = this.convertJSON2CSV(data);
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `sales - ${new Date()}.csv`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+
+  convertJSON2CSV(data: any) {
+    const keys = Object.keys(data[0]);
+    const csvRows = [keys.join(',').toUpperCase().replaceAll('STOCK', '')];
+
+    data.forEach((row: any) => {
+      const values = keys.map((key) => {
+        const escaped = ('' + row[key]).replace(/"/g, '\\"');
+        return `"${escaped}"`;
+      });
+      csvRows.push(values.join(','));
+    });
+
+    return csvRows.join('\n');
+  }
 }
