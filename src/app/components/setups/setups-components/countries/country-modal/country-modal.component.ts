@@ -10,7 +10,7 @@ import { ENVIRONMENT } from 'src/app/environments/environments';
   styleUrls: ['./country-modal.component.scss'],
 })
 export class CountryModalComponent {
-  loading!: boolean;
+  loading!: boolean; user: any;
   successMessage!: string;
   errorMessage!: string;
 
@@ -20,8 +20,12 @@ export class CountryModalComponent {
     private _data: DataService
   ) {}
 
+  ngOnInit() {
+    this.getUser();
+  }
+
   save() {
-    this.data.country.companyCode = 1;
+    this.data.country.companyCode = this.user.userCompanyCode;
     if (this.data.country.code === undefined) {
       this.createCountry(this.data.country);
     } else {
@@ -85,5 +89,9 @@ export class CountryModalComponent {
 
   onClose() {
     this.dialogRef.close();
+  }
+
+  getUser() {
+    this.user = JSON.parse(sessionStorage.getItem('user') || '{}');
   }
 }

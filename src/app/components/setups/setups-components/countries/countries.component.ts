@@ -27,8 +27,6 @@ export class CountriesComponent {
   displayedColumns: string[] = [
     'id',
     'countryName',
-    'countryCountryCode',
-    'countryShortDesc',
     'countryCurrencyCode',
     'action',
   ];
