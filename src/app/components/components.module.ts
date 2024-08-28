@@ -43,6 +43,8 @@ import { BatchModalComponent } from './stock/stock-components/stock-batch/batch-
 import { SalesComponent } from './sales/sales.component';
 import { PostedSalesComponent } from './sales/posted-sales/posted-sales.component';
 import { AfterSalesComponent } from './sales/after-sales/after-sales.component';
+import { DealershipsComponent } from './setups/setups-components/dealerships/dealerships.component';
+import { DealershipModalComponent } from './setups/setups-components/dealerships/dealership-modal/dealership-modal.component';
 
 @NgModule({
   imports: [
@@ -107,6 +109,8 @@ import { AfterSalesComponent } from './sales/after-sales/after-sales.component';
     SalesComponent,
     PostedSalesComponent,
     AfterSalesComponent,
+    DealershipsComponent,
+    DealershipModalComponent,
   ],
 })
 export class ComponentsModule {}
