@@ -139,6 +139,10 @@ export class UserModalComponent {
   selectCountry() {
     this.filterRegions();
     this.data.user.userRegionCode = this.data.user.userBrnCode = null;
+    const country = this.countries.find(
+      (country: Country) => country.code == this.data.user.userCountryCode
+    );
+    this.data.user.userPhone = `+${country?.countryCountryCode}`;
   }
 
   filterRegions() {

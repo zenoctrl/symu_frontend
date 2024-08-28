@@ -46,14 +46,9 @@
         <input type="email" matInput [(ngModel)]="data.user.userEmail" />
       </mat-form-field>
 
-      <mat-form-field class="me-24 fs-16" appearance="outline" *ngIf="data.user.userEmail">
-        <mat-label>Phone Number</mat-label>
-        <input type="text" matInput [(ngModel)]="data.user.userPhone" />
-      </mat-form-field>
-
-      <mat-form-field class="me-24 fs-16" appearance="outline" *ngIf="data.user.code === undefined && data.user.userPhone">
+      <mat-form-field class="me-24 fs-16" appearance="outline" *ngIf="data.user.code === undefined && data.user.userEmail">
         <mat-label>Password</mat-label>
-        <input type="text" matInput [(ngModel)]="data.user.userPassword" />
+        <input type="password" matInput [(ngModel)]="data.user.userPassword" />
       </mat-form-field>
 
       <mat-form-field class="me-24 fs-16" appearance="outline" *ngIf="data.user.userPassword">
@@ -73,9 +68,14 @@
           </mat-option>
         </mat-select>
       </mat-form-field>
+
+      <mat-form-field class="me-24 fs-16" appearance="outline" *ngIf="data.user.userCountryCode">
+        <mat-label>Phone Number</mat-label>
+        <input type="text" matInput [(ngModel)]="data.user.userPhone" />
+      </mat-form-field>
       
       <!-- do not show if role is admin & admin asst. -->
-      <mat-form-field class="me-24 fs-16" appearance="outline" *ngIf="data.user.userRoleCode && (data.user.userRoleCode > 3 && data.user.userRoleCode <= 7)">
+      <mat-form-field class="me-24 fs-16" appearance="outline" *ngIf="data.user.userCountryCode && data.user.userRoleCode && (data.user.userRoleCode > 3 && data.user.userRoleCode <= 7)">
         <mat-label>Region</mat-label>
         <mat-select [(ngModel)]="data.user.userRegionCode" (selectionChange)="filterBranches()">
           <mat-option *ngFor="let region of _regions" [value]="region.code">

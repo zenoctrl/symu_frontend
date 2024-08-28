@@ -30,7 +30,7 @@
           <ng-container matColumnDef="contacts">
             <th mat-header-cell *matHeaderCellDef> Contact </th>
             <td mat-cell *matCellDef="let user">
-              <p class="mb-0 fw-medium"><a [href]="'tel:+' + user.userPhone">+{{ user.userPhone }}</a></p>
+              <p class="mb-0 fw-medium"><a [href]="'tel:' + user.userPhone">{{ user.userPhone }}</a></p>
               <p class="mb-0 fw-normal op-5"><a [href]="'mailto:' + user.userEmail">{{ user.userEmail }}</a></p>
             </td>
           </ng-container>
@@ -52,7 +52,7 @@
             <td mat-cell *matCellDef="let user">
               <div class="action">
                 <a class="edit" (click)="editUser(user)">Edit</a>
-                <a class="delete" (click)="deleteUser(user)">Delete</a>
+                <!-- <a class="delete" (click)="deleteUser(user)">Delete</a> -->
             </div>
             </td>
           </ng-container>
