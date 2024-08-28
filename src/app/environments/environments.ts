@@ -79,6 +79,8 @@ export const ENVIRONMENT = {
     },
     dealership: {
       getAll: '/dealership/getAllByCompanyCode',
+      create: '/dealership/createOrUpdateDealership',
+      update: '/dealership/createOrUpdateDealership'
     },
   },
 };
