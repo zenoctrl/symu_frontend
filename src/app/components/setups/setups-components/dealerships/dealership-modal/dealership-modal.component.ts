@@ -29,7 +29,8 @@ export class DealershipModalComponent {
   }
 
   save() {
-    this.data.dealership.companyCode = this.user.userCompanyCode;;
+    this.data.dealership.dealerCompanyCode = this.user.userCompanyCode;
+    this.data.dealership.dealerShortDec = this.data.dealership.dealerName;
     if (this.data.dealership.dealerCode === undefined) {
       this.createDealership(this.data.dealership);
     } else {
