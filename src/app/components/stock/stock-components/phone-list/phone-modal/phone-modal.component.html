@@ -135,7 +135,7 @@
               <div *ngIf="!fetchingReceipt">
                 <p class="fw-bold" style="text-align: center;">{{ receipt.receiptDealership }}</p>
                 <p style="text-align: center;">{{ transformDate(receipt.receiptCreatedOn) }}</p>
-                <p style="text-align: center;">{{ receipt.receiptNo }}</p>
+                <p style="text-align: center;">Receipt No: <span class="fw-bold">{{ receipt.receiptNo }}</span></p>
                 <hr>
                 <div>
                   <table style="width: 100%;">
