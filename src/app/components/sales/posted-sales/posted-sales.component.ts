@@ -54,9 +54,38 @@ export class PostedSalesComponent {
       (res: any) => {
         this.isFetching = false;
         if (res.statusCode == 0) {
-          this.dataSource = res.data.filter((phone: any) =>
-            phone.stockStatusEntity.statusName.toLowerCase().includes('posted')
-          );
+          const role = this.user.roleModel.roleName;
+          if (role.toLowerCase().includes('admin')) {
+            this.dataSource = res.data.filter((phone: any) =>
+              phone.stockStatusEntity.statusName
+                .toLowerCase()
+                .includes('posted')
+            );
+          } else if (role.toLowerCase() == 'sales manager') {
+            this.dataSource = res.data.filter(
+              (phone: any) =>
+                phone.stockStatusEntity.statusName
+                  .toLowerCase()
+                  .includes('posted') &&
+                phone.stockCountryCode == this.user.userCountryCode
+            );
+          } else if (role.toLowerCase().includes('region')) {
+            this.dataSource = res.data.filter(
+              (phone: any) =>
+                phone.stockStatusEntity.statusName
+                  .toLowerCase()
+                  .includes('posted') &&
+                phone.stockRegionCode == this.user.userRegionCode
+            );
+          } else {
+            this.dataSource = res.data.filter(
+              (phone: any) =>
+                phone.stockStatusEntity.statusName
+                  .toLowerCase()
+                  .includes('posted') &&
+                phone.stockRegionCode == this.user.userBrnCode
+            );
+          }
         } else {
           this.getPhones();
         }
@@ -136,6 +165,13 @@ export class PostedSalesComponent {
 
   getUser() {
     this.user = JSON.parse(sessionStorage.getItem('user') || '{}');
+    const role = this.user.roleModel.roleName;
+    if (!role.toLowerCase().includes('admin')) {
+      this.displayedColumns = this.displayedColumns.filter(
+        (column: string) =>
+          !column.includes('price')
+      );
+    }
   }
 
   getDealerships() {

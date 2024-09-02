@@ -20,8 +20,14 @@
 
             <mat-form-field class="me-24 fs-16" appearance="outline">
                 <mat-label>Batch Status</mat-label>
-                <input type="text" matInput [(ngModel)]="data.stockBatch.batchStatus">
+                <!-- <input type="text" matInput [(ngModel)]="data.stockBatch.batchStatus"> -->
+                <mat-select [(ngModel)]="data.stockBatch.batchStatus">
+                  <mat-option *ngFor="let status of statuses" [value]="status">
+                    {{ status }}
+                  </mat-option>
+                </mat-select>
             </mat-form-field>
+            
 
             <mat-form-field class="me-24 fs-16" appearance="outline">
                 <mat-label>Country</mat-label>

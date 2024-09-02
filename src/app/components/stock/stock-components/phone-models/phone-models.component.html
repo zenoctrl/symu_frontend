@@ -26,7 +26,7 @@
           </ng-container>
 
           <!-- Price Column -->
-          <ng-container matColumnDef="price" *ngIf="user.roleModel.roleName.toLowerCase().includes('admin')">
+          <ng-container matColumnDef="price">
             <th mat-header-cell *matHeaderCellDef> Selling Price </th>
             <td mat-cell *matCellDef="let model">
               <p class="mb-0 fw-medium">{{ model?.countryEntity?.countryCurrencyCode + ' ' + model.modelSellingPrice }}</p>
@@ -46,7 +46,7 @@
           </ng-container>
   
           <!-- Action Column -->
-          <ng-container matColumnDef="action" *ngIf="user.roleModel.roleName.toLowerCase().includes('admin')">
+          <ng-container matColumnDef="action">
             <th mat-header-cell *matHeaderCellDef> Action </th>
             <td mat-cell *matCellDef="let model">
               <div class="action">

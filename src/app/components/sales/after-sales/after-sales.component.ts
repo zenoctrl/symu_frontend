@@ -64,6 +64,13 @@ export class AfterSalesComponent {
 
   getUser() {
     this.user = JSON.parse(sessionStorage.getItem('user') || '{}');
+    const role = this.user.roleModel.roleName;
+    if (!role.toLowerCase().includes('admin')) {
+      this.displayedColumns = this.displayedColumns.filter(
+        (column: string) =>
+          !column.includes('price') && !column.includes('action')
+      );
+    }
   }
 
   openSnackBar(message: string, action: string) {

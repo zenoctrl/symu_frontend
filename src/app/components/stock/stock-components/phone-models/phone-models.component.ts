@@ -69,7 +69,16 @@ export class PhoneModelsComponent {
         this.isFetching = false;
         if (res.statusCode == 0) {
           sessionStorage.setItem('models', JSON.stringify(res.data));
-          this.dataSource = res.data;
+          const role = this.user.roleModel.roleName;
+          const models = res.data;
+          if (role.toLowerCase().includes('admin')) {
+            this.dataSource = models;
+          } else {
+            this.dataSource = models.filter(
+              (model: any) =>
+                model.modelCountryCode == this.user.userCountryCode
+            );
+          }          
           this.dataSource.paginator = this.paginator;
         } else {
         }
@@ -110,5 +119,12 @@ export class PhoneModelsComponent {
 
   getUser() {
     this.user = JSON.parse(sessionStorage.getItem('user') || '{}');
+    const role = this.user.roleModel.roleName;
+    if (!role.toLowerCase().includes('admin')) {
+      this.displayedColumns = this.displayedColumns.filter(
+        (column: string) =>
+          !column.includes('price') && !column.includes('action')
+      );
+    }
   }
 }

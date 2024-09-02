@@ -33,6 +33,7 @@ export class PhoneListComponent {
     'model',
     'price',
     'status',
+    'date',
     'action',
   ];
   dataSource!: any[];
@@ -76,14 +77,19 @@ export class PhoneListComponent {
         this.isFetching = false;
         if (res.statusCode == 0) {
           const role = this.user.roleModel.roleName;
-          if (
-            role.toLowerCase().includes('admin') ||
-            role.toLowerCase() == 'sales manager'
-          ) {
+          if (role.toLowerCase().includes('admin')) {
             this.dataSource = res.data.filter((phone: any) =>
               phone.stockStatusEntity.statusName
                 .toLowerCase()
                 .includes('available')
+            );
+          } else if (role.toLowerCase() == 'sales manager') {
+            this.dataSource = res.data.filter(
+              (phone: any) =>
+                phone.stockStatusEntity.statusName
+                  .toLowerCase()
+                  .includes('available') &&
+                phone.stockCountryCode == this.user.userCountryCode
             );
           } else if (role.toLowerCase().includes('region')) {
             this.dataSource = res.data.filter(
@@ -179,6 +185,12 @@ export class PhoneListComponent {
     ) {
       this.userHasPrivilege = true;
     }
+    if (!role.toLowerCase().includes('admin')) {
+      this.displayedColumns = this.displayedColumns.filter(
+        (column: string) =>
+          !column.includes('price')
+      );
+    }
   }
 
   getDealerships() {
@@ -199,5 +211,9 @@ export class PhoneListComponent {
 
   getCountries() {
     this.countries = JSON.parse(sessionStorage.getItem('countries') || '[]');
+  }
+
+  transformDate(date: string){
+    return (new Date(date)).toLocaleString();
   }
 }

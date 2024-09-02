@@ -39,6 +39,7 @@ export class StockBatchComponent {
     'model',
     'price',
     'status',
+    'date',
     'action',
   ];
   dataSource = new MatTableDataSource<StockBatch[]>();
@@ -79,7 +80,16 @@ export class StockBatchComponent {
         this.isFetching = false;
         if (res.statusCode == 0) {
           sessionStorage.setItem('stock-batches', JSON.stringify(res.data));
-          this.dataSource = res.data;
+          const role = this.user.roleModel.roleName;
+          const batches = res.data;
+          if (role.toLowerCase().includes('admin')) {
+            this.dataSource = batches;
+          } else {
+            this.dataSource = batches.filter(
+              (batch: any) =>
+                batch.stockBatchCountryCode == this.user.userCountryCode
+            );
+          }          
           this.dataSource.paginator = this.paginator;
         } else {
         }
@@ -120,5 +130,12 @@ export class StockBatchComponent {
 
   getUser() {
     this.user = JSON.parse(sessionStorage.getItem('user') || '{}');
+    const role = this.user.roleModel.roleName;
+    if (!role.toLowerCase().includes('admin')) {
+      this.displayedColumns = this.displayedColumns.filter(
+        (column: string) =>
+          !column.includes('price') && !column.includes('action')
+      );
+    }
   }
 }

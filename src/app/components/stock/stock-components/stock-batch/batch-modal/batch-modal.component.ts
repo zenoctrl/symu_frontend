@@ -17,7 +17,9 @@ export class BatchModalComponent {
   errorMessage!: string;
   user: any;
   countries: Country[] = [];
-  models: DeviceModel[] = []; _models: DeviceModel[] = [];
+  models: DeviceModel[] = [];
+  _models: DeviceModel[] = [];
+  statuses: string[] = ['AVAILABLE', 'COMPLETED'];
 
   constructor(
     public dialogRef: MatDialogRef<BatchModalComponent>,
@@ -117,6 +119,7 @@ export class BatchModalComponent {
     this.data.stockBatch.stockBatchCurrencyCode = this.countries.find(
       (c) => c.code === this.data.stockBatch.stockBatchCountryCode
     )?.countryCurrencyCode;
-    this.data.stockBatch.stockModelCode = this.data.stockBatch.batchBuyingPrice = null;
+    this.data.stockBatch.stockModelCode =
+      this.data.stockBatch.batchBuyingPrice = null;
   }
 }
