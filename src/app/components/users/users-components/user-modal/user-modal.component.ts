@@ -62,6 +62,7 @@ export class UserModalComponent {
     const endpoint: string = ENVIRONMENT.endpoints.users.create;
     this._data.post(ENVIRONMENT.baseUrl + endpoint, payload).subscribe(
       (res: any) => {
+        this.loading = false;
         if (res.statusCode == 0) {
           this.successMessage = 'User saved successfully.';
           setTimeout(() => {
@@ -73,6 +74,7 @@ export class UserModalComponent {
         }
       },
       (error: any) => {
+        this.loading = false;
         if (error.error.message !== undefined) {
           this.errorMessage = error.error.message;
         } else {
@@ -102,6 +104,7 @@ export class UserModalComponent {
     const endpoint: string = ENVIRONMENT.endpoints.users.update;
     this._data.post(ENVIRONMENT.baseUrl + endpoint, payload).subscribe(
       (res: any) => {
+        this.loading = false;
         if (res.statusCode == 0) {
           this.successMessage = 'User saved successfully.';
           setTimeout(() => {
@@ -113,6 +116,7 @@ export class UserModalComponent {
         }
       },
       (error: any) => {
+        this.loading = false;
         if (error.error.message !== undefined) {
           this.errorMessage = error.error.message;
         } else {
