@@ -9,6 +9,7 @@ import { ENVIRONMENT } from 'src/app/environments/environments';
 import { StockStatus } from '../../stock/stock-components/stock-status/stock-status.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Branch } from '../../setups/setups-components/branches/branches.component';
+import { MatTableDataSource } from '@angular/material/table';
 
 @Component({
   selector: 'app-after-sales',
@@ -27,7 +28,8 @@ export class AfterSalesComponent {
     'status',
     'action',
   ];
-  dataSource!: any[];
+  // dataSource!: any[];
+  dataSource = new MatTableDataSource<any>();
   phone!: any;
   isFetching!: boolean;
   dealerships: any[] = [];
@@ -51,7 +53,8 @@ export class AfterSalesComponent {
       (res: any) => {
         this.isFetching = false;
         if (res.statusCode == 0) {
-          this.dataSource = res.data;
+          // this.dataSource = res.data;
+          this.dataSource.data = res.data;
         } else {
           this.getPhones();
         }
@@ -117,9 +120,10 @@ export class AfterSalesComponent {
     );
   }
 
-  viewAgent() {}
-
-  viewClient() {} 
+  search(event: Event) {
+    const text = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = text.trim().toLowerCase();
+  }
 
   export(data: any) {
     const csv = this.convertJSON2CSV(data);

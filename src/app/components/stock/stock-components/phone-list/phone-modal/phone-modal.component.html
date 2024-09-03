@@ -22,7 +22,7 @@
 
               <mat-form-field class="me-24 fs-16" appearance="outline">
                 <mat-label>IMEI</mat-label>
-                <input type="text" matInput [(ngModel)]="data.phone.stockImei">
+                <input  type="text" matInput [(ngModel)]="data.phone.stockImei" maxlength="15" (keyup)="checkInput(data.phone.stockImei)">
               </mat-form-field>
 
               <mat-form-field class="me-24 fs-16" appearance="outline" *ngIf="!userAssignedToBranch">

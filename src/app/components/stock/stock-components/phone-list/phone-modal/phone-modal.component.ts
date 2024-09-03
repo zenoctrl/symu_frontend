@@ -29,6 +29,7 @@ export class PhoneModalComponent {
   receipt: any;
   batches: StockBatch[] = [];
   userAssignedToBranch!: boolean;
+  inValidIMEI!: boolean;
 
   constructor(
     public dialogRef: MatDialogRef<PhoneModalComponent>,
@@ -355,5 +356,10 @@ export class PhoneModalComponent {
 
   transformDate(date: string): string {
     return (new Date(date)).toLocaleString();
+  }
+
+  checkInput(input: string) {
+    this.inValidIMEI = isNaN(Number(input));
+    this.errorMessage = this.inValidIMEI ? 'Wrong IMEI input value' : '';
   }
 }

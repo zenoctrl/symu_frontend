@@ -10,6 +10,7 @@ import { DataService } from 'src/app/services/data.service';
 import { ENVIRONMENT } from 'src/app/environments/environments';
 import { StockStatus } from '../stock-status/stock-status.component';
 import { Country } from 'src/app/components/setups/setups-components/countries/countries.component';
+import { MatTableDataSource } from '@angular/material/table';
 
 export interface Phone {
   id?: string;
@@ -36,7 +37,7 @@ export class PhoneListComponent {
     'date',
     'action',
   ];
-  dataSource!: any[];
+  dataSource = new MatTableDataSource<any>();
   stockStatuses!: StockStatus[];
   phone!: any;
   isFetching!: boolean;
@@ -78,13 +79,13 @@ export class PhoneListComponent {
         if (res.statusCode == 0) {
           const role = this.user.roleModel.roleName;
           if (role.toLowerCase().includes('admin')) {
-            this.dataSource = res.data.filter((phone: any) =>
+            this.dataSource.data = res.data.filter((phone: any) =>
               phone.stockStatusEntity.statusName
                 .toLowerCase()
                 .includes('available')
             );
           } else if (role.toLowerCase() == 'sales manager') {
-            this.dataSource = res.data.filter(
+            this.dataSource.data = res.data.filter(
               (phone: any) =>
                 phone.stockStatusEntity.statusName
                   .toLowerCase()
@@ -92,7 +93,7 @@ export class PhoneListComponent {
                 phone.stockCountryCode == this.user.userCountryCode
             );
           } else if (role.toLowerCase().includes('region')) {
-            this.dataSource = res.data.filter(
+            this.dataSource.data = res.data.filter(
               (phone: any) =>
                 phone.stockStatusEntity.statusName
                   .toLowerCase()
@@ -100,7 +101,7 @@ export class PhoneListComponent {
                 phone.stockRegionCode == this.user.userRegionCode
             );
           } else {
-            this.dataSource = res.data.filter(
+            this.dataSource.data = res.data.filter(
               (phone: any) =>
                 phone.stockStatusEntity.statusName
                   .toLowerCase()
@@ -116,14 +117,13 @@ export class PhoneListComponent {
   }
 
   editPhone(phone: any, title: string) {
-
     const country = this.countries.find(
       (country: Country) => country.code == phone.stockCountryCode
     );
 
-    if (title.toLowerCase().includes('post')) 
+    if (title.toLowerCase().includes('post'))
       phone.customerPhoneNumber = `+${country?.countryCountryCode}`;
-    
+
     const dialogRef = this.dialog.open(PhoneModalComponent, {
       data: {
         phone: phone,
@@ -177,7 +177,7 @@ export class PhoneListComponent {
 
   getUser() {
     this.user = JSON.parse(sessionStorage.getItem('user') || '{}');
-    const role = this.user.roleModel.roleName
+    const role = this.user.roleModel.roleName;
     if (
       role.toLowerCase().includes('admin') ||
       role.toLowerCase() == 'shop manager' ||
@@ -187,8 +187,7 @@ export class PhoneListComponent {
     }
     if (!role.toLowerCase().includes('admin')) {
       this.displayedColumns = this.displayedColumns.filter(
-        (column: string) =>
-          !column.includes('price')
+        (column: string) => !column.includes('price')
       );
     }
   }
@@ -213,7 +212,12 @@ export class PhoneListComponent {
     this.countries = JSON.parse(sessionStorage.getItem('countries') || '[]');
   }
 
-  transformDate(date: string){
-    return (new Date(date)).toLocaleString();
+  transformDate(date: string) {
+    return new Date(date).toLocaleString();
+  }
+
+  search(event: Event) {
+    const text = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = text.trim().toLowerCase();
   }
 }

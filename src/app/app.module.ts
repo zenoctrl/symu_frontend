@@ -6,6 +6,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatTabsModule } from '@angular/material/tabs';
+import { MatTableModule } from '@angular/material/table';
 // import { ZXingScannerModule } from '@zxing/ngx-scanner';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -32,6 +33,7 @@ import { ComponentsModule } from './components/components.module';
     HttpClientModule,
     MatDialogModule,
     MatTabsModule,
+    MatTableModule,
     // ZXingScannerModule
   ],
   providers: [],

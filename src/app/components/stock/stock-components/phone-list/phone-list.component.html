@@ -1,7 +1,7 @@
 <mat-card class="w-100">
     <mat-card-content>
       <div class="d-flex justify-content-end">
-        <input type="text" name="" id="search" placeholder="Seach ...">
+        <input type="text" name="" id="search" placeholder="Seach ..." (keyup)="search($event)">
         <a id="add-btn" (click)="addPhone()" *ngIf="userHasPrivilege">+ Add Phone</a>
       </div>
 
@@ -14,7 +14,7 @@
           <!-- Id Column -->
           <ng-container matColumnDef="id">
             <th mat-header-cell *matHeaderCellDef> # </th>
-            <td mat-cell class="fw-medium" *matCellDef="let phone"> {{ dataSource.indexOf(phone) + 1 }} </td>
+            <td mat-cell class="fw-medium" *matCellDef="let phone"> {{ dataSource.filteredData.indexOf(phone) + 1 }} </td>
           </ng-container>
 
           <!-- IMEI Column -->
