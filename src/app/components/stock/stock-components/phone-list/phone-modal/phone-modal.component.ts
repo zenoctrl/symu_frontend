@@ -72,6 +72,11 @@ export class PhoneModalComponent {
   }
 
   createPhone(phone: any) {
+    this.errorMessage = '';
+    if (this.data.phone.stockImei.length < 15) {
+      this.errorMessage = 'IMEI entered has less than 15 digits.';
+      return;
+    }
     const payload = {
       stockCompanyCode: this.user.userCompanyCode,
       stockCountryCode: this.data.phone.stockCountryCode,
@@ -111,6 +116,11 @@ export class PhoneModalComponent {
   }
 
   updatePhone(phone: any) {
+    this.errorMessage = '';
+    if (this.data.phone.stockImei.length < 15) {
+      this.errorMessage = 'IMEI entered has less than 15 digits.';
+      return;
+    }
     const payload = {
       code: this.data.phone.code,
       stockCompanyCode: this.user.userCompanyCode,
