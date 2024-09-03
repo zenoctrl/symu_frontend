@@ -83,7 +83,7 @@ export class PostedSalesComponent {
                 phone.stockStatusEntity.statusName
                   .toLowerCase()
                   .includes('posted') &&
-                phone.stockRegionCode == this.user.userBrnCode
+                phone.stockBranchCode == this.user.userBrnCode
             );
           }
         } else {

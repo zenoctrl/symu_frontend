@@ -101,12 +101,14 @@ export class PhoneListComponent {
                 phone.stockRegionCode == this.user.userRegionCode
             );
           } else {
+            console.log('user assigned to branch');
+            console.log(this.user.userBrnCode);
             this.dataSource.data = res.data.filter(
               (phone: any) =>
                 phone.stockStatusEntity.statusName
                   .toLowerCase()
                   .includes('available') &&
-                phone.stockRegionCode == this.user.userBrnCode
+                phone.stockBranchCode == this.user.userBrnCode
             );
           }
         } else {

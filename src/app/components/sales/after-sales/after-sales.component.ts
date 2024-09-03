@@ -28,7 +28,6 @@ export class AfterSalesComponent {
     'status',
     'action',
   ];
-  // dataSource!: any[];
   dataSource = new MatTableDataSource<any>();
   phone!: any;
   isFetching!: boolean;
@@ -53,7 +52,6 @@ export class AfterSalesComponent {
       (res: any) => {
         this.isFetching = false;
         if (res.statusCode == 0) {
-          // this.dataSource = res.data;
           this.dataSource.data = res.data;
         } else {
           this.getPhones();
