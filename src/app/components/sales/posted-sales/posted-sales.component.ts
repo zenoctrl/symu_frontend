@@ -55,13 +55,13 @@ export class PostedSalesComponent {
         this.isFetching = false;
         if (res.statusCode == 0) {
           const role = this.user.roleModel.roleName;
-          if (role.toLowerCase().includes('admin')) {
+          if (role.toLowerCase().includes('director')) {
             this.dataSource = res.data.filter((phone: any) =>
               phone.stockStatusEntity.statusName
                 .toLowerCase()
                 .includes('posted')
             );
-          } else if (role.toLowerCase() == 'sales manager') {
+          } else if (role.toLowerCase().includes('admin') || role.toLowerCase() == 'sales manager') {
             this.dataSource = res.data.filter(
               (phone: any) =>
                 phone.stockStatusEntity.statusName
@@ -166,7 +166,7 @@ export class PostedSalesComponent {
   getUser() {
     this.user = JSON.parse(sessionStorage.getItem('user') || '{}');
     const role = this.user.roleModel.roleName;
-    if (!role.toLowerCase().includes('admin')) {
+    if (!role.toLowerCase().includes('director') && !role.toLowerCase().includes('admin')) {
       this.displayedColumns = this.displayedColumns.filter(
         (column: string) =>
           !column.includes('price')

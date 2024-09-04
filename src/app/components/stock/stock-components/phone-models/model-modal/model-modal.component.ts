@@ -22,8 +22,8 @@ export class ModelModalComponent {
     @Inject(MAT_DIALOG_DATA) public data: any,
     private _data: DataService
   ) {
-    this.getUser();
     this.getCountries();
+    this.getUser();
   }
 
   save() {
@@ -99,6 +99,11 @@ export class ModelModalComponent {
 
   getUser() {
     this.user = JSON.parse(sessionStorage.getItem('user') || '{}');
+    if (this.user.roleModel.roleName.toLowerCase().includes('admin')) {
+      this.data.deviceModel.modelCountryCode = this.user.countryEntity.code;
+      this.data.deviceModel.modelCurrencyCode =
+        this.user.countryEntity.countryCurrencyCode;
+    }
   }
 
   getCountries() {

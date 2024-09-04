@@ -1,7 +1,7 @@
 <mat-card class="w-100">
     <mat-card-content>
 
-      <div class="d-flex justify-content-end" *ngIf="user.roleModel.roleName.toLowerCase().includes('admin')">
+      <div class="d-flex justify-content-end">
         <a id="add-btn" (click)="addCountry()">+ Add Country</a>
       </div>
 
@@ -36,7 +36,7 @@
           </ng-container>
   
           <!-- Action Column -->
-          <ng-container matColumnDef="action" *ngIf="user.roleModel.roleName.toLowerCase().includes('admin')">
+          <ng-container matColumnDef="action">
             <th mat-header-cell *matHeaderCellDef> Action </th>
             <td mat-cell *matCellDef="let country">
               <div class="action">

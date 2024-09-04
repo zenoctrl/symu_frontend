@@ -67,7 +67,7 @@ export class FullComponent {
     this.user = JSON.parse(sessionStorage.getItem('user') || '{}');
     const role = this.user.roleModel.roleName;
     
-    if (!role.toLowerCase().includes('admin')) {
+    if (!role.toLowerCase().includes('director')) {
       this.sidebarMenu = this.sidebarMenu.filter((menu: sidebarMenu) => !menu.link.includes('admin'));
     }
 

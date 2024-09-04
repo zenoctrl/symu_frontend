@@ -18,7 +18,7 @@
                 <input type="text" matInput [(ngModel)]="data.deviceModel.modelName">
             </mat-form-field>
 
-            <mat-form-field class="me-24 fs-16" appearance="outline">
+            <mat-form-field class="me-24 fs-16" appearance="outline" *ngIf="user.roleModel.roleName.toLowerCase().includes('director')">
                 <mat-label>Country</mat-label>
                 <mat-select [(ngModel)]="data.deviceModel.modelCountryCode" (selectionChange)="selectCountry()">
                   <mat-option *ngFor="let country of countries" [value]="country.code">
@@ -27,12 +27,12 @@
                 </mat-select>
             </mat-form-field>
 
-            <mat-form-field class="me-24 fs-16" appearance="outline" *ngIf="data.deviceModel.modelCountryCode">
+            <mat-form-field class="me-24 fs-16" appearance="outline">
                 <mat-label>Selling Price ({{ data.deviceModel.modelCurrencyCode }})</mat-label>
                 <input type="text" matInput [(ngModel)]="data.deviceModel.modelSellingPrice">
             </mat-form-field>
 
-            <mat-form-field class="me-24 fs-16" appearance="outline" *ngIf="data.deviceModel.code">
+            <mat-form-field class="me-24 fs-16" appearance="outline">
                 <mat-label>Status</mat-label>
                 <mat-select [(ngModel)]="data.deviceModel.modelStatus">
                   <mat-option *ngFor="let status of statuses" [value]="status">

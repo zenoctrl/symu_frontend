@@ -1,8 +1,6 @@
 import { Component, Inject, ViewChild, AfterViewInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { DataService } from 'src/app/services/data.service';
-import { v4 as uuidv4 } from 'uuid';
-import { Phone } from '../phone-list.component';
 import { ENVIRONMENT } from 'src/app/environments/environments';
 import { DeviceModel } from '../../phone-models/phone-models.component';
 import { Country } from 'src/app/components/setups/setups-components/countries/countries.component';
@@ -46,6 +44,8 @@ export class PhoneModalComponent {
     this.getUser();
 
     if (this.data.title === 'Edit Phone' || this.data.title === 'Post Sale') {
+      this.getRegions();
+      this.getBranches();
       this.getModels();
       this.getBatch();
     }
@@ -352,7 +352,10 @@ export class PhoneModalComponent {
     this.user = JSON.parse(sessionStorage.getItem('user') || '{}');
     this.getCountries();
     const role = this.user.roleModel.roleName;
-    if (
+    if (role.toLowerCase().includes('admin')) {
+      this.data.phone.stockCountryCode = this.user.userCountryCode;
+      this.selectCountry();
+    } else if (
       role.toLowerCase() == 'shop manager' ||
       role.toLowerCase() == 'field sales manager'
     ) {
@@ -360,8 +363,8 @@ export class PhoneModalComponent {
       this.data.phone.stockCountryCode = this.user.userCountryCode;
       this.data.phone.stockRegionCode = this.user.userRegionCode;
       this.data.phone.stockBranchCode = this.user.userBrnCode;
-      this.getModels();
     }
+    this.getModels();
   }
 
   transformDate(date: string): string {

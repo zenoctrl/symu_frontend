@@ -2,7 +2,7 @@
     <mat-card-content>
 
       <div class="d-flex justify-content-end">
-        <a id="add-btn" (click)="addStockBatch()" *ngIf="user.roleModel.roleName.toLowerCase().includes('admin')">+ Add Batch</a>
+        <a id="add-btn" (click)="addStockBatch()" *ngIf="user.roleModel.roleName.toLowerCase().includes('director') || user.roleModel.roleName.toLowerCase().includes('admin')">+ Add Batch</a>
       </div>
 
       <br>

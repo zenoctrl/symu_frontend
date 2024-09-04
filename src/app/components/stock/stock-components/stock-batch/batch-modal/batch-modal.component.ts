@@ -26,9 +26,9 @@ export class BatchModalComponent {
     @Inject(MAT_DIALOG_DATA) public data: any,
     private _data: DataService
   ) {
-    this.getUser();
     this.getCountries();
     this.getDeviceModels();
+    this.getUser();
   }
 
   save() {
@@ -102,6 +102,14 @@ export class BatchModalComponent {
 
   getUser() {
     this.user = JSON.parse(sessionStorage.getItem('user') || '{}');
+    if (this.user.roleModel.roleName.toLowerCase().includes('admin')) {
+      this.data.stockBatch.stockBatchCountryCode = this.user.countryEntity.code;
+      this.data.stockBatch.stockBatchCurrencyCode =
+        this.user.countryEntity.countryCurrencyCode;
+      this._models = this.models.filter(
+        (m) => m.modelCountryCode === this.data.stockBatch.stockBatchCountryCode
+      );
+    }
   }
 
   getCountries() {

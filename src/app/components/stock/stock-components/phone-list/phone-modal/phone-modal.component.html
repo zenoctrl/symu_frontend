@@ -25,7 +25,7 @@
                 <input  type="text" matInput [(ngModel)]="data.phone.stockImei" maxlength="15" (keyup)="checkInput(data.phone.stockImei)">
               </mat-form-field>
 
-              <mat-form-field class="me-24 fs-16" appearance="outline" *ngIf="!userAssignedToBranch">
+              <mat-form-field class="me-24 fs-16" appearance="outline" *ngIf="!userAssignedToBranch && user.roleModel.roleName.toLowerCase().includes('director')">
                 <mat-label>Country</mat-label>
                 <mat-select [(ngModel)]="data.phone.stockCountryCode" (selectionChange)="selectCountry()">
                   <mat-option *ngFor="let country of countries" [value]="country.code">

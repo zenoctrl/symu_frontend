@@ -78,13 +78,13 @@ export class PhoneListComponent {
         this.isFetching = false;
         if (res.statusCode == 0) {
           const role = this.user.roleModel.roleName;
-          if (role.toLowerCase().includes('admin')) {
+          if (role.toLowerCase().includes('director')) {
             this.dataSource.data = res.data.filter((phone: any) =>
               phone.stockStatusEntity.statusName
                 .toLowerCase()
                 .includes('available')
             );
-          } else if (role.toLowerCase() == 'sales manager') {
+          } else if (role.toLowerCase().includes('admin') || role.toLowerCase() == 'sales manager') {
             this.dataSource.data = res.data.filter(
               (phone: any) =>
                 phone.stockStatusEntity.statusName
@@ -101,8 +101,6 @@ export class PhoneListComponent {
                 phone.stockRegionCode == this.user.userRegionCode
             );
           } else {
-            console.log('user assigned to branch');
-            console.log(this.user.userBrnCode);
             this.dataSource.data = res.data.filter(
               (phone: any) =>
                 phone.stockStatusEntity.statusName
@@ -181,13 +179,17 @@ export class PhoneListComponent {
     this.user = JSON.parse(sessionStorage.getItem('user') || '{}');
     const role = this.user.roleModel.roleName;
     if (
+      role.toLowerCase().includes('director') ||
       role.toLowerCase().includes('admin') ||
       role.toLowerCase() == 'shop manager' ||
       role.toLowerCase() == 'field sales manager'
     ) {
       this.userHasPrivilege = true;
     }
-    if (!role.toLowerCase().includes('admin')) {
+    if (
+      !role.toLowerCase().includes('director') ||
+      !role.toLowerCase().includes('admin')
+    ) {
       this.displayedColumns = this.displayedColumns.filter(
         (column: string) => !column.includes('price')
       );

@@ -71,7 +71,7 @@ export class PhoneModelsComponent {
           sessionStorage.setItem('models', JSON.stringify(res.data));
           const role = this.user.roleModel.roleName;
           const models = res.data;
-          if (role.toLowerCase().includes('admin')) {
+          if (role.toLowerCase().includes('director')) {
             this.dataSource = models;
           } else {
             this.dataSource = models.filter(
@@ -120,7 +120,7 @@ export class PhoneModelsComponent {
   getUser() {
     this.user = JSON.parse(sessionStorage.getItem('user') || '{}');
     const role = this.user.roleModel.roleName;
-    if (!role.toLowerCase().includes('admin')) {
+    if (!role.toLowerCase().includes('director') && !role.toLowerCase().includes('admin')) {
       this.displayedColumns = this.displayedColumns.filter(
         (column: string) =>
           !column.includes('price') && !column.includes('action')

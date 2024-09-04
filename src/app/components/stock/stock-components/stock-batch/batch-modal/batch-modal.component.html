@@ -20,7 +20,6 @@
 
             <mat-form-field class="me-24 fs-16" appearance="outline">
                 <mat-label>Batch Status</mat-label>
-                <!-- <input type="text" matInput [(ngModel)]="data.stockBatch.batchStatus"> -->
                 <mat-select [(ngModel)]="data.stockBatch.batchStatus">
                   <mat-option *ngFor="let status of statuses" [value]="status">
                     {{ status }}
@@ -29,7 +28,7 @@
             </mat-form-field>
             
 
-            <mat-form-field class="me-24 fs-16" appearance="outline">
+            <mat-form-field class="me-24 fs-16" appearance="outline" *ngIf="user.roleModel.roleName.toLowerCase().includes('director')">
                 <mat-label>Country</mat-label>
                 <mat-select [(ngModel)]="data.stockBatch.stockBatchCountryCode" (selectionChange)="selectCountry()">
                   <mat-option *ngFor="let country of countries" [value]="country.code">
@@ -38,7 +37,7 @@
                 </mat-select>
             </mat-form-field>
 
-            <mat-form-field class="me-24 fs-16" appearance="outline" *ngIf="data.stockBatch.stockBatchCountryCode">
+            <mat-form-field class="me-24 fs-16" appearance="outline">
                 <mat-label>Phone Model</mat-label>
                 <mat-select [(ngModel)]="data.stockBatch.stockModelCode">
                   <mat-option *ngFor="let model of _models" [value]="model.code">
@@ -47,7 +46,7 @@
                 </mat-select>
             </mat-form-field>
 
-            <mat-form-field class="me-24 fs-16" appearance="outline" *ngIf="data.stockBatch.stockBatchCountryCode && data.stockBatch.stockModelCode">
+            <mat-form-field class="me-24 fs-16" appearance="outline">
                 <mat-label>Buying Price ({{ data.stockBatch.stockBatchCurrencyCode }})</mat-label>
                 <input type="text" matInput [(ngModel)]="data.stockBatch.batchBuyingPrice">
             </mat-form-field>

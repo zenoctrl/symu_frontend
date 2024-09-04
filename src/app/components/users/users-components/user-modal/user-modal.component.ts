@@ -35,6 +35,13 @@ export class UserModalComponent {
     this.getLocations();
   }
 
+  ngOnInit() {
+    if (this.data.title == 'Edit User') {
+      this.filterRegions();
+      this.filterBranches();
+    }
+  }
+
   save() {
     if (this.data.user.code === undefined) {
       this.createUser(this.data.user);
@@ -135,9 +142,9 @@ export class UserModalComponent {
   }
 
   getLocations() {
-    this.countries = JSON.parse(sessionStorage.getItem('countries') || '{}');
-    this.regions = JSON.parse(sessionStorage.getItem('regions') || '{}');
-    this.branches = JSON.parse(sessionStorage.getItem('branches') || '{}');
+    this.countries = JSON.parse(sessionStorage.getItem('countries') || '[]');
+    this.regions = JSON.parse(sessionStorage.getItem('regions') || '[]');
+    this.branches = JSON.parse(sessionStorage.getItem('branches') || '[]');
   }
 
   selectCountry() {
