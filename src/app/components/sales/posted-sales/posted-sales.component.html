@@ -50,8 +50,8 @@
             <td mat-cell *matCellDef="let phone">
               <div class="action">
                 <a class="edit" *ngIf="phone.stockStatusEntity.statusName.toLowerCase().includes('post') || phone.stockStatusEntity.statusName.toLowerCase().includes('sold')" (click)="viewReceipt(phone)">Receipt</a>
-                <a class="edit" (click)="editPhone(phone, 'Complete Sale')" *ngIf="phone.stockStatusEntity.statusName.toLowerCase().includes('posted') && user.roleModel.roleName.toLowerCase().includes('admin')">Complete</a>
-                <a class="delete" (click)="reject(phone)" *ngIf="user.roleModel.roleName.toLowerCase().includes('admin')">Reject</a>
+                <a class="edit" (click)="editPhone(phone, 'Complete Sale')" *ngIf="phone.stockStatusEntity.statusName.toLowerCase().includes('posted') && (user.roleModel.roleName.toLowerCase().includes('director') || user.roleModel.roleName.toLowerCase().includes('admin'))">Complete</a>
+                <a class="delete" (click)="reject(phone)" *ngIf="user.roleModel.roleName.toLowerCase().includes('director') || user.roleModel.roleName.toLowerCase().includes('admin')">Reject</a>
             </div>
             </td>
           </ng-container>

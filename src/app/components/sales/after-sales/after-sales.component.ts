@@ -52,7 +52,29 @@ export class AfterSalesComponent {
       (res: any) => {
         this.isFetching = false;
         if (res.statusCode == 0) {
-          this.dataSource.data = res.data;
+          const role = this.user.roleModel.roleName;
+          // this.dataSource.data = res.data;
+          if (role.toLowerCase().includes('director')) {
+            this.dataSource.data = res.data;
+          } else if (
+            role.toLowerCase().includes('admin') ||
+            role.toLowerCase() == 'sales manager'
+          ) {
+            this.dataSource = res.data.filter(
+              (phone: any) =>
+                phone.stockCountryCode == this.user.userCountryCode
+            );
+          } else if (role.toLowerCase().includes('region')) {
+            this.dataSource = res.data.filter(
+              (phone: any) =>
+                phone.stockRegionCode == this.user.userRegionCode
+            );
+          } else {
+            this.dataSource = res.data.filter(
+              (phone: any) =>
+                phone.stockBranchCode == this.user.userBrnCode
+            );
+          }
         } else {
           this.getPhones();
         }
