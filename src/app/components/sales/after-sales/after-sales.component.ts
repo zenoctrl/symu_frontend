@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import {
   MatDialog,
   MAT_DIALOG_DATA,
@@ -11,10 +11,17 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Branch } from '../../setups/setups-components/branches/branches.component';
 import { MatTableDataSource } from '@angular/material/table';
 
+import { AgGridAngular } from 'ag-grid-angular';
+import { ColDef, GridApi, GridReadyEvent, CsvExportModule } from 'ag-grid-community';
+import { CommonModule } from '@angular/common';
+
 @Component({
   selector: 'app-after-sales',
   templateUrl: './after-sales.component.html',
   styleUrls: ['./after-sales.component.scss'],
+  standalone: true,
+  imports: [AgGridAngular, CommonModule],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class AfterSalesComponent {
   user: any;
@@ -28,12 +35,38 @@ export class AfterSalesComponent {
     'status',
     'action',
   ];
-  dataSource = new MatTableDataSource<any>();
+  // dataSource = new MatTableDataSource<any>();
+  dataSource = [];
   phone!: any;
   isFetching!: boolean;
   dealerships: any[] = [];
   stockStatuses!: StockStatus[];
   branches: Branch[] = [];
+  rowData = [];
+  gridApi!: GridApi;
+
+  // Column Definitions: Defines the columns to be displayed.
+  colDefs: ColDef[] = [
+    { headerName: 'IMEI', field: 'stockImei', filter: true },
+    { headerName: 'Model', field: 'stockModelName', filter: true },
+    { headerName: 'Currency', field: 'stockCurrencyCode' },
+    { headerName: 'Price', field: 'stockSellingPrice' },
+    { headerName: 'Customer Name', field: 'stockCustomerName', filter: true },
+    {
+      headerName: 'Customer Phone Number',
+      field: 'stockCustomerPhone',
+      filter: true,
+    },
+    {
+      headerName: 'Customer ID',
+      field: 'stockCustomerNationalId',
+      filter: true,
+    },
+    { headerName: 'Dealership', field: 'stockDealerShipName', filter: true },
+    { headerName: 'Branch', field: 'stockBranchName', filter: true },
+    { headerName: 'Agent', field: 'stockAgentName', filter: true },
+    { headerName: 'Default Status', field: 'stockDefaulted', filter: true },
+  ];
 
   constructor(
     public dialog: MatDialog,
@@ -55,7 +88,7 @@ export class AfterSalesComponent {
           const role = this.user.roleModel.roleName;
           // this.dataSource.data = res.data;
           if (role.toLowerCase().includes('director')) {
-            this.dataSource.data = res.data;
+            this.dataSource = res.data;
           } else if (
             role.toLowerCase().includes('admin') ||
             role.toLowerCase() == 'sales manager'
@@ -66,15 +99,14 @@ export class AfterSalesComponent {
             );
           } else if (role.toLowerCase().includes('region')) {
             this.dataSource = res.data.filter(
-              (phone: any) =>
-                phone.stockRegionCode == this.user.userRegionCode
+              (phone: any) => phone.stockRegionCode == this.user.userRegionCode
             );
           } else {
             this.dataSource = res.data.filter(
-              (phone: any) =>
-                phone.stockBranchCode == this.user.userBrnCode
+              (phone: any) => phone.stockBranchCode == this.user.userBrnCode
             );
           }
+          this.rowData = this.dataSource;
         } else {
           this.getPhones();
         }
@@ -88,10 +120,18 @@ export class AfterSalesComponent {
   getUser() {
     this.user = JSON.parse(sessionStorage.getItem('user') || '{}');
     const role = this.user.roleModel.roleName;
-    if (!role.toLowerCase().includes('director') && !role.toLowerCase().includes('admin')) {
-      this.displayedColumns = this.displayedColumns.filter(
-        (column: string) =>
-          !column.includes('price') && !column.includes('action')
+    if (
+      !role.toLowerCase().includes('director') &&
+      !role.toLowerCase().includes('admin')
+    ) {
+      // this.displayedColumns = this.displayedColumns.filter(
+      //   (column: string) =>
+      //     !column.includes('price') && !column.includes('action')
+      // );
+      this.colDefs = this.colDefs.filter(
+        (column: any) =>
+          !column.headerName.toLowerCase().includes('currency') &&
+          !column.headerName.toLowerCase().includes('price')
       );
     }
   }
@@ -140,9 +180,12 @@ export class AfterSalesComponent {
     );
   }
 
-  search(event: Event) {
-    const text = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = text.trim().toLowerCase();
+  onBtnExport() {
+    this.gridApi.exportDataAsCsv();
+  }
+
+  onGridReady(params: GridReadyEvent) {
+    this.gridApi = params.api;
   }
 
   export(data: any) {

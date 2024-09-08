@@ -68,6 +68,7 @@ import { DealershipModalComponent } from './setups/setups-components/dealerships
     TooltipsComponent,
     FormsModule,
     MatPaginatorModule,
+    AfterSalesComponent,
   ],
   exports: [
     AlertsComponent,
@@ -108,7 +109,7 @@ import { DealershipModalComponent } from './setups/setups-components/dealerships
     BatchModalComponent,
     SalesComponent,
     PostedSalesComponent,
-    AfterSalesComponent,
+    // AfterSalesComponent,
     DealershipsComponent,
     DealershipModalComponent,
   ],
