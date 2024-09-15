@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter } from '@angular/core';
+import { Component, Output, EventEmitter, ViewChild } from '@angular/core';
 import {
   MatDialog,
   MAT_DIALOG_DATA,
@@ -10,6 +10,8 @@ import { PhoneModalComponent } from '../../stock/stock-components/phone-list/pho
 import { StockStatus } from '../../stock/stock-components/stock-status/stock-status.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Country } from 'src/app/components/setups/setups-components/countries/countries.component';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatTableDataSource } from '@angular/material/table';
 
 @Component({
   selector: 'app-posted-sales',
@@ -26,13 +28,14 @@ export class PostedSalesComponent {
     'status',
     'action',
   ];
-  dataSource!: any[];
+  dataSource = new MatTableDataSource<any[]>();
   phone!: any;
   isFetching!: boolean;
   dealerships: any[] = [];
   stockStatuses!: StockStatus[];
   countries: Country[] = [];
 
+  @ViewChild('paginator') paginator!: MatPaginator;
   @Output() completeEvent = new EventEmitter<any>();
 
   constructor(
@@ -47,6 +50,10 @@ export class PostedSalesComponent {
     this.getCountries();
   }
 
+  ngAfterViewInit(): void {
+    this.dataSource.paginator = this.paginator;
+  }
+
   getPhones() {
     this.isFetching = true;
     const endpoint: string = `${ENVIRONMENT.endpoints.stock.phone.getAll}?companyCode=${this.user.userCompanyCode}`;
@@ -56,13 +63,16 @@ export class PostedSalesComponent {
         if (res.statusCode == 0) {
           const role = this.user.roleModel.roleName;
           if (role.toLowerCase().includes('director')) {
-            this.dataSource = res.data.filter((phone: any) =>
+            this.dataSource.data = res.data.filter((phone: any) =>
               phone.stockStatusEntity.statusName
                 .toLowerCase()
                 .includes('posted')
             );
-          } else if (role.toLowerCase().includes('admin') || role.toLowerCase() == 'sales manager') {
-            this.dataSource = res.data.filter(
+          } else if (
+            role.toLowerCase().includes('admin') ||
+            role.toLowerCase() == 'sales manager'
+          ) {
+            this.dataSource.data = res.data.filter(
               (phone: any) =>
                 phone.stockStatusEntity.statusName
                   .toLowerCase()
@@ -70,7 +80,7 @@ export class PostedSalesComponent {
                 phone.stockCountryCode == this.user.userCountryCode
             );
           } else if (role.toLowerCase().includes('region')) {
-            this.dataSource = res.data.filter(
+            this.dataSource.data = res.data.filter(
               (phone: any) =>
                 phone.stockStatusEntity.statusName
                   .toLowerCase()
@@ -78,7 +88,7 @@ export class PostedSalesComponent {
                 phone.stockRegionCode == this.user.userRegionCode
             );
           } else {
-            this.dataSource = res.data.filter(
+            this.dataSource.data = res.data.filter(
               (phone: any) =>
                 phone.stockStatusEntity.statusName
                   .toLowerCase()
@@ -86,6 +96,7 @@ export class PostedSalesComponent {
                 phone.stockBranchCode == this.user.userBrnCode
             );
           }
+          this.dataSource.paginator = this.paginator;
         } else {
           this.getPhones();
         }
@@ -103,7 +114,6 @@ export class PostedSalesComponent {
   }
 
   editPhone(phone: any, title: string) {
-
     const country = this.countries.find(
       (country: Country) => country.code == phone.stockCountryCode
     );
@@ -166,10 +176,12 @@ export class PostedSalesComponent {
   getUser() {
     this.user = JSON.parse(sessionStorage.getItem('user') || '{}');
     const role = this.user.roleModel.roleName;
-    if (!role.toLowerCase().includes('director') || !role.toLowerCase().includes('admin')) {
+    if (
+      !role.toLowerCase().includes('director') ||
+      !role.toLowerCase().includes('admin')
+    ) {
       this.displayedColumns = this.displayedColumns.filter(
-        (column: string) =>
-          !column.includes('price')
+        (column: string) => !column.includes('price')
       );
     }
   }
@@ -198,5 +210,10 @@ export class PostedSalesComponent {
 
   getCountries() {
     this.countries = JSON.parse(sessionStorage.getItem('countries') || '[]');
+  }
+
+  search(event: Event) {
+    const text = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = text.trim().toLowerCase();
   }
 }

@@ -7,6 +7,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTableModule } from '@angular/material/table';
+import { MatPaginatorModule } from '@angular/material/paginator';
 // import { ZXingScannerModule } from '@zxing/ngx-scanner';
 // Angular Data Grid Component
 
@@ -35,6 +36,7 @@ import { ComponentsModule } from './components/components.module';
     MatDialogModule,
     MatTabsModule,
     MatTableModule,
+    MatPaginatorModule,
     // ZXingScannerModule,
   ],
   providers: [],

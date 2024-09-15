@@ -47,7 +47,7 @@
             </mat-form-field>
 
             <mat-form-field class="me-24 fs-16" appearance="outline">
-                <mat-label>Buying Price ({{ data.stockBatch.stockBatchCurrencyCode }})</mat-label>
+                <mat-label>Buying Price <span *ngIf="data.stockBatch.stockBatchCurrencyCode">({{ data.stockBatch.stockBatchCurrencyCode }})</span></mat-label>
                 <input type="text" matInput [(ngModel)]="data.stockBatch.batchBuyingPrice">
             </mat-form-field>
 

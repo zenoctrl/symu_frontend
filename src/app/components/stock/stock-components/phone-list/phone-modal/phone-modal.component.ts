@@ -51,6 +51,7 @@ export class PhoneModalComponent {
     }
     
     if (this.data.title === 'Receipt') {
+      console.log(this.data.phone);
       this.fetchReceipt(this.data.phone);
     }
   }

@@ -32,7 +32,8 @@ export interface DeviceModel {
 export class PhoneModelsComponent {
   displayedColumns: string[] = ['id', 'name', 'price', 'status', 'action'];
   dataSource = new MatTableDataSource<DeviceModel[]>();
-  isFetching!: boolean; user: any;
+  isFetching!: boolean;
+  user: any;
   @ViewChild('paginator') paginator!: MatPaginator;
 
   constructor(
@@ -72,13 +73,13 @@ export class PhoneModelsComponent {
           const role = this.user.roleModel.roleName;
           const models = res.data;
           if (role.toLowerCase().includes('director')) {
-            this.dataSource = models;
+            this.dataSource.data = models;
           } else {
-            this.dataSource = models.filter(
+            this.dataSource.data = models.filter(
               (model: any) =>
                 model.modelCountryCode == this.user.userCountryCode
             );
-          }          
+          }
           this.dataSource.paginator = this.paginator;
         } else {
         }
@@ -120,11 +121,19 @@ export class PhoneModelsComponent {
   getUser() {
     this.user = JSON.parse(sessionStorage.getItem('user') || '{}');
     const role = this.user.roleModel.roleName;
-    if (!role.toLowerCase().includes('director') && !role.toLowerCase().includes('admin')) {
+    if (
+      !role.toLowerCase().includes('director') &&
+      !role.toLowerCase().includes('admin')
+    ) {
       this.displayedColumns = this.displayedColumns.filter(
         (column: string) =>
           !column.includes('price') && !column.includes('action')
       );
     }
+  }
+
+  search(event: Event) {
+    const text = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = text.trim().toLowerCase();
   }
 }

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import {
   MatDialog,
   MAT_DIALOG_DATA,
@@ -9,6 +9,8 @@ import { DataService } from 'src/app/services/data.service';
 import { ENVIRONMENT } from 'src/app/environments/environments';
 import { RegionModalComponent } from './region-modal/region-modal.component';
 import { Country } from '../countries/countries.component';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatPaginator } from '@angular/material/paginator';
 
 export interface Region {
   code?: string;
@@ -33,11 +35,13 @@ export class RegionsComponent {
     'status',
     'action',
   ];
-  dataSource!: Region[];
+  dataSource = new MatTableDataSource<any>();
   region!: Region;
   isFetching!: boolean;
   countries: Country[] = [];
   user: any;
+
+  @ViewChild('paginator') paginator!: MatPaginator;
 
   constructor(
     public dialog: MatDialog,
@@ -47,6 +51,10 @@ export class RegionsComponent {
     this.countries = JSON.parse(sessionStorage.getItem('countries') || '{}');
     this.getUser();
     this.getRegions();
+  }
+
+  ngAfterViewInit(): void {
+    this.dataSource.paginator = this.paginator;
   }
 
   addRegion() {
@@ -70,7 +78,7 @@ export class RegionsComponent {
         this.isFetching = false;
         if (res.statusCode == 0) {
           sessionStorage.setItem('regions', JSON.stringify(res.data));
-          this.dataSource = res.data;
+          this.dataSource.data = res.data;
         } else {
         }
       },

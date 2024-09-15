@@ -1,8 +1,9 @@
 <mat-card class="w-100">
     <mat-card-content>
 
-      <div class="d-flex justify-content-end" *ngIf="user.roleModel.roleName.toLowerCase().includes('admin')">
-        <a id="add-btn" (click)="addDeviceModel()">+ Add Model</a>
+      <div class="d-flex justify-content-end">
+        <input type="text" name="" id="search" placeholder="Seach ..." (keyup)="search($event)">
+        <a id="add-btn" (click)="addDeviceModel()" *ngIf="user.roleModel.roleName.toLowerCase().includes('director') || user.roleModel.roleName.toLowerCase().includes('admin')">+ Add Model</a>
       </div>
 
       <br>

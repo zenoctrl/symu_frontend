@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import {
   MatDialog,
   MAT_DIALOG_DATA,
@@ -10,6 +10,8 @@ import { ENVIRONMENT } from 'src/app/environments/environments';
 import { BranchModalComponent } from './branch-modal/branch-modal.component';
 import { Region } from '../regions/regions.component';
 import { Country } from '../countries/countries.component';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatPaginator } from '@angular/material/paginator';
 
 export interface Branch {
   code?: string;
@@ -29,12 +31,14 @@ export interface Branch {
 })
 export class BranchesComponent {
   displayedColumns: string[] = ['id', 'name', 'region', 'status', 'action'];
-  dataSource!: Branch[];
+  dataSource = new MatTableDataSource<any>();
   branch!: Branch;
   isFetching!: boolean;
   regions!: Region[];
   countries!: Country[];
   user: any;
+
+  @ViewChild('paginator') paginator!: MatPaginator;
 
   constructor(
     public dialog: MatDialog,
@@ -45,6 +49,10 @@ export class BranchesComponent {
     this.getBranches();
     this.getRegions();
     this.getCountries();
+  }
+
+  ngAfterViewInit(): void {
+    this.dataSource.paginator = this.paginator;
   }
 
   addBranch() {
@@ -67,14 +75,13 @@ export class BranchesComponent {
 
   getBranches() {
     this.isFetching = true;
-    const endpoint: string =
-      `${ENVIRONMENT.endpoints.branches.getAll}?companyCode=${this.user.userCompanyCode}`;
+    const endpoint: string = `${ENVIRONMENT.endpoints.branches.getAll}?companyCode=${this.user.userCompanyCode}`;
     this.data.get(ENVIRONMENT.baseUrl + endpoint).subscribe(
       (res: any) => {
         this.isFetching = false;
         if (res.statusCode == 0) {
           sessionStorage.setItem('branches', JSON.stringify(res.data));
-          this.dataSource = res.data;
+          this.dataSource.data = res.data;
         } else {
         }
       },

@@ -43,7 +43,8 @@ export class StockBatchComponent {
     'action',
   ];
   dataSource = new MatTableDataSource<StockBatch[]>();
-  isFetching!: boolean; user: any;
+  isFetching!: boolean;
+  user: any;
   @ViewChild('paginator') paginator!: MatPaginator;
 
   constructor(
@@ -83,13 +84,13 @@ export class StockBatchComponent {
           const role = this.user.roleModel.roleName;
           const batches = res.data;
           if (role.toLowerCase().includes('director')) {
-            this.dataSource = batches;
+            this.dataSource.data = batches;
           } else {
-            this.dataSource = batches.filter(
+            this.dataSource.data = batches.filter(
               (batch: any) =>
                 batch.stockBatchCountryCode == this.user.userCountryCode
             );
-          }          
+          }
           this.dataSource.paginator = this.paginator;
         } else {
         }
@@ -131,11 +132,19 @@ export class StockBatchComponent {
   getUser() {
     this.user = JSON.parse(sessionStorage.getItem('user') || '{}');
     const role = this.user.roleModel.roleName;
-    if (!role.toLowerCase().includes('director') && !role.toLowerCase().includes('admin')) {
+    if (
+      !role.toLowerCase().includes('director') &&
+      !role.toLowerCase().includes('admin')
+    ) {
       this.displayedColumns = this.displayedColumns.filter(
         (column: string) =>
           !column.includes('price') && !column.includes('action')
       );
     }
+  }
+
+  search(event: Event) {
+    const text = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = text.trim().toLowerCase();
   }
 }

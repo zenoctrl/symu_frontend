@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import {
   MatDialog,
   MAT_DIALOG_DATA,
@@ -8,6 +8,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { DataService } from 'src/app/services/data.service';
 import { ENVIRONMENT } from 'src/app/environments/environments';
 import { CountryModalComponent } from './country-modal/country-modal.component';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatPaginator } from '@angular/material/paginator';
 
 export interface Country {
   code?: string;
@@ -30,9 +32,11 @@ export class CountriesComponent {
     'countryCurrencyCode',
     'action',
   ];
-  dataSource!: Country[];
+  dataSource = new MatTableDataSource<any>();
   user!: any;
   isFetching!: boolean;
+
+  @ViewChild('paginator') paginator!: MatPaginator;
 
   constructor(
     public dialog: MatDialog,
@@ -41,6 +45,10 @@ export class CountriesComponent {
   ) {
     this.getUser();
     this.getCountries();
+  }
+
+  ngAfterViewInit(): void {
+    this.dataSource.paginator = this.paginator;
   }
 
   addCountry() {
@@ -64,7 +72,7 @@ export class CountriesComponent {
         this.isFetching = false;
         if (res.statusCode == 0) {
           sessionStorage.setItem('countries', JSON.stringify(res.data));
-          this.dataSource = res.data;
+          this.dataSource.data = res.data;
         } else {
         }
       },

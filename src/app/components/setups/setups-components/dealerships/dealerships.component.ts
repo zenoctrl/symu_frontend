@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import {
   MatDialog,
   MAT_DIALOG_DATA,
@@ -9,6 +9,8 @@ import { DataService } from 'src/app/services/data.service';
 import { ENVIRONMENT } from 'src/app/environments/environments';
 import { Country } from '../countries/countries.component';
 import { DealershipModalComponent } from './dealership-modal/dealership-modal.component';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatPaginator } from '@angular/material/paginator';
 
 export interface Dealership {
   dealerCode?: string;
@@ -28,15 +30,11 @@ export class DealershipsComponent {
   user!: any;
   isFetching!: boolean;
   countries: Country[] = [];
-  dataSource!: Dealership[];
 
-  displayedColumns: string[] = [
-    'id',
-    'name',
-    'country',
-    'status',
-    'action',
-  ];
+  displayedColumns: string[] = ['id', 'name', 'country', 'status', 'action'];
+
+  dataSource = new MatTableDataSource<any>();
+  @ViewChild('paginator') paginator!: MatPaginator;
 
   constructor(
     public dialog: MatDialog,
@@ -46,6 +44,10 @@ export class DealershipsComponent {
     this.getUser();
     this.getCountries();
     this.getDealerships();
+  }
+
+  ngAfterViewInit(): void {
+    this.dataSource.paginator = this.paginator;
   }
 
   getUser() {
@@ -90,7 +92,7 @@ export class DealershipsComponent {
         this.isFetching = false;
         if (res.statusCode == 0) {
           sessionStorage.setItem('dealerships', JSON.stringify(res.data));
-          this.dataSource = res.data;
+          this.dataSource.data = res.data;
         } else {
           this.getDealerships();
         }

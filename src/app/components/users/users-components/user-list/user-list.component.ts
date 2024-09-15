@@ -1,9 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { MatDialog, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { UserModalComponent } from '../user-modal/user-modal.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { DataService } from 'src/app/services/data.service';
 import { ENVIRONMENT } from 'src/app/environments/environments';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatPaginator } from '@angular/material/paginator';
 
 export interface User {
   id?: string;
@@ -19,15 +21,26 @@ export interface User {
 @Component({
   selector: 'app-user-list',
   templateUrl: './user-list.component.html',
-  styleUrls: ['./user-list.component.scss']
+  styleUrls: ['./user-list.component.scss'],
 })
 export class UserListComponent {
-
   displayedColumns: string[] = ['id', 'username', 'contacts', 'role', 'action'];
-  dataSource!: any[]; user: any; roles!: any[];
+  user: any;
+  roles!: any[];
   isFetching!: boolean;
 
-  constructor( public dialog: MatDialog, private data: DataService, public snackBar: MatSnackBar ) { }
+  dataSource = new MatTableDataSource<any>();
+  @ViewChild('paginator') paginator!: MatPaginator;
+  
+  constructor(
+    public dialog: MatDialog,
+    private data: DataService,
+    public snackBar: MatSnackBar
+  ) {}
+
+  ngAfterViewInit(): void {
+    this.dataSource.paginator = this.paginator;
+  }
 
   ngOnInit(): void {
     this.getUser();
@@ -37,11 +50,11 @@ export class UserListComponent {
 
   addUser() {
     const dialogRef = this.dialog.open(UserModalComponent, {
-      data: {user: {}, title: 'Add User'},
-      disableClose: true
+      data: { user: {}, title: 'Add User' },
+      disableClose: true,
     });
 
-    dialogRef.afterClosed().subscribe(res => {
+    dialogRef.afterClosed().subscribe((res) => {
       if (res) {
         this.getUsers();
       }
@@ -60,7 +73,7 @@ export class UserListComponent {
         this.isFetching = false;
         if (res.statusCode == 0) {
           sessionStorage.setItem('users', JSON.stringify(res.data));
-          this.dataSource = res.data;
+          this.dataSource.data = res.data;
         } else {
         }
       },
@@ -72,11 +85,11 @@ export class UserListComponent {
 
   editUser(user: any) {
     const dialogRef = this.dialog.open(UserModalComponent, {
-      data: {user: user, title: 'Edit User'},
-      disableClose: true
+      data: { user: user, title: 'Edit User' },
+      disableClose: true,
     });
 
-    dialogRef.afterClosed().subscribe(res => {
+    dialogRef.afterClosed().subscribe((res) => {
       if (res) {
         this.getUsers();
       }
@@ -84,14 +97,12 @@ export class UserListComponent {
   }
 
   deleteUser(user: any) {
-    return
+    return;
     const endpoint: string = `${ENVIRONMENT.endpoints.users.delete}/${user.code}`;
-    this.data.delete(ENVIRONMENT.baseUrl + endpoint).subscribe(
-      (res: any) => {
-        this.openSnackBar("User deleted successfully.", "Close");
-        this.getUsers();
-      }
-    );
+    this.data.delete(ENVIRONMENT.baseUrl + endpoint).subscribe((res: any) => {
+      this.openSnackBar('User deleted successfully.', 'Close');
+      this.getUsers();
+    });
   }
 
   openSnackBar(message: string, action: string) {
@@ -116,5 +127,4 @@ export class UserListComponent {
       }
     );
   }
-
 }

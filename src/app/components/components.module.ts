@@ -37,7 +37,6 @@ import { PhoneModelsComponent } from './stock/stock-components/phone-models/phon
 import { ModelModalComponent } from './stock/stock-components/phone-models/model-modal/model-modal.component';
 import { StockStatusComponent } from './stock/stock-components/stock-status/stock-status.component';
 import { StatusModalComponent } from './stock/stock-components/stock-status/status-modal/status-modal.component';
-import { MatPaginatorModule } from '@angular/material/paginator';
 import { StockBatchComponent } from './stock/stock-components/stock-batch/stock-batch.component';
 import { BatchModalComponent } from './stock/stock-components/stock-batch/batch-modal/batch-modal.component';
 import { SalesComponent } from './sales/sales.component';
@@ -67,7 +66,6 @@ import { DealershipModalComponent } from './setups/setups-components/dealerships
     GridListComponent,
     TooltipsComponent,
     FormsModule,
-    MatPaginatorModule,
     AfterSalesComponent,
   ],
   exports: [

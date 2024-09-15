@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import {
   MatDialog,
   MAT_DIALOG_DATA,
@@ -11,6 +11,7 @@ import { ENVIRONMENT } from 'src/app/environments/environments';
 import { StockStatus } from '../stock-status/stock-status.component';
 import { Country } from 'src/app/components/setups/setups-components/countries/countries.component';
 import { MatTableDataSource } from '@angular/material/table';
+import { MatPaginator } from '@angular/material/paginator';
 
 export interface Phone {
   id?: string;
@@ -30,8 +31,8 @@ export class PhoneListComponent {
   user: any;
   displayedColumns: string[] = [
     'id',
-    'imei',
-    'model',
+    'phone',
+    'branch',
     'price',
     'status',
     'date',
@@ -45,6 +46,8 @@ export class PhoneListComponent {
   userHasPrivilege!: boolean;
   countries: Country[] = [];
 
+  @ViewChild('paginator') paginator!: MatPaginator;
+
   constructor(
     public dialog: MatDialog,
     private data: DataService,
@@ -55,6 +58,10 @@ export class PhoneListComponent {
     this.getAllStockStatus();
     this.getDealerships();
     this.getCountries();
+  }
+
+  ngAfterViewInit(): void {
+    this.dataSource.paginator = this.paginator;
   }
 
   addPhone() {
@@ -84,7 +91,10 @@ export class PhoneListComponent {
                 .toLowerCase()
                 .includes('available')
             );
-          } else if (role.toLowerCase().includes('admin') || role.toLowerCase() == 'sales manager') {
+          } else if (
+            role.toLowerCase().includes('admin') ||
+            role.toLowerCase() == 'sales manager'
+          ) {
             this.dataSource.data = res.data.filter(
               (phone: any) =>
                 phone.stockStatusEntity.statusName
@@ -223,5 +233,17 @@ export class PhoneListComponent {
   search(event: Event) {
     const text = (event.target as HTMLInputElement).value;
     this.dataSource.filter = text.trim().toLowerCase();
+  }
+
+  getBranch(id: number): string {
+    return JSON.parse(sessionStorage.getItem('branches') || '[]').find(
+      (b: any) => b.code == id
+    ).name;
+  }
+
+  getCountry(id: number): string {
+    return JSON.parse(sessionStorage.getItem('countries') || '[]').find(
+      (b: any) => b.code == id
+    ).countryName;
   }
 }
