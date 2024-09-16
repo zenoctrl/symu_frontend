@@ -15,6 +15,7 @@ import { AgGridAngular } from 'ag-grid-angular';
 import { ColDef, GridApi, GridReadyEvent, CsvExportModule } from 'ag-grid-community';
 import { CommonModule } from '@angular/common';
 
+
 @Component({
   selector: 'app-after-sales',
   templateUrl: './after-sales.component.html',
@@ -188,8 +189,19 @@ export class AfterSalesComponent {
     this.gridApi = params.api;
   }
 
-  export(data: any) {
-    const csv = this.convertJSON2CSV(data);
+  export(data: any[]) {
+    const filteredStockData = data.map((stock) => {
+      const {
+        stockBranchCode,
+        stockRegionCode,
+        stockCountryCode,
+        stockCreatedOn,
+        stockUpdatedOn,
+        ...filteredStock
+      } = stock;
+      return filteredStock;
+    });
+    const csv = this.convertJSON2CSV(filteredStockData);
     const blob = new Blob([csv], { type: 'text/csv' });
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);

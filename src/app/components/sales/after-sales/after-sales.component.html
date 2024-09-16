@@ -10,12 +10,12 @@
           user.roleModel.roleName.toLowerCase().includes('admin'))
       "
     >
-      <a id="add-btn">Export Data</a>
+      <a id="add-btn" (click)="export(rowData)">Export Data</a>
     </div>
     <br />
     <ag-grid-angular
       class="ag-theme-quartz"
-      style="height: 500px"
+      style="height: 650px"
       [rowData]="rowData"
       [columnDefs]="colDefs"
       [pagination]="true"
