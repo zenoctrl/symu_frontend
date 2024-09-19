@@ -48,15 +48,22 @@ export class PhoneModalComponent {
       this.getBranches();
       this.getModels();
       this.getBatch();
+
+       const country = this.countries.find(
+         (country: Country) => country.code == this.data.phone.stockCountryCode
+       );
+
+       if (this.data.title.toLowerCase().includes('post'))
+         this.data.phone.customerPhoneNumber = `+${country?.countryCountryCode}`;
     }
-    
+
     if (this.data.title === 'Receipt') {
-      console.log(this.data.phone);
       this.fetchReceipt(this.data.phone);
     }
   }
 
   save() {
+    this.errorMessage = '';
     if (this.data.phone.code === undefined) {
       this.createPhone(this.data.phone);
     } else {
@@ -73,7 +80,6 @@ export class PhoneModalComponent {
   }
 
   createPhone(phone: any) {
-    this.errorMessage = '';
     if (this.data.phone.stockImei.length < 15) {
       this.errorMessage = 'IMEI entered has less than 15 digits.';
       return;
@@ -353,9 +359,19 @@ export class PhoneModalComponent {
     this.user = JSON.parse(sessionStorage.getItem('user') || '{}');
     this.getCountries();
     const role = this.user.roleModel.roleName;
-    if (role.toLowerCase().includes('admin')) {
+    if (
+      role.toLowerCase().includes('admin') ||
+      role.toLowerCase() == 'sales manager' ||
+      role.toLowerCase().includes('regional')
+    ) {
       this.data.phone.stockCountryCode = this.user.userCountryCode;
-      this.selectCountry();
+      this.data.phone.stockBaseCurrency =
+        this.user.countryEntity.countryCurrencyCode;
+      // this.selectCountry();
+      if (role.toLowerCase().includes('regional')) {
+        this.data.phone.stockRegionCode = this.user.userRegionCode;
+        this.getBranches();
+      }
     } else if (
       role.toLowerCase() == 'shop manager' ||
       role.toLowerCase() == 'field sales manager'
@@ -364,6 +380,8 @@ export class PhoneModalComponent {
       this.data.phone.stockCountryCode = this.user.userCountryCode;
       this.data.phone.stockRegionCode = this.user.userRegionCode;
       this.data.phone.stockBranchCode = this.user.userBrnCode;
+      this.data.phone.stockBaseCurrency =
+        this.user.countryEntity.countryCurrencyCode;
     }
     this.getModels();
   }

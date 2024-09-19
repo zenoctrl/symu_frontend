@@ -107,7 +107,9 @@ export class BatchModalComponent {
       this.data.stockBatch.stockBatchCurrencyCode =
         this.user.countryEntity.countryCurrencyCode;
       this._models = this.models.filter(
-        (m) => m.modelCountryCode === this.data.stockBatch.stockBatchCountryCode
+        (m) =>
+          m.modelCountryCode === this.data.stockBatch.stockBatchCountryCode &&
+          m.modelStatus?.toLowerCase().includes('available')
       );
     }
   }
@@ -122,7 +124,8 @@ export class BatchModalComponent {
 
   selectCountry() {
     this._models = this.models.filter(
-      (m) => m.modelCountryCode === this.data.stockBatch.stockBatchCountryCode
+      (m) => m.modelCountryCode === this.data.stockBatch.stockBatchCountryCode &&
+          m.modelStatus?.toLowerCase().includes('available')
     );
     this.data.stockBatch.stockBatchCurrencyCode = this.countries.find(
       (c) => c.code === this.data.stockBatch.stockBatchCountryCode

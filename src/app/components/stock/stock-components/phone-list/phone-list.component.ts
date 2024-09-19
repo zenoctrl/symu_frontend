@@ -43,7 +43,6 @@ export class PhoneListComponent {
   phone!: any;
   isFetching!: boolean;
   dealerships: any[] = [];
-  userHasPrivilege!: boolean;
   countries: Country[] = [];
 
   @ViewChild('paginator') paginator!: MatPaginator;
@@ -52,7 +51,9 @@ export class PhoneListComponent {
     public dialog: MatDialog,
     private data: DataService,
     public snackBar: MatSnackBar
-  ) {
+  ) {}
+
+  ngOnInit() {
     this.getUser();
     this.getPhones();
     this.getAllStockStatus();
@@ -127,13 +128,6 @@ export class PhoneListComponent {
   }
 
   editPhone(phone: any, title: string) {
-    const country = this.countries.find(
-      (country: Country) => country.code == phone.stockCountryCode
-    );
-
-    if (title.toLowerCase().includes('post'))
-      phone.customerPhoneNumber = `+${country?.countryCountryCode}`;
-
     const dialogRef = this.dialog.open(PhoneModalComponent, {
       data: {
         phone: phone,
@@ -188,14 +182,6 @@ export class PhoneListComponent {
   getUser() {
     this.user = JSON.parse(sessionStorage.getItem('user') || '{}');
     const role = this.user.roleModel.roleName;
-    if (
-      role.toLowerCase().includes('director') ||
-      role.toLowerCase().includes('admin') ||
-      role.toLowerCase() == 'shop manager' ||
-      role.toLowerCase() == 'field sales manager'
-    ) {
-      this.userHasPrivilege = true;
-    }
     if (
       !role.toLowerCase().includes('director') ||
       !role.toLowerCase().includes('admin')

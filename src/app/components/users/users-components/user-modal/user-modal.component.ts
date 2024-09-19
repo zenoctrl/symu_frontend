@@ -24,6 +24,8 @@ export class UserModalComponent {
   _regions!: Region[];
   _branches!: Branch[];
   user: any;
+  userMustBelongToRegion!: boolean;
+  userMustBelongToBranch!: boolean;
 
   constructor(
     public dialogRef: MatDialogRef<UserModalComponent>,
@@ -43,6 +45,7 @@ export class UserModalComponent {
   }
 
   save() {
+    this.errorMessage = this.successMessage = '';
     if (this.data.user.code === undefined) {
       this.createUser(this.data.user);
     } else {
@@ -171,5 +174,23 @@ export class UserModalComponent {
 
   getUser() {
     this.user = JSON.parse(sessionStorage.getItem('user') || '{}');
+  }
+
+  selectRole(roleCode: number) {
+    const role: any = this.roles.find((r: any) => r.code == roleCode).roleName.toLowerCase();
+    if (
+      role.includes('region') ||
+      role.includes('shop') ||
+      role.includes('field')
+    ) {
+      this.userMustBelongToRegion = true;
+    }
+
+    if (
+      role.includes('shop') ||
+      role.includes('field')
+    ) {
+      this.userMustBelongToBranch = true;
+    }
   }
 }
