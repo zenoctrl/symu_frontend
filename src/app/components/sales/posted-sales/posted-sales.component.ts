@@ -64,7 +64,7 @@ export class PostedSalesComponent {
           const role = this.user.roleModel.roleName;
           if (role.toLowerCase().includes('director')) {
             this.dataSource.data = res.data.filter((phone: any) =>
-              phone.stockStatusEntity.statusName
+              phone.stockStatusName
                 .toLowerCase()
                 .includes('posted')
             );
@@ -74,7 +74,7 @@ export class PostedSalesComponent {
           ) {
             this.dataSource.data = res.data.filter(
               (phone: any) =>
-                phone.stockStatusEntity.statusName
+                phone.stockStatusName
                   .toLowerCase()
                   .includes('posted') &&
                 phone.stockCountryCode == this.user.userCountryCode
@@ -82,7 +82,7 @@ export class PostedSalesComponent {
           } else if (role.toLowerCase().includes('region')) {
             this.dataSource.data = res.data.filter(
               (phone: any) =>
-                phone.stockStatusEntity.statusName
+                phone.stockStatusName
                   .toLowerCase()
                   .includes('posted') &&
                 phone.stockRegionCode == this.user.userRegionCode
@@ -90,7 +90,7 @@ export class PostedSalesComponent {
           } else {
             this.dataSource.data = res.data.filter(
               (phone: any) =>
-                phone.stockStatusEntity.statusName
+                phone.stockStatusName
                   .toLowerCase()
                   .includes('posted') &&
                 phone.stockBranchCode == this.user.userBrnCode
