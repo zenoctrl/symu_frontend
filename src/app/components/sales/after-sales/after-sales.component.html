@@ -1,7 +1,6 @@
 <mat-card class="w-100">
   <mat-card-content>
-    <mat-progress-bar *ngIf="isFetching" mode="indeterminate"></mat-progress-bar
-    ><br />
+    <mat-progress-bar *ngIf="isFetching" mode="indeterminate"></mat-progress-bar><br />
     <div
       class="d-flex justify-content-end"
       *ngIf="
@@ -13,6 +12,7 @@
       <a id="add-btn" (click)="export(rowData)">Export Data</a>
     </div>
     <br />
+    <mat-progress-bar *ngIf="isFetching" mode="indeterminate"></mat-progress-bar>
     <ag-grid-angular
       class="ag-theme-quartz"
       style="height: 650px"

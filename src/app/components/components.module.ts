@@ -44,6 +44,8 @@ import { PostedSalesComponent } from './sales/posted-sales/posted-sales.componen
 import { AfterSalesComponent } from './sales/after-sales/after-sales.component';
 import { DealershipsComponent } from './setups/setups-components/dealerships/dealerships.component';
 import { DealershipModalComponent } from './setups/setups-components/dealerships/dealership-modal/dealership-modal.component';
+import { AfterSaleActionsComponent } from './sales/after-sales/after-sale-actions/after-sale-actions.component';
+import { StockActionsComponent } from './stock/stock-components/phone-list/stock-actions/stock-actions.component';
 
 @NgModule({
   imports: [
@@ -67,6 +69,7 @@ import { DealershipModalComponent } from './setups/setups-components/dealerships
     TooltipsComponent,
     FormsModule,
     AfterSalesComponent,
+    PhoneListComponent,
   ],
   exports: [
     AlertsComponent,
@@ -90,7 +93,7 @@ import { DealershipModalComponent } from './setups/setups-components/dealerships
     StockComponent,
     UserListComponent,
     UserModalComponent,
-    PhoneListComponent,
+    // PhoneListComponent,
     PhoneModalComponent,
     SetupsComponent,
     CountriesComponent,
@@ -110,6 +113,8 @@ import { DealershipModalComponent } from './setups/setups-components/dealerships
     // AfterSalesComponent,
     DealershipsComponent,
     DealershipModalComponent,
+    AfterSaleActionsComponent,
+    StockActionsComponent,
   ],
 })
 export class ComponentsModule {}

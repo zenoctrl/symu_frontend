@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, ViewChild } from '@angular/core';
 import {
   MatDialog,
   MAT_DIALOG_DATA,
@@ -12,6 +12,15 @@ import { StockStatus } from '../stock-status/stock-status.component';
 import { Country } from 'src/app/components/setups/setups-components/countries/countries.component';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
+import { AgGridAngular } from 'ag-grid-angular';
+import {
+  ColDef,
+  GridApi,
+  GridReadyEvent,
+  CsvExportModule,
+} from 'ag-grid-community';
+import { CommonModule } from '@angular/common';
+import { StockActionsComponent } from './stock-actions/stock-actions.component';
 
 export interface Phone {
   id?: string;
@@ -26,6 +35,9 @@ export interface Phone {
   selector: 'app-phone-list',
   templateUrl: './phone-list.component.html',
   styleUrls: ['./phone-list.component.scss'],
+  standalone: true,
+  imports: [AgGridAngular, CommonModule],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class PhoneListComponent {
   user: any;
@@ -38,12 +50,46 @@ export class PhoneListComponent {
     'date',
     'action',
   ];
-  dataSource = new MatTableDataSource<any>();
+  dataSource = [];
   stockStatuses!: StockStatus[];
   phone!: any;
   isFetching!: boolean;
   dealerships: any[] = [];
   countries: Country[] = [];
+
+  rowData = [];
+  gridApi!: GridApi;
+
+  colDefs: ColDef[] = [
+    { headerName: 'IMEI', field: 'stockImei', filter: true },
+    { headerName: 'Model', field: 'stockMemory', filter: true },
+    {
+      headerName: 'Branch',
+      field: 'stockBranchCode',
+      filter: true,
+      cellRenderer: (params: any) =>
+        `${this.getBranch(params.data.stockBranchCode)}, ${this.getCountry(params.data.stockCountryCode)}`,
+    },
+    {
+      headerName: 'Status',
+      field: 'stockMemory',
+      cellRenderer: (params: any) =>
+        params.data.stockStatusEntity.statusName.toUpperCase(),
+    },
+    {
+      headerName: 'Date',
+      field: 'stockCreatedOn',
+      filter: true,
+      cellRenderer: (params: any) => this.transformDate(params.value),
+    },
+    {
+      headerName: 'Actions',
+      cellRenderer: StockActionsComponent,
+      cellRendererParams: {
+        update: this.editPhone.bind(this),
+      },
+    },
+  ];
 
   @ViewChild('paginator') paginator!: MatPaginator;
 
@@ -62,7 +108,7 @@ export class PhoneListComponent {
   }
 
   ngAfterViewInit(): void {
-    this.dataSource.paginator = this.paginator;
+    // this.dataSource.paginator = this.paginator;
   }
 
   addPhone() {
@@ -87,7 +133,7 @@ export class PhoneListComponent {
         if (res.statusCode == 0) {
           const role = this.user.roleModel.roleName;
           if (role.toLowerCase().includes('director')) {
-            this.dataSource.data = res.data.filter((phone: any) =>
+            this.dataSource = res.data.filter((phone: any) =>
               phone.stockStatusEntity.statusName
                 .toLowerCase()
                 .includes('available')
@@ -96,7 +142,7 @@ export class PhoneListComponent {
             role.toLowerCase().includes('admin') ||
             role.toLowerCase() == 'sales manager'
           ) {
-            this.dataSource.data = res.data.filter(
+            this.dataSource = res.data.filter(
               (phone: any) =>
                 phone.stockStatusEntity.statusName
                   .toLowerCase()
@@ -104,7 +150,7 @@ export class PhoneListComponent {
                 phone.stockCountryCode == this.user.userCountryCode
             );
           } else if (role.toLowerCase().includes('region')) {
-            this.dataSource.data = res.data.filter(
+            this.dataSource = res.data.filter(
               (phone: any) =>
                 phone.stockStatusEntity.statusName
                   .toLowerCase()
@@ -112,7 +158,7 @@ export class PhoneListComponent {
                 phone.stockRegionCode == this.user.userRegionCode
             );
           } else {
-            this.dataSource.data = res.data.filter(
+            this.dataSource = res.data.filter(
               (phone: any) =>
                 phone.stockStatusEntity.statusName
                   .toLowerCase()
@@ -120,6 +166,7 @@ export class PhoneListComponent {
                 phone.stockBranchCode == this.user.userBrnCode
             );
           }
+          this.rowData = this.dataSource
         } else {
         }
       },
@@ -127,14 +174,14 @@ export class PhoneListComponent {
     );
   }
 
-  editPhone(phone: any, title: string) {
+  editPhone(event: any) {
     const dialogRef = this.dialog.open(PhoneModalComponent, {
       data: {
-        phone: phone,
-        title: title,
+        phone: event.phone,
+        title: event.title,
         user: this.user,
         dealers: this.dealerships.filter(
-          (d) => d.dealerCountryCode === phone.stockCountryCode
+          (d) => d.dealerCountryCode === event.phone.stockCountryCode
         ),
       },
       disableClose: true,
@@ -214,11 +261,6 @@ export class PhoneListComponent {
 
   transformDate(date: string) {
     return new Date(date).toLocaleString();
-  }
-
-  search(event: Event) {
-    const text = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = text.trim().toLowerCase();
   }
 
   getBranch(id: number): string {

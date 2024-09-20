@@ -1,20 +1,21 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import {
-  MatDialog,
-  MAT_DIALOG_DATA,
-  MatDialogRef,
-} from '@angular/material/dialog';
+  Component,
+  CUSTOM_ELEMENTS_SCHEMA
+} from '@angular/core';
 import { DataService } from 'src/app/services/data.service';
 import { ENVIRONMENT } from 'src/app/environments/environments';
 import { StockStatus } from '../../stock/stock-components/stock-status/stock-status.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Branch } from '../../setups/setups-components/branches/branches.component';
-import { MatTableDataSource } from '@angular/material/table';
-
 import { AgGridAngular } from 'ag-grid-angular';
-import { ColDef, GridApi, GridReadyEvent, CsvExportModule } from 'ag-grid-community';
+import {
+  ColDef,
+  GridApi,
+  GridReadyEvent,
+  CsvExportModule,
+} from 'ag-grid-community';
 import { CommonModule } from '@angular/common';
-
+import { AfterSaleActionsComponent } from './after-sale-actions/after-sale-actions.component';
 
 @Component({
   selector: 'app-after-sales',
@@ -36,7 +37,7 @@ export class AfterSalesComponent {
     'status',
     'action',
   ];
-  // dataSource = new MatTableDataSource<any>();
+
   dataSource = [];
   phone!: any;
   isFetching!: boolean;
@@ -46,17 +47,22 @@ export class AfterSalesComponent {
   rowData = [];
   gridApi!: GridApi;
 
-  // Column Definitions: Defines the columns to be displayed.
   colDefs: ColDef[] = [
     { headerName: 'IMEI', field: 'stockImei', filter: true },
     { headerName: 'Model', field: 'stockModelName', filter: true },
-    { headerName: 'Currency', field: 'stockCurrencyCode' },
-    { headerName: 'Price', field: 'stockSellingPrice' },
+    {
+      headerName: 'Price',
+      field: 'stockBranchCode',
+      cellRenderer: (params: any) =>
+        `${params.data.stockCurrencyCode} ${params.data.stockSellingPrice}`,
+    },
     { headerName: 'Customer Name', field: 'stockCustomerName', filter: true },
     {
       headerName: 'Customer Phone Number',
       field: 'stockCustomerPhone',
       filter: true,
+      cellRenderer: (params: any) =>
+        `<a href="tel:${params.value}">${params.value}</a>`,
     },
     {
       headerName: 'Customer ID',
@@ -66,14 +72,22 @@ export class AfterSalesComponent {
     { headerName: 'Dealership', field: 'stockDealerShipName', filter: true },
     { headerName: 'Branch', field: 'stockBranchName', filter: true },
     { headerName: 'Agent', field: 'stockAgentName', filter: true },
-    { headerName: 'Default Status', field: 'stockDefaulted', filter: true },
+    {
+      headerName: 'Status',
+      field: 'stockDefaulted',
+      filter: true,
+      cellRenderer: (params: any) => (params.value == 'Y' ? 'YES' : 'NO'),
+    },
+    {
+      headerName: 'Actions',
+      cellRenderer: AfterSaleActionsComponent,
+      cellRendererParams: { update: this.updateStatus.bind(this) },
+    },
   ];
 
-  constructor(
-    public dialog: MatDialog,
-    private data: DataService,
-    public snackBar: MatSnackBar
-  ) {
+  constructor(private data: DataService, public snackBar: MatSnackBar) {}
+
+  ngOnInit() {
     this.getUser();
     this.getPhones();
     this.getBranches();
@@ -87,7 +101,6 @@ export class AfterSalesComponent {
         this.isFetching = false;
         if (res.statusCode == 0) {
           const role = this.user.roleModel.roleName;
-          // this.dataSource.data = res.data;
           if (role.toLowerCase().includes('director')) {
             this.dataSource = res.data;
           } else if (
@@ -125,10 +138,6 @@ export class AfterSalesComponent {
       !role.toLowerCase().includes('director') &&
       !role.toLowerCase().includes('admin')
     ) {
-      // this.displayedColumns = this.displayedColumns.filter(
-      //   (column: string) =>
-      //     !column.includes('price') && !column.includes('action')
-      // );
       this.colDefs = this.colDefs.filter(
         (column: any) =>
           !column.headerName.toLowerCase().includes('currency') &&
@@ -153,9 +162,9 @@ export class AfterSalesComponent {
 
   updateStatus(phone: any) {
     const confirmed = confirm(
-      `Are you sure you want to update default to ${
-        phone.stockDefaulted == 'N' ? 'YES' : 'NO'
-      }?`
+      `Are you sure you want to update ${
+        phone.stockCustomerName.split(' ')[0]
+      }'s default status to ${phone.stockDefaulted == 'N' ? 'YES' : 'NO'}?`
     );
     if (!confirmed) return;
 
@@ -170,6 +179,7 @@ export class AfterSalesComponent {
         this.isFetching = false;
         if (res.statusCode == 0) {
           this.getPhones();
+          this.openSnackBar('Default status updated successfully.', 'Close');
         } else {
           this.openSnackBar(res.message, 'Close');
         }
