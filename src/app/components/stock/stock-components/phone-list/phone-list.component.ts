@@ -65,10 +65,13 @@ export class PhoneListComponent {
     { headerName: 'Model', field: 'stockMemory', filter: true },
     {
       headerName: 'Branch',
-      field: 'stockBranchCode',
-      filter: true,
-      cellRenderer: (params: any) =>
-        `${this.getBranch(params.data.stockBranchCode)}, ${this.getCountry(params.data.stockCountryCode)}`,
+      field: 'stockBranchName',
+      filter: true
+    },
+    {
+      headerName: 'Country',
+      field: 'stockCountryName',
+      filter: true
     },
     {
       headerName: 'Status',
@@ -166,7 +169,7 @@ export class PhoneListComponent {
                 phone.stockBranchCode == this.user.userBrnCode
             );
           }
-          this.rowData = this.dataSource
+          this.rowData = this.dataSource;
         } else {
         }
       },
