@@ -66,23 +66,23 @@ export class PhoneListComponent {
     {
       headerName: 'Branch',
       field: 'stockBranchName',
-      filter: true
+      filter: true,
     },
     {
       headerName: 'Country',
       field: 'stockCountryName',
-      filter: true
+      filter: true,
     },
     {
       headerName: 'Status',
-      field: 'stockMemory',
+      field: 'stockStatusName',
       cellRenderer: (params: any) =>
-        params.data.stockStatusEntity.statusName.toUpperCase(),
+        params.value.toUpperCase(),
     },
     {
       headerName: 'Date',
       field: 'stockCreatedOn',
-      filter: true,
+      // filter: true,
       cellRenderer: (params: any) => this.transformDate(params.value),
     },
     {
@@ -137,7 +137,7 @@ export class PhoneListComponent {
           const role = this.user.roleModel.roleName;
           if (role.toLowerCase().includes('director')) {
             this.dataSource = res.data.filter((phone: any) =>
-              phone.stockStatusEntity.statusName
+              phone.stockStatusName
                 .toLowerCase()
                 .includes('available')
             );
@@ -147,7 +147,7 @@ export class PhoneListComponent {
           ) {
             this.dataSource = res.data.filter(
               (phone: any) =>
-                phone.stockStatusEntity.statusName
+                phone.stockStatusName
                   .toLowerCase()
                   .includes('available') &&
                 phone.stockCountryCode == this.user.userCountryCode
@@ -155,7 +155,7 @@ export class PhoneListComponent {
           } else if (role.toLowerCase().includes('region')) {
             this.dataSource = res.data.filter(
               (phone: any) =>
-                phone.stockStatusEntity.statusName
+                phone.stockStatusName
                   .toLowerCase()
                   .includes('available') &&
                 phone.stockRegionCode == this.user.userRegionCode
@@ -163,7 +163,7 @@ export class PhoneListComponent {
           } else {
             this.dataSource = res.data.filter(
               (phone: any) =>
-                phone.stockStatusEntity.statusName
+                phone.stockStatusName
                   .toLowerCase()
                   .includes('available') &&
                 phone.stockBranchCode == this.user.userBrnCode
