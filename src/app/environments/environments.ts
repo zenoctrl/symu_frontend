@@ -6,7 +6,7 @@ export const ENVIRONMENT = {
       create: '/symu/user/createOrUpdateUser',
       update: '/symu/user/createOrUpdateUser',
       delete: '',
-      login: '/symu//user/login',
+      login: '/symu/user/login',
       logout: '/symu/user/logout',
       forgotPassword: '',
       resetPassword: '',
