@@ -63,6 +63,7 @@ export class PhoneListComponent {
   colDefs: ColDef[] = [
     { headerName: 'IMEI', field: 'stockImei', filter: true },
     { headerName: 'Model', field: 'stockMemory', filter: true },
+    { headerName: 'Batch', field: 'stockBatchNumber', filter: true },
     {
       headerName: 'Branch',
       field: 'stockBranchName',
@@ -76,14 +77,13 @@ export class PhoneListComponent {
     {
       headerName: 'Status',
       field: 'stockStatusName',
-      cellRenderer: (params: any) =>
-        params.value.toUpperCase(),
+      cellRenderer: (params: any) => params.value.toUpperCase(),
     },
     {
       headerName: 'Date',
       field: 'stockCreatedOn',
-      // filter: true,
-      cellRenderer: (params: any) => this.transformDate(params.value),
+      filter: true,
+      cellRenderer: (params: any) => params.value.split(' ')[0],
     },
     {
       headerName: 'Actions',
@@ -137,9 +137,7 @@ export class PhoneListComponent {
           const role = this.user.roleModel.roleName;
           if (role.toLowerCase().includes('director')) {
             this.dataSource = res.data.filter((phone: any) =>
-              phone.stockStatusName
-                .toLowerCase()
-                .includes('available')
+              phone.stockStatusName.toLowerCase().includes('available')
             );
           } else if (
             role.toLowerCase().includes('admin') ||
@@ -147,25 +145,19 @@ export class PhoneListComponent {
           ) {
             this.dataSource = res.data.filter(
               (phone: any) =>
-                phone.stockStatusName
-                  .toLowerCase()
-                  .includes('available') &&
+                phone.stockStatusName.toLowerCase().includes('available') &&
                 phone.stockCountryCode == this.user.userCountryCode
             );
           } else if (role.toLowerCase().includes('region')) {
             this.dataSource = res.data.filter(
               (phone: any) =>
-                phone.stockStatusName
-                  .toLowerCase()
-                  .includes('available') &&
+                phone.stockStatusName.toLowerCase().includes('available') &&
                 phone.stockRegionCode == this.user.userRegionCode
             );
           } else {
             this.dataSource = res.data.filter(
               (phone: any) =>
-                phone.stockStatusName
-                  .toLowerCase()
-                  .includes('available') &&
+                phone.stockStatusName.toLowerCase().includes('available') &&
                 phone.stockBranchCode == this.user.userBrnCode
             );
           }
