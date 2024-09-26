@@ -367,7 +367,7 @@ export class PhoneModalComponent {
       this.data.phone.stockCountryCode = this.user.userCountryCode;
       this.data.phone.stockBaseCurrency =
         this.user.countryEntity.countryCurrencyCode;
-      // this.selectCountry();
+      this.selectCountry();
       if (role.toLowerCase().includes('regional')) {
         this.data.phone.stockRegionCode = this.user.userRegionCode;
         this.getBranches();
