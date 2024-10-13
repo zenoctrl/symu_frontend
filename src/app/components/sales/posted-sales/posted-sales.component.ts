@@ -26,6 +26,7 @@ export class PostedSalesComponent {
     'model',
     'price',
     'status',
+    'branch',
     'action',
   ];
   dataSource = new MatTableDataSource<any[]>();
@@ -64,9 +65,7 @@ export class PostedSalesComponent {
           const role = this.user.roleModel.roleName;
           if (role.toLowerCase().includes('director')) {
             this.dataSource.data = res.data.filter((phone: any) =>
-              phone.stockStatusName
-                .toLowerCase()
-                .includes('posted')
+              phone.stockStatusName.toLowerCase().includes('posted')
             );
           } else if (
             role.toLowerCase().includes('admin') ||
@@ -74,25 +73,19 @@ export class PostedSalesComponent {
           ) {
             this.dataSource.data = res.data.filter(
               (phone: any) =>
-                phone.stockStatusName
-                  .toLowerCase()
-                  .includes('posted') &&
+                phone.stockStatusName.toLowerCase().includes('posted') &&
                 phone.stockCountryCode == this.user.userCountryCode
             );
           } else if (role.toLowerCase().includes('region')) {
             this.dataSource.data = res.data.filter(
               (phone: any) =>
-                phone.stockStatusName
-                  .toLowerCase()
-                  .includes('posted') &&
+                phone.stockStatusName.toLowerCase().includes('posted') &&
                 phone.stockRegionCode == this.user.userRegionCode
             );
           } else {
             this.dataSource.data = res.data.filter(
               (phone: any) =>
-                phone.stockStatusName
-                  .toLowerCase()
-                  .includes('posted') &&
+                phone.stockStatusName.toLowerCase().includes('posted') &&
                 phone.stockBranchCode == this.user.userBrnCode
             );
           }

@@ -50,11 +50,10 @@ export class AfterSalesComponent {
   colDefs: ColDef[] = [
     { headerName: 'IMEI', field: 'stockImei', filter: true },
     { headerName: 'Model', field: 'stockModelName', filter: true },
+    { headerName: 'Currency', field: 'stockCurrencyCode' },
     {
       headerName: 'Price',
-      field: 'stockBranchCode',
-      cellRenderer: (params: any) =>
-        `${params.data.stockCurrencyCode} ${params.data.stockSellingPrice}`,
+      field: 'stockSellingPrice',
     },
     { headerName: 'Customer Name', field: 'stockCustomerName', filter: true },
     {
@@ -69,11 +68,18 @@ export class AfterSalesComponent {
       field: 'stockCustomerNationalId',
       filter: true,
     },
+    {
+      headerName: 'Date Sold',
+      field: 'stockCreatedOn',
+      filter: true,
+      cellRenderer: (params: any) =>
+        params.value ? params.value.split(' ')[0] : null,
+    },
     { headerName: 'Dealership', field: 'stockDealerShipName', filter: true },
     { headerName: 'Branch', field: 'stockBranchName', filter: true },
     { headerName: 'Agent', field: 'stockAgentName', filter: true },
     {
-      headerName: 'Status',
+      headerName: 'Default Status',
       field: 'stockDefaulted',
       filter: true,
       cellRenderer: (params: any) => (params.value == 'Y' ? 'YES' : 'NO'),
@@ -192,7 +198,23 @@ export class AfterSalesComponent {
   }
 
   onBtnExport() {
-    this.gridApi.exportDataAsCsv();
+    const params = {
+      columnKeys: [
+        'stockImei',
+        'stockModelName',
+        'stockCurrencyCode',
+        'stockSellingPrice',
+        'stockCustomerName',
+        'stockCustomerPhone',
+        'stockCustomerNationalId',
+        'stockCreatedOn',
+        'stockDealerShipName',
+        'stockBranchName',
+        'stockAgentName',
+        'stockDefaulted',
+      ],
+    };
+    this.gridApi.exportDataAsCsv(params);
   }
 
   onGridReady(params: GridReadyEvent) {

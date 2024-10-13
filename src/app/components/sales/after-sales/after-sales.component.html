@@ -9,7 +9,7 @@
           user.roleModel.roleName.toLowerCase().includes('admin'))
       "
     >
-      <a id="add-btn" (click)="export(rowData)">Export Data</a>
+       <a id="add-btn" (click)="onBtnExport()">Export Data</a>
     </div>
     <br />
     <mat-progress-bar *ngIf="isFetching" mode="indeterminate"></mat-progress-bar>
@@ -20,6 +20,7 @@
       [columnDefs]="colDefs"
       [pagination]="true"
       [paginationPageSize]="20"
+      (gridReady)="onGridReady($event)"
     />
   </mat-card-content>
 </mat-card>
