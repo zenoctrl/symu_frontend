@@ -70,7 +70,7 @@ export class AfterSalesComponent {
     },
     {
       headerName: 'Date Sold',
-      field: 'stockCreatedOn',
+      field: 'stockUpdatedOn',
       filter: true,
       cellRenderer: (params: any) =>
         params.value ? params.value.split(' ')[0] : null,
