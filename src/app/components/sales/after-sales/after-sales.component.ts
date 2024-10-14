@@ -207,7 +207,7 @@ export class AfterSalesComponent {
         'stockCustomerName',
         'stockCustomerPhone',
         'stockCustomerNationalId',
-        'stockCreatedOn',
+        'stockUpdatedOn',
         'stockDealerShipName',
         'stockBranchName',
         'stockAgentName',
