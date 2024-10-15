@@ -269,4 +269,22 @@ export class PhoneListComponent {
       (b: any) => b.code == id
     ).countryName;
   }
+
+  onBtnExport() {
+    const params = {
+      columnKeys: [
+        'stockImei',
+        'stockMemory',
+        'stockBatchNumber',
+        'stockBranchName',
+        'stockCountryName',
+        'stockCreatedOn',
+      ],
+    };
+    this.gridApi.exportDataAsCsv(params);
+  }
+
+  onGridReady(params: GridReadyEvent) {
+    this.gridApi = params.api;
+  }
 }
