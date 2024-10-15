@@ -278,7 +278,8 @@ export class PhoneListComponent {
         'stockBatchNumber',
         'stockBranchName',
         'stockCountryName',
-        'stockCreatedOn',
+        'stockStatusName',
+        'stockCreatedOn'
       ],
     };
     this.gridApi.exportDataAsCsv(params);
