@@ -129,35 +129,30 @@ export class PhoneListComponent {
 
   getPhones() {
     this.isFetching = true;
-    const endpoint: string = `${ENVIRONMENT.endpoints.stock.phone.getAll}?companyCode=${this.user.userCompanyCode}`;
+    const endpoint: string = `${ENVIRONMENT.endpoints.stock.phone.getAll}?companyCode=${this.user.userCompanyCode}&statusShortDesc=AVAILABLE`;
     this.data.get(ENVIRONMENT.baseUrl + endpoint).subscribe(
       (res: any) => {
         this.isFetching = false;
         if (res.statusCode == 0) {
           const role = this.user.roleModel.roleName;
           if (role.toLowerCase().includes('director')) {
-            this.dataSource = res.data.filter((phone: any) =>
-              phone.stockStatusName.toLowerCase().includes('available')
-            );
+            this.dataSource = res.data;
           } else if (
             role.toLowerCase().includes('admin') ||
             role.toLowerCase() == 'sales manager'
           ) {
             this.dataSource = res.data.filter(
               (phone: any) =>
-                phone.stockStatusName.toLowerCase().includes('available') &&
                 phone.stockCountryCode == this.user.userCountryCode
             );
           } else if (role.toLowerCase().includes('region')) {
             this.dataSource = res.data.filter(
               (phone: any) =>
-                phone.stockStatusName.toLowerCase().includes('available') &&
                 phone.stockRegionCode == this.user.userRegionCode
             );
           } else {
             this.dataSource = res.data.filter(
               (phone: any) =>
-                phone.stockStatusName.toLowerCase().includes('available') &&
                 phone.stockBranchCode == this.user.userBrnCode
             );
           }
