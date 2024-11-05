@@ -35,6 +35,8 @@ export class PostedSalesComponent {
   dealerships: any[] = [];
   stockStatuses!: StockStatus[];
   countries: Country[] = [];
+  page: number = 0; size: number = 100;
+  RETRY_COUNT: number = 3;
 
   @ViewChild('paginator') paginator!: MatPaginator;
   @Output() completeEvent = new EventEmitter<any>();
@@ -57,40 +59,60 @@ export class PostedSalesComponent {
 
   getPhones() {
     this.isFetching = true;
-    const endpoint: string = `${ENVIRONMENT.endpoints.stock.phone.getAll}?companyCode=${this.user.userCompanyCode}&statusShortDesc=POSTED`;
+    const endpoint: string = `${ENVIRONMENT.endpoints.stock.phone.getAll}?companyCode=${this.user.userCompanyCode}&statusShortDesc=POSTED&page=${this.page}&size=${this.size}`;
     this.data.get(ENVIRONMENT.baseUrl + endpoint).subscribe(
       (res: any) => {
         this.isFetching = false;
+        this.dataSource.paginator = this.paginator;
         if (res.statusCode == 0) {
           const role = this.user.roleModel.roleName;
           if (role.toLowerCase().includes('director')) {
-            this.dataSource.data = res.data;
+            this.dataSource.data = this.dataSource.data.concat(res.data.content);
           } else if (
             role.toLowerCase().includes('admin') ||
             role.toLowerCase() == 'sales manager'
           ) {
-            this.dataSource.data = res.data.filter(
+            this.dataSource.data = this.dataSource.data.concat(res.data.content.filter(
               (phone: any) =>
                 phone.stockCountryCode == this.user.userCountryCode
-            );
+            ));
           } else if (role.toLowerCase().includes('region')) {
-            this.dataSource.data = res.data.filter(
+            this.dataSource.data = this.dataSource.data.concat(res.data.content.filter(
               (phone: any) =>
                 phone.stockRegionCode == this.user.userRegionCode
-            );
+            ));
           } else {
-            this.dataSource.data = res.data.filter(
+            this.dataSource.data = this.dataSource.data.concat(res.data.content.filter(
               (phone: any) =>
                 phone.stockBranchCode == this.user.userBrnCode
-            );
+            ));
           }
-          this.dataSource.paginator = this.paginator;
+          
+          // fetch some more if page is not last
+          if (!res.data.last) {
+            this.page++;
+            this.getPhones();
+          } 
         } else {
-          this.getPhones();
+          if (this.RETRY_COUNT > 0) {
+            setTimeout(() => {
+              this.getPhones();
+              this.RETRY_COUNT--;
+            }, 3000);
+          } else {
+            this.openSnackBar('Failed to fetch resources. Please refresh page.', 'Close');
+          }
         }
       },
       (error: any) => {
-        this.getPhones();
+        if (this.RETRY_COUNT > 0) {
+          setTimeout(() => {
+            this.getPhones();
+            this.RETRY_COUNT--;
+          }, 3000);
+        } else {
+          this.openSnackBar('Failed to fetch resources. Please refresh page.', 'Close');
+        }
       }
     );
   }

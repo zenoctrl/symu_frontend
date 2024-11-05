@@ -10,8 +10,6 @@ import { DataService } from 'src/app/services/data.service';
 import { ENVIRONMENT } from 'src/app/environments/environments';
 import { StockStatus } from '../stock-status/stock-status.component';
 import { Country } from 'src/app/components/setups/setups-components/countries/countries.component';
-import { MatTableDataSource } from '@angular/material/table';
-import { MatPaginator } from '@angular/material/paginator';
 import { AgGridAngular } from 'ag-grid-angular';
 import {
   ColDef,
@@ -56,10 +54,11 @@ export class PhoneListComponent {
   isFetching!: boolean;
   dealerships: any[] = [];
   countries: Country[] = [];
+  page: number = 0; size: number = 100;
+  RETRY_COUNT: number = 3;
 
   rowData = [];
   gridApi!: GridApi;
-
   colDefs: ColDef[] = [
     { headerName: 'IMEI', field: 'stockImei', filter: true },
     { headerName: 'Model', field: 'stockMemory', filter: true },
@@ -94,8 +93,6 @@ export class PhoneListComponent {
     },
   ];
 
-  @ViewChild('paginator') paginator!: MatPaginator;
-
   constructor(
     public dialog: MatDialog,
     private data: DataService,
@@ -108,10 +105,6 @@ export class PhoneListComponent {
     this.getAllStockStatus();
     this.getDealerships();
     this.getCountries();
-  }
-
-  ngAfterViewInit(): void {
-    // this.dataSource.paginator = this.paginator;
   }
 
   addPhone() {
@@ -129,38 +122,62 @@ export class PhoneListComponent {
 
   getPhones() {
     this.isFetching = true;
-    const endpoint: string = `${ENVIRONMENT.endpoints.stock.phone.getAll}?companyCode=${this.user.userCompanyCode}&statusShortDesc=AVAILABLE`;
+    const endpoint: string = `${ENVIRONMENT.endpoints.stock.phone.getAll}?companyCode=${this.user.userCompanyCode}&statusShortDesc=AVAILABLE&page=${this.page}&size=${this.size}`;
     this.data.get(ENVIRONMENT.baseUrl + endpoint).subscribe(
       (res: any) => {
         this.isFetching = false;
         if (res.statusCode == 0) {
           const role = this.user.roleModel.roleName;
           if (role.toLowerCase().includes('director')) {
-            this.dataSource = res.data;
+            this.dataSource = this.dataSource.concat(res.data.content);
           } else if (
             role.toLowerCase().includes('admin') ||
             role.toLowerCase() == 'sales manager'
           ) {
-            this.dataSource = res.data.filter(
+            this.dataSource = this.dataSource.concat(res.data.content.filter(
               (phone: any) =>
                 phone.stockCountryCode == this.user.userCountryCode
-            );
+            ));
           } else if (role.toLowerCase().includes('region')) {
-            this.dataSource = res.data.filter(
+            this.dataSource = this.dataSource.concat(res.data.content.filter(
               (phone: any) =>
                 phone.stockRegionCode == this.user.userRegionCode
-            );
+            ));
           } else {
-            this.dataSource = res.data.filter(
+            this.dataSource = this.dataSource.concat(res.data.content.filter(
               (phone: any) =>
                 phone.stockBranchCode == this.user.userBrnCode
-            );
+            ));
           }
           this.rowData = this.dataSource;
+
+          // fetch some more if page is not last
+          if (!res.data.last) {
+            this.page++;
+            this.getPhones();
+          } 
+
         } else {
+          if (this.RETRY_COUNT > 0) {
+            setTimeout(() => {
+              this.getPhones();
+              this.RETRY_COUNT--;
+            }, 3000);
+          } else {
+            this.openSnackBar('Failed to fetch resources. Please refresh page.', 'Close');
+          }
         }
       },
-      (error: any) => {}
+      (error: any) => {
+        if (this.RETRY_COUNT > 0) {
+          setTimeout(() => {
+            this.getPhones();
+            this.RETRY_COUNT--;
+          }, 3000);
+        } else {
+          this.openSnackBar('Failed to fetch resources. Please refresh page.', 'Close');
+        }
+      }
     );
   }
 

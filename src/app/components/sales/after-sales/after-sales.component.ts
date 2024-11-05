@@ -44,9 +44,11 @@ export class AfterSalesComponent {
   dealerships: any[] = [];
   stockStatuses!: StockStatus[];
   branches: Branch[] = [];
+  page: number = 0; size: number = 100;
+  RETRY_COUNT: number = 3;
+
   rowData = [];
   gridApi!: GridApi;
-
   colDefs: ColDef[] = [
     { headerName: 'IMEI', field: 'stockImei', filter: true },
     { headerName: 'Model', field: 'stockModelName', filter: true },
@@ -101,38 +103,60 @@ export class AfterSalesComponent {
 
   getPhones() {
     this.isFetching = true;
-    const endpoint: string = `${ENVIRONMENT.endpoints.stock.phone.getAllStockDetails}?companyCode=${this.user.userCompanyCode}`;
+    const endpoint: string = `${ENVIRONMENT.endpoints.stock.phone.getAllStockDetails}?companyCode=${this.user.userCompanyCode}&page=${this.page}&size=${this.size}`;
     this.data.get(ENVIRONMENT.baseUrl + endpoint).subscribe(
       (res: any) => {
         this.isFetching = false;
         if (res.statusCode == 0) {
           const role = this.user.roleModel.roleName;
           if (role.toLowerCase().includes('director')) {
-            this.dataSource = res.data;
+            this.dataSource = this.dataSource.concat(res.data.content);
           } else if (
             role.toLowerCase().includes('admin') ||
             role.toLowerCase() == 'sales manager'
           ) {
-            this.dataSource = res.data.filter(
+            this.dataSource = this.dataSource.concat(res.data.content.filter(
               (phone: any) =>
                 phone.stockCountryCode == this.user.userCountryCode
-            );
+            ));
           } else if (role.toLowerCase().includes('region')) {
-            this.dataSource = res.data.filter(
+            this.dataSource = this.dataSource.concat(res.data.content.filter(
               (phone: any) => phone.stockRegionCode == this.user.userRegionCode
-            );
+            ));
           } else {
-            this.dataSource = res.data.filter(
+            this.dataSource = this.dataSource.concat(res.data.content.filter(
               (phone: any) => phone.stockBranchCode == this.user.userBrnCode
-            );
+            ));
           }
           this.rowData = this.dataSource;
+
+          // fetch some more if page is not last
+          if (!res.data.last) {
+            this.page++;
+            this.getPhones();
+          }
         } else {
-          this.getPhones();
+
+          if (this.RETRY_COUNT > 0) {
+            setTimeout(() => {
+              this.getPhones();
+              this.RETRY_COUNT--;
+            }, 3000);
+          } else {
+            this.openSnackBar('Failed to fetch resources. Please refresh page.', 'Close');
+          }
+          
         }
       },
       (error: any) => {
-        this.getPhones();
+        if (this.RETRY_COUNT > 0) {
+          setTimeout(() => {
+            this.getPhones();
+            this.RETRY_COUNT--;
+          }, 3000);
+        } else {
+          this.openSnackBar('Failed to fetch resources. Please refresh page.', 'Close');
+        }
       }
     );
   }

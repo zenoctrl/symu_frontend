@@ -1,10 +1,8 @@
 <mat-card class="w-100">
-  <mat-card-content>
-    <mat-progress-bar *ngIf="isFetching" mode="indeterminate"></mat-progress-bar><br />
+  <mat-card-content><br>
     <div
       class="d-flex justify-content-end"
       *ngIf="
-        !isFetching &&
         (user.roleModel.roleName.toLowerCase().includes('director') ||
           user.roleModel.roleName.toLowerCase().includes('admin'))
       "
@@ -15,11 +13,12 @@
     <mat-progress-bar *ngIf="isFetching" mode="indeterminate"></mat-progress-bar>
     <ag-grid-angular
       class="ag-theme-quartz"
-      style="height: 650px"
       [rowData]="rowData"
       [columnDefs]="colDefs"
       [pagination]="true"
-      [paginationPageSize]="20"
+      [paginationPageSize]="10"
+      [paginationPageSizeSelector]="[10,20,50,100]"
+      [gridOptions]="{domLayout: 'autoHeight'}"
       (gridReady)="onGridReady($event)"
     />
   </mat-card-content>
