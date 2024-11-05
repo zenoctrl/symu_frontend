@@ -52,9 +52,14 @@ export class FullComponent {
       menu: 'Admin',
     },
     {
-      link: '/stock',
+      link: '/models',
+      icon: 'smartphone',
+      menu: 'Models',
+    },
+    {
+      link: '/batches',
       icon: 'table',
-      menu: 'Stock',
+      menu: 'Batches',
     },
     {
       link: '/sales',

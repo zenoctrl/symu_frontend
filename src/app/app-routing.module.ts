@@ -24,6 +24,8 @@ import { UsersComponent } from './components/users/users.component';
 import { StockComponent } from './components/stock/stock.component';
 import { SetupsComponent } from './components/setups/setups.component';
 import { SalesComponent } from './components/sales/sales.component';
+import { PhoneModelsComponent } from './components/stock/stock-components/phone-models/phone-models.component';
+import { StockBatchComponent } from './components/stock/stock-components/stock-batch/stock-batch.component';
 
 const routes: Routes = [
   {
@@ -32,9 +34,11 @@ const routes: Routes = [
     children: [
       { path: '', redirectTo: '/login', pathMatch: 'full' },
       // {path:"home", component:DashboardComponent},
-      { path: 'stock', component: StockComponent, canActivate: [AuthGuard] },
+      // { path: 'stock', component: StockComponent, canActivate: [AuthGuard] },
       { path: 'admin', component: SetupsComponent, canActivate: [AuthGuard] },
       { path: 'sales', component: SalesComponent, canActivate: [AuthGuard] },
+      { path: 'models', component: PhoneModelsComponent, canActivate: [AuthGuard] },
+      { path: 'batches', component: StockBatchComponent, canActivate: [AuthGuard] }
     ],
   },
 
