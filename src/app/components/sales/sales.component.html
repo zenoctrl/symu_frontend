@@ -1,4 +1,7 @@
 <mat-tab-group>
+  <mat-tab label="Available Stock">
+    <app-phone-list></app-phone-list>
+  </mat-tab>
   <mat-tab label="Posted Sales">
     <app-posted-sales (completeEvent)="handleCompleteEvent()"></app-posted-sales>
   </mat-tab>
