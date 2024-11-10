@@ -26,7 +26,7 @@ export class LoginComponent {
         this.loading = false;
         if (res.statusCode == 0) {
           sessionStorage.setItem('user', JSON.stringify(res.data));
-          this.route.navigate(['/stock']);
+          this.route.navigate(['/sales']);
         } else {
           this.errorMessage = res.message;
         }
