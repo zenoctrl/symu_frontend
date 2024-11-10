@@ -36,11 +36,6 @@ export class PhoneModalComponent {
   ) {}
 
   ngOnInit() {
-    // if (this.data.phone.stockImei === undefined) {
-    //   this.scanning = true;
-    // } else {
-    //   this.scanning = false;
-    // }
     this.getUser();
 
     if (this.data.title === 'Edit Phone' || this.data.title === 'Post Sale') {
@@ -320,12 +315,12 @@ export class PhoneModalComponent {
       sessionStorage.getItem('stock-batches') || '[]'
     ).filter(
       (batch: StockBatch) =>
-        batch.stockModelCode == this.data.phone.stockModelCode
+        batch.stockModelCode == this.data.phone.stockModelCode && batch.batchStatus == 'AVAILABLE'
     );
     if (this.batches.length > 0) {
       this.errorMessage = '';
     } else {
-      this.errorMessage = "Selected model has no batch number.";
+      this.errorMessage = "Model has no available batch.";
     }
     
   }

@@ -12,11 +12,7 @@
           </div>
         </div>
 
-        <div id="view">
-            <!-- <zxing-scanner [formats]="['CODE_128']" (scanSuccess)="scanSuccessHandler($event)"></zxing-scanner> -->
-        </div>
-
-        <div class="mt-20" *ngIf="!successMessage && !scanning">            
+        <div class="mt-20" *ngIf="!successMessage">            
 
             <div *ngIf="data.title == 'Add Phone' || data.title == 'Edit Phone'">
 
