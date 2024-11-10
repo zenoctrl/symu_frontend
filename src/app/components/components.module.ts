@@ -46,6 +46,8 @@ import { DealershipsComponent } from './setups/setups-components/dealerships/dea
 import { DealershipModalComponent } from './setups/setups-components/dealerships/dealership-modal/dealership-modal.component';
 import { AfterSaleActionsComponent } from './sales/after-sales/after-sale-actions/after-sale-actions.component';
 import { StockActionsComponent } from './stock/stock-components/phone-list/stock-actions/stock-actions.component';
+import { CaptureInventoryComponent } from './stock/stock-components/capture-inventory/capture-inventory.component';
+import { InventoryModalComponent } from './stock/stock-components/capture-inventory/inventory-modal/inventory-modal.component';
 
 @NgModule({
   imports: [
@@ -115,6 +117,8 @@ import { StockActionsComponent } from './stock/stock-components/phone-list/stock
     DealershipModalComponent,
     AfterSaleActionsComponent,
     StockActionsComponent,
+    CaptureInventoryComponent,
+    InventoryModalComponent,
   ],
 })
 export class ComponentsModule {}

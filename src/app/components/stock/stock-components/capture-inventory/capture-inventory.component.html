@@ -1,0 +1,69 @@
+<mat-card class="w-100">
+    <mat-card-content><br>
+        <div class="d-flex justify-content-end">
+            <a id="add-btn" (click)="addPhone()">+ Add Stock</a>
+            <a id="add-btn" *ngIf="dataSource.data.length > 0" (click)="approveStock()">Approve Stock</a>
+        </div>
+
+        <br>
+        <mat-progress-bar *ngIf="loading" mode="indeterminate"></mat-progress-bar>
+        <div class="table-responsive">
+            <table mat-table [dataSource]="dataSource" class="text-nowrap w-100">
+      
+              <!-- Id Column -->
+              <ng-container matColumnDef="#">
+                <th mat-header-cell *matHeaderCellDef> <input type="checkbox" name="check-all-imei" id="check-all-imei" [checked]="checkAll" (change)="checkAllStock()"> All </th>
+                <td mat-cell class="fw-medium" *matCellDef="let stock">
+                    <input type="checkbox" [name]="stock.code" id="" class="check-imei" (change)="checkAStock($event)">
+                </td>
+              </ng-container>
+      
+              <!-- IMEI Column -->
+              <ng-container matColumnDef="imei">
+                <th mat-header-cell *matHeaderCellDef> IMEI </th>
+                <td mat-cell *matCellDef="let stock">
+                  <p class="mb-0 fw-medium">{{ stock.stockImei}}</p>
+                </td>
+              </ng-container>
+
+              <!-- Model Column -->
+              <ng-container matColumnDef="model">
+                <th mat-header-cell *matHeaderCellDef> Model </th>
+                <td mat-cell *matCellDef="let stock">
+                  <p class="mb-0 fw-medium">{{ stock.stockMemory}}</p>
+                </td>
+              </ng-container>
+
+              <!-- Batch Column -->
+              <ng-container matColumnDef="batch">
+                <th mat-header-cell *matHeaderCellDef> Batch </th>
+                <td mat-cell *matCellDef="let stock">
+                  <p class="mb-0 fw-medium">{{ stock.stockBatchNumber}}</p>
+                </td>
+              </ng-container>
+    
+              <!-- Branch Column -->
+              <ng-container matColumnDef="branch">  
+                <th mat-header-cell *matHeaderCellDef> Branch </th>
+                <td mat-cell *matCellDef="let stock">
+                  <p class="mb-0 fw-medium">{{ stock.stockBranchName }}</p>
+                </td>
+              </ng-container>
+
+              <!-- Country Column -->
+              <ng-container matColumnDef="country">  
+                <th mat-header-cell *matHeaderCellDef> Country </th>
+                <td mat-cell *matCellDef="let stock">
+                  <p class="mb-0 fw-medium">{{ stock.stockCountryName }}</p>
+                </td>
+              </ng-container>
+
+      
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+            <mat-paginator #paginator [pageSize]="10" [pageSizeOptions]="[10, 25]" showFirstLastButtons aria-label="Select page"></mat-paginator>
+          </div>
+
+    </mat-card-content>
+</mat-card>

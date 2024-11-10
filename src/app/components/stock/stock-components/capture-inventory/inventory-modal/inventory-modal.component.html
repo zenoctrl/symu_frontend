@@ -1,0 +1,84 @@
+<main>
+    <h1 mat-dialog-title>{{ data.title }}</h1>
+    <div id="form" mat-dialog-content>
+        <div class="mt-20" *ngIf="successMessage || errorMessage">
+          <div *ngIf="errorMessage" class="alert alert-danger alert-text-danger d-flex fs-14 align-items-center rounded mb-16" role="alert">
+            <i-feather name="alert-circle" class="text-danger feather-base me-12"></i-feather>
+            {{ errorMessage }}
+          </div>
+          <div *ngIf="successMessage" class="alert alert-success alert-text-success d-flex fs-14 align-items-center rounded mb-16" role="alert">
+            <i-feather name="alert-circle" class="text-success feather-base me-12"></i-feather>
+            {{ successMessage }}
+          </div>
+          <div *ngIf="SOME_FAILED_INSERT">
+            <p *ngFor="let reason of REASON_FOR_FAILURE">{{ reason }}</p>
+          </div>
+        </div>
+
+        <div class="mt-20" *ngIf="!successMessage">            
+
+            <div *ngIf="!VIEW_CAPTURED_IMEI">
+
+              <mat-form-field class="me-24 fs-16" appearance="outline">
+                  <mat-label>Branch</mat-label>
+                  <mat-select [(ngModel)]="data.stock.stockBranchCode" (selectionChange)="filterModels()">
+                    <mat-option *ngFor="let branch of branches" [value]="branch.code">
+                      {{ branch.name }}
+                    </mat-option>
+                  </mat-select>
+              </mat-form-field>
+
+              <mat-form-field class="me-24 fs-16" appearance="outline">
+                  <mat-label>Model</mat-label>
+                  <mat-select [(ngModel)]="data.stock.stockModelCode" (selectionChange)="filterBatches()">
+                    <mat-option *ngFor="let model of _models" [value]="model.code">
+                      {{ model.modelName }}
+                    </mat-option>
+                  </mat-select>
+              </mat-form-field>
+
+               <mat-form-field class="me-24 fs-16" appearance="outline">
+                <mat-label>Batch Number</mat-label>
+                <mat-select [(ngModel)]="data.stock.stockBatchCode">
+                    <mat-option *ngFor="let batch of _batches" [value]="batch.code">
+                      {{ batch.batchNo }}
+                    </mat-option>
+                  </mat-select>
+              </mat-form-field>
+
+              <mat-form-field class="me-24 fs-16" appearance="outline">
+                <mat-label>IMEI</mat-label>
+                <input  type="text" matInput [(ngModel)]="IMEI" maxlength="15" (keyup)="capture()">
+              </mat-form-field>
+
+              <p class="link" (click)="viewCapturedIMEI()">Scanned IMEI: <b>{{ CAPTURED_IMEI.length }}</b></p>
+
+            </div>
+
+            <div id="view" *ngIf="VIEW_CAPTURED_IMEI">
+              <div>
+                <p class="link" id="back" (click)="viewCapturedIMEI()"><img src="assets/images/left.png" alt=""> Back</p>
+                <p>#{{ CAPTURED_IMEI.length }}</p>
+              </div>
+
+              <mat-form-field class="me-24 fs-16" appearance="outline">
+                <mat-label>IMEI</mat-label>
+                <input  type="text" matInput [(ngModel)]="IMEI" maxlength="15" (keyup)="capture()">
+              </mat-form-field>
+              
+              <p *ngFor="let IMEI of CAPTURED_IMEI">{{ (CAPTURED_IMEI.indexOf(IMEI) + 1) + '. ' + IMEI}} </p>
+            </div>
+
+        </div>
+    </div>
+
+    <div mat-dialog-actions align="center" *ngIf="!successMessage && (data.title === 'Add Stock')">
+        <button id="cancel" mat-button (click)="onClose()">Cancel</button>
+        <button id="save" mat-button *ngIf="loading"><mat-progress-spinner mode="indeterminate" diameter="25"></mat-progress-spinner></button>
+        <button id="save" mat-button disabled *ngIf="!loading && (CAPTURED_IMEI.length < 1  || !data.stock.stockBranchCode || !data.stock.stockModelCode || !data.stock.stockBatchCode)">Save</button>
+        <button id="save" mat-button *ngIf="!loading && ((CAPTURED_IMEI.length > 0 && data.stock.stockBranchCode  && data.stock.stockModelCode && data.stock.stockBatchCode))" (click)="save()" cdkFocusInitial>Save</button>
+    </div>
+    <div mat-dialog-actions align="center" *ngIf="successMessage">
+      <button id="cancel" mat-button (click)="onClose('success')">Close</button>
+    </div>
+</main>
