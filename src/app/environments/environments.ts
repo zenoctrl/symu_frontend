@@ -76,6 +76,10 @@ export const ENVIRONMENT = {
         updateDefaultStatus: '/symu/stock/updateDefaultStatus',
       },
       queryReceipt: '/symu/receipt/getAllByReceiptStockCode',
+      bulk : {
+        create: '/symu/stock/createStockBulk',
+        approve: '/symu/stock/stockApproval'
+      }
     },
     dealership: {
       getAll: '/symu/dealership/getAllByCompanyCode',
