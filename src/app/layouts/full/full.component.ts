@@ -48,7 +48,7 @@ export class FullComponent {
     // },
     {
       link: '/admin',
-      icon: 'list',
+      icon: 'settings',
       menu: 'Admin',
     },
     {
@@ -58,14 +58,19 @@ export class FullComponent {
     },
     {
       link: '/batches',
-      icon: 'table',
+      icon: 'box',
       menu: 'Batches',
+    },
+    {
+      link: '/stock',
+      icon: 'table',
+      menu: 'Stock',
     },
     {
       link: '/sales',
       icon: 'layers',
       menu: 'Sales',
-    }
+    },
   ];
 
   getUser() {
