@@ -1,4 +1,4 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA, ViewChild } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, Output, ViewChild, EventEmitter } from '@angular/core';
 import {
   MatDialog,
   MAT_DIALOG_DATA,
@@ -92,6 +92,8 @@ export class PhoneListComponent {
       },
     },
   ];
+
+  @Output() postEvent = new EventEmitter();
 
   constructor(
     public dialog: MatDialog,
@@ -196,8 +198,13 @@ export class PhoneListComponent {
 
     dialogRef.afterClosed().subscribe((res) => {
       if (res) {
+        this.dataSource = [];
         this.getPhones();
+        if (res == 'posted') {
+          this.postEvent.emit();
+        }
       }
+      
     });
   }
 

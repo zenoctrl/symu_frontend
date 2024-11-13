@@ -180,7 +180,7 @@
     </div>
 
     <div mat-dialog-actions align="center" *ngIf="data.title === 'Receipt'">
-      <button id="cancel" mat-button (click)="onClose('close')">Close</button>
+      <button id="cancel" mat-button (click)="onClose('posted')">Close</button>
     </div>
     <div mat-dialog-actions align="center" *ngIf="!successMessage && (data.title === 'Add Phone' || data.title === 'Edit Phone')">
         <button id="cancel" mat-button (click)="onClose()">Cancel</button>

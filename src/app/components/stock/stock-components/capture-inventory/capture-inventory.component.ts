@@ -220,5 +220,10 @@ export class CaptureInventoryComponent {
 
   }
 
+  search(event: Event) {
+    const text = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = text.trim().toLowerCase();
+  }
+
 
 }

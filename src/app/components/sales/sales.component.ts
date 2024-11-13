@@ -1,5 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import { AfterSalesComponent } from './after-sales/after-sales.component';
+import { PostedSalesComponent } from './posted-sales/posted-sales.component';
 
 @Component({
   selector: 'app-sales',
@@ -7,10 +8,14 @@ import { AfterSalesComponent } from './after-sales/after-sales.component';
   styleUrls: ['./sales.component.scss'],
 })
 export class SalesComponent {
-  @ViewChild(AfterSalesComponent) afterSaleComponent!: AfterSalesComponent;
+  @ViewChild(AfterSalesComponent) afterSalesComponent!: AfterSalesComponent;
+  @ViewChild(PostedSalesComponent) postedSalesComponent!: PostedSalesComponent;
 
   handleCompleteEvent() {
-    console.log('sale completed');
-    this.afterSaleComponent.getPhones();
+    this.afterSalesComponent.getPhones();
+  }
+
+  handlePostEvent() {
+    this.postedSalesComponent.getPhones();
   }
 }

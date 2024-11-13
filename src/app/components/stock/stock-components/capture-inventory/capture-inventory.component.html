@@ -1,6 +1,7 @@
 <mat-card class="w-100">
     <mat-card-content><br>
         <div class="d-flex justify-content-end">
+            <input type="text" name="" id="search" placeholder="Seach ..." (keyup)="search($event)">
             <a id="add-btn" (click)="addPhone()">+ Add Stock</a>
             <a id="add-btn" *ngIf="dataSource.data.length > 0" (click)="approveStock()">Approve Stock</a>
         </div>

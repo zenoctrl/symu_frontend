@@ -146,6 +146,7 @@ export class PostedSalesComponent {
     dialogRef.afterClosed().subscribe((res) => {
       if (res) {
         this.completeEvent.emit();
+        this.dataSource.data = [];
         this.getPhones();
       }
     });

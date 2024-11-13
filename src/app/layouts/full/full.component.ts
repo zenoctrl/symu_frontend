@@ -92,6 +92,14 @@ export class FullComponent {
     if (sessionStorage.getItem('branches') == null) {
       this.getBranches();
     }
+
+    if (sessionStorage.getItem('stock-batches') == null) {
+      this.getAllStockBatch();
+    }
+
+    if (sessionStorage.getItem('models') == null) {
+      this.getDeviceModels();
+    }
     
   }
 
@@ -144,6 +152,39 @@ export class FullComponent {
       },
       (error: any) => {
         this.getBranches();
+      }
+    );
+  }
+
+  getAllStockBatch() {
+    const endpoint: string = ENVIRONMENT.endpoints.stock.batch.getAll;
+    this.data.get(ENVIRONMENT.baseUrl + endpoint).subscribe(
+      (res: any) => {
+        if (res.statusCode == 0) {
+          sessionStorage.setItem('stock-batches', JSON.stringify(res.data));
+        } else {
+          this.getAllStockBatch();
+        }
+      },
+      (error: any) => {
+        this.getAllStockBatch();
+      }
+    );
+  }
+
+  getDeviceModels() {
+    const endpoint: string = ENVIRONMENT.endpoints.phoneModels.getAll;
+    this.data.get(ENVIRONMENT.baseUrl + endpoint).subscribe(
+      (res: any) => {
+        if (res.statusCode == 0) {
+          sessionStorage.setItem('models', JSON.stringify(res.data));
+          
+        } else {
+          this.getDeviceModels();
+        }
+      },
+      (error: any) => {
+        this.getDeviceModels();
       }
     );
   }

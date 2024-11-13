@@ -16,6 +16,7 @@ import {
 } from 'ag-grid-community';
 import { CommonModule } from '@angular/common';
 import { AfterSaleActionsComponent } from './after-sale-actions/after-sale-actions.component';
+import { StockBatch } from '../../stock/stock-components/stock-batch/stock-batch.component';
 
 @Component({
   selector: 'app-after-sales',
@@ -46,13 +47,15 @@ export class AfterSalesComponent {
   branches: Branch[] = [];
   page: number = 0; size: number = 100;
   RETRY_COUNT: number = 3;
+  batches: StockBatch[] = [];
 
   rowData = [];
   gridApi!: GridApi;
   colDefs: ColDef[] = [
     { headerName: 'IMEI', field: 'stockImei', filter: true },
     { headerName: 'Model', field: 'stockModelName', filter: true },
-    { headerName: 'Currency', field: 'stockCurrencyCode' },
+    { headerName: 'Batch Number', field: 'stockBatchNo', filter: true },
+    { headerName: 'Currency', field: 'stockCurrencyCode', filter: true },
     {
       headerName: 'Price',
       field: 'stockSellingPrice',
@@ -73,9 +76,22 @@ export class AfterSalesComponent {
     {
       headerName: 'Date Sold',
       field: 'stockUpdatedOn',
-      filter: true,
-      cellRenderer: (params: any) =>
-        params.value ? params.value.split(' ')[0] : null,
+      filter: 'agDateColumnFilter',
+      valueGetter: (params) => {
+        const date = new Date(params.data.stockUpdatedOn); 
+        return date.toLocaleDateString();
+      },
+      filterParams: {
+        comparator: (filterLocalDateAtMidnight: Date, cellValue: Date) => {
+          const cellDate = new Date(cellValue);
+          if (cellDate < filterLocalDateAtMidnight) {
+              return -1;
+          } else if (cellDate > filterLocalDateAtMidnight) {
+              return 1;
+          }
+          return 0;
+        }
+      }
     },
     { headerName: 'Dealership', field: 'stockDealerShipName', filter: true },
     { headerName: 'Branch', field: 'stockBranchName', filter: true },
@@ -98,7 +114,6 @@ export class AfterSalesComponent {
   ngOnInit() {
     this.getUser();
     this.getPhones();
-    this.getBranches();
   }
 
   getPhones() {
@@ -182,14 +197,6 @@ export class AfterSalesComponent {
     });
   }
 
-  getBranches() {
-    this.branches = JSON.parse(sessionStorage.getItem('branches') || '[]');
-  }
-
-  getBranchName(code: string) {
-    return this.branches.find((b) => b.code == code)?.name;
-  }
-
   updateStatus(phone: any) {
     const confirmed = confirm(
       `Are you sure you want to update ${
@@ -208,6 +215,7 @@ export class AfterSalesComponent {
       (res: any) => {
         this.isFetching = false;
         if (res.statusCode == 0) {
+          this.dataSource = [];
           this.getPhones();
           this.openSnackBar('Default status updated successfully.', 'Close');
         } else {
@@ -226,6 +234,7 @@ export class AfterSalesComponent {
       columnKeys: [
         'stockImei',
         'stockModelName',
+        'stockBatchNo',
         'stockCurrencyCode',
         'stockSellingPrice',
         'stockCustomerName',
@@ -281,4 +290,5 @@ export class AfterSalesComponent {
 
     return csvRows.join('\n');
   }
+
 }
