@@ -107,8 +107,8 @@ export class InventoryModalComponent {
           if (res.failed > 0) {
             this.SOME_FAILED_INSERT = true;
             this.successMessage += ` But failed to save ${res.failed}.`;
-            this.REASON_FOR_FAILURE = res.symuErrorInfoList.map((error: any) => error.statusMessage);
-            this.export(res.data);
+            this.REASON_FOR_FAILURE = res.symuErrorInfoList.map((error: any) => `${error.statusDesc} -  ${error.statusMessage}`);
+            if(res.data.length > 0) this.export(res.data);
           }
         } else {
         }
