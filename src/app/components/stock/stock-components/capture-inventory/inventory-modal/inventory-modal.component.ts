@@ -103,15 +103,24 @@ export class InventoryModalComponent {
       (res: any) => {
         this.loading = false;
         if (res.statusCode == 0) {
-          this.successMessage = `${res.success} added successfully.`;
-          if (res.failed > 0) {
+          if(res.data.length > 0) this.export(res.data);
+
+          if (res.success > 0 && res.failed == 0) {
+            this.successMessage = `${res.success} added successfully.`;
+          }  
+          
+          if (res.success > 0 && res.failed > 0) {
             this.SOME_FAILED_INSERT = true;
             this.successMessage += ` But failed to save ${res.failed}.`;
             this.REASON_FOR_FAILURE = res.symuErrorInfoList.map((error: any) => `${error.statusDesc} -  ${error.statusMessage}`);
-            if(res.data.length > 0) this.export(res.data);
           }
-        } else {
-        }
+          
+          if (res.success == 0 && res.failed > 0) {
+            this.SOME_FAILED_INSERT = true;
+            this.errorMessage = `Failed to save any of the IMEI.`;
+            this.REASON_FOR_FAILURE = res.symuErrorInfoList.map((error: any) => `${error.statusDesc} -  ${error.statusMessage}`);
+          }
+        } 
       },
       (error: any) => {
         this.loading = false;
