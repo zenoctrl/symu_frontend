@@ -111,7 +111,7 @@ export class InventoryModalComponent {
           
           if (res.success > 0 && res.failed > 0) {
             this.SOME_FAILED_INSERT = true;
-            this.successMessage += ` But failed to save ${res.failed}.`;
+            this.successMessage = `Saved ${res.success} successfully. But failed to save ${res.failed}.`;
             this.REASON_FOR_FAILURE = res.symuErrorInfoList.map((error: any) => `${error.statusDesc} -  ${error.statusMessage}`);
           }
           
@@ -148,7 +148,16 @@ export class InventoryModalComponent {
   }
 
   export(data: any[]) {
-    const filteredStockData = data.map((stock: any ) => stock.stockImei);
+    const filteredStockData = data.map((stock) => {
+      const {
+        code, stockCompanyCode, stockBatchCode, stockBranchCode, stockRegionCode, stockCountryCode, stockCreatedOn, stockUpdatedOn,
+        stockAgnCode, stockModelCode, stockMemory, stockBuyingPrice, stockSellingPrice, stockProfit, stockStatusCode, stockBaseCurrency,
+        stockDefaulted, stockCustomerCode, stockCreatedBy, stockUpdatedBy, stockSoldBy, stockTradeName, stockDealerCode, stockStatusDescription,
+        stockStatusName, statusShortDesc, stockBranchName, stockCountryName, stockBatchNumber,
+        ...filteredStock
+      } = stock;
+      return filteredStock;
+    });
     const csv = this.convertJSON2CSV(filteredStockData);
     const blob = new Blob([csv], { type: 'text/csv' });
     const link = document.createElement('a');
