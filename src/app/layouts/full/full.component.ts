@@ -47,9 +47,14 @@ export class FullComponent {
     //   menu: 'Dashboard',
     // },
     {
-      link: '/admin',
-      icon: 'settings',
-      menu: 'Admin',
+      link: '/sales',
+      icon: 'layers',
+      menu: 'Sales',
+    },
+    {
+      link: '/stock',
+      icon: 'table',
+      menu: 'Stock',
     },
     {
       link: '/models',
@@ -62,14 +67,14 @@ export class FullComponent {
       menu: 'Batches',
     },
     {
-      link: '/stock',
-      icon: 'table',
-      menu: 'Stock',
+      link: '/archive',
+      icon: 'file',
+      menu: 'Archive',
     },
     {
-      link: '/sales',
-      icon: 'layers',
-      menu: 'Sales',
+      link: '/admin',
+      icon: 'settings',
+      menu: 'Admin',
     },
   ];
 
@@ -99,6 +104,10 @@ export class FullComponent {
 
     if (sessionStorage.getItem('models') == null) {
       this.getDeviceModels();
+    }
+
+    if (sessionStorage.getItem('stock-statuses') == null) {
+      this.getStockStatuses();
     }
     
   }
@@ -185,6 +194,23 @@ export class FullComponent {
       },
       (error: any) => {
         this.getDeviceModels();
+      }
+    );
+  }
+
+  getStockStatuses() {
+    const endpoint: string = ENVIRONMENT.endpoints.stock.status.getAll;
+    this.data.get(ENVIRONMENT.baseUrl + endpoint).subscribe(
+      (res: any) => {
+        if (res.statusCode == 0) {
+          sessionStorage.setItem('stock-statuses', JSON.stringify(res.data));
+          
+        } else {
+          this.getStockStatuses();
+        }
+      },
+      (error: any) => {
+        this.getStockStatuses();
       }
     );
   }

@@ -28,6 +28,7 @@ export class PhoneModalComponent {
   batches: StockBatch[] = [];
   userAssignedToBranch!: boolean;
   inValidIMEI!: boolean;
+  stockStatuses: any[] = [];
 
   constructor(
     public dialogRef: MatDialogRef<PhoneModalComponent>,
@@ -43,6 +44,7 @@ export class PhoneModalComponent {
       this.getBranches();
       this.getModels();
       this.getBatch();
+      this.getStatuses();
 
        const country = this.countries.find(
          (country: Country) => country.code == this.data.phone.stockCountryCode
@@ -102,7 +104,7 @@ export class PhoneModalComponent {
           setTimeout(() => {
             this.successMessage = '';
             this.dialogRef.close('saved');
-          }, 1500);
+          }, 2000);
         } else {
         }
       },
@@ -133,7 +135,7 @@ export class PhoneModalComponent {
       stockModelCode: this.data.phone.stockModelCode,
       stockMemory: this.data.phone.stockMemory,
       stockBaseCurrency: this.data.phone.stockBaseCurrency,
-      stockStatusCode: 2, // set to available (price has been set already on model & batch)
+      stockStatusCode: this.data.phone.stockStatusCode,
       stockCreatedBy: this.data.phone.stockCreatedBy,
       stockUpdatedBy: this.user.code,
       stockBatchCode: this.data.phone.stockBatchCode,
@@ -144,11 +146,11 @@ export class PhoneModalComponent {
       (res: any) => {
         this.loading = false;
         if (res.statusCode == 0) {
-          this.successMessage = 'Phone saved successfully.';
+          this.successMessage = 'Phone updated successfully.';
           setTimeout(() => {
             this.successMessage = '';
             this.dialogRef.close('saved');
-          }, 1500);
+          }, 2000);
         } else {
         }
       },
@@ -181,7 +183,7 @@ export class PhoneModalComponent {
           setTimeout(() => {
             this.successMessage = '';
             this.dialogRef.close('saved');
-          }, 1500);
+          }, 2000);
         } else {
         }
       },
@@ -247,7 +249,7 @@ export class PhoneModalComponent {
           setTimeout(() => {
             this.successMessage = '';
             this.dialogRef.close('posted');
-          }, 1500);
+          }, 2000);
         } else {
         }
       },
@@ -388,5 +390,9 @@ export class PhoneModalComponent {
   checkInput(input: string) {
     this.inValidIMEI = isNaN(Number(input));
     this.errorMessage = this.inValidIMEI ? 'Wrong IMEI input value' : '';
+  }
+
+  getStatuses() {
+    this.stockStatuses = JSON.parse(sessionStorage.getItem('stock-statuses') || '[]').filter((s: any) => s.statusName.toLowerCase().includes('available') || s.statusName.toLowerCase().includes('missing') || s.statusName.toLowerCase().includes('lost'));
   }
 }

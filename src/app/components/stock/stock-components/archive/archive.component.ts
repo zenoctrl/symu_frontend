@@ -1,10 +1,4 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA, Output, ViewChild, EventEmitter } from '@angular/core';
-import {
-  MatDialog,
-  MAT_DIALOG_DATA,
-  MatDialogRef,
-} from '@angular/material/dialog';
-import { PhoneModalComponent } from './phone-modal/phone-modal.component';
+import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { DataService } from 'src/app/services/data.service';
 import { ENVIRONMENT } from 'src/app/environments/environments';
@@ -17,27 +11,21 @@ import {
   GridReadyEvent,
   CsvExportModule,
 } from 'ag-grid-community';
+import { PhoneModalComponent } from '../phone-list/phone-modal/phone-modal.component';
+import { MatDialog } from '@angular/material/dialog';
+import { StockActionsComponent } from '../phone-list/stock-actions/stock-actions.component';
 import { CommonModule } from '@angular/common';
-import { StockActionsComponent } from './stock-actions/stock-actions.component';
-
-export interface Phone {
-  id?: string;
-  imei?: string;
-  model?: string;
-  memory?: string;
-  price?: string;
-  currency?: string;
-}
 
 @Component({
-  selector: 'app-phone-list',
-  templateUrl: './phone-list.component.html',
-  styleUrls: ['./phone-list.component.scss'],
+  selector: 'app-archive',
+  templateUrl: './archive.component.html',
+  styleUrls: ['./archive.component.scss'],
   standalone: true,
   imports: [AgGridAngular, CommonModule],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
-export class PhoneListComponent {
+export class ArchiveComponent {
+
   user: any;
   displayedColumns: string[] = [
     'id',
@@ -76,7 +64,8 @@ export class PhoneListComponent {
     {
       headerName: 'Status',
       field: 'stockStatusName',
-      cellRenderer: (params: any) => params.value.toUpperCase(),
+      filter: true,
+      valueGetter: (params: any) => params.data.stockStatusName.toUpperCase(),
     },
     {
       headerName: 'Date',
@@ -107,8 +96,6 @@ export class PhoneListComponent {
     },
   ];
 
-  @Output() postEvent = new EventEmitter();
-
   constructor(
     public dialog: MatDialog,
     private data: DataService,
@@ -117,28 +104,15 @@ export class PhoneListComponent {
 
   ngOnInit() {
     this.getUser();
-    this.getPhones();
+    this.getPhones('MISSING');
+    this.getPhones('LOST');
     this.getAllStockStatus();
-    this.getDealerships();
     this.getCountries();
   }
 
-  addPhone() {
-    const dialogRef = this.dialog.open(PhoneModalComponent, {
-      data: { phone: {}, title: 'Add Phone', user: this.user },
-      disableClose: true,
-    });
-
-    dialogRef.afterClosed().subscribe((res) => {
-      if (res) {
-        this.getPhones();
-      }
-    });
-  }
-
-  getPhones() {
+  getPhones(status: string) {
     this.isFetching = true;
-    const endpoint: string = `${ENVIRONMENT.endpoints.stock.phone.getAll}?companyCode=${this.user.userCompanyCode}&statusShortDesc=AVAILABLE&page=${this.page}&size=${this.size}`;
+    const endpoint: string = `${ENVIRONMENT.endpoints.stock.phone.getAll}?companyCode=${this.user.userCompanyCode}&statusShortDesc=${status}&page=${this.page}&size=${this.size}`;
     this.data.get(ENVIRONMENT.baseUrl + endpoint).subscribe(
       (res: any) => {
         this.isFetching = false;
@@ -165,18 +139,18 @@ export class PhoneListComponent {
                 phone.stockBranchCode == this.user.userBrnCode
             ));
           }
-          this.rowData = this.dataSource;
+          this.rowData = [...new Set(this.rowData.concat(this.dataSource))];
 
           // fetch some more if page is not last
           if (!res.data.last) {
             this.page++;
-            this.getPhones();
+            this.getPhones(status);
           } 
 
         } else {
           if (this.RETRY_COUNT > 0) {
             setTimeout(() => {
-              this.getPhones();
+              this.getPhones(status);
               this.RETRY_COUNT--;
             }, 3000);
           } else {
@@ -187,7 +161,7 @@ export class PhoneListComponent {
       (error: any) => {
         if (this.RETRY_COUNT > 0) {
           setTimeout(() => {
-            this.getPhones();
+            this.getPhones(status);
             this.RETRY_COUNT--;
           }, 3000);
         } else {
@@ -198,6 +172,11 @@ export class PhoneListComponent {
   }
 
   editPhone(event: any) {
+    if (event.title.toLowerCase().includes('post')) {
+      this.openSnackBar(`Posting a ${event.phone.stockStatusName.toLowerCase()} is not allowed.`, 'Close');
+      return;
+    }
+
     const dialogRef = this.dialog.open(PhoneModalComponent, {
       data: {
         phone: event.phone,
@@ -212,46 +191,18 @@ export class PhoneListComponent {
 
     dialogRef.afterClosed().subscribe((res) => {
       if (res) {
-        this.dataSource = [];
-        this.getPhones();
-        if (res == 'posted') {
-          this.postEvent.emit();
-        }
+        this.rowData = this.dataSource = [];
+        this.getPhones('MISSING');
+        this.getPhones('LOST');
       }
       
     });
   }
 
-  viewReceipt(phone: any) {
-    const dialogRef = this.dialog.open(PhoneModalComponent, {
-      data: {
-        phone: phone,
-        title: 'Receipt',
-        user: this.user,
-      },
-      disableClose: true,
-    });
-  }
-
-  deletePhone(phone: any) {
-    return;
-    const endpoint: string = `${ENVIRONMENT.endpoints.stock.phone.delete}/${phone.id}`;
-    this.data.delete(ENVIRONMENT.baseUrl + endpoint).subscribe((res: any) => {
-      this.openSnackBar('Phone deleted successfully.', 'Close');
-      this.getPhones();
-    });
-  }
-
   openSnackBar(message: string, action: string) {
     this.snackBar.open(message, action, {
-      duration: 2000,
+      duration: 5000,
     });
-  }
-
-  getAllStockStatus() {
-    this.stockStatuses = JSON.parse(
-      sessionStorage.getItem('stock-status') || '{}'
-    );
   }
 
   getUser() {
@@ -267,28 +218,18 @@ export class PhoneListComponent {
     }
   }
 
-  getDealerships() {
-    const endpoint: string = `${ENVIRONMENT.endpoints.dealership.getAll}?companyCode=${this.user.userCompanyCode}`;
-    this.data.get(ENVIRONMENT.baseUrl + endpoint).subscribe(
-      (res: any) => {
-        if (res.statusCode == 0) {
-          this.dealerships = res.data;
-        } else {
-          this.getDealerships();
-        }
-      },
-      (error: any) => {
-        this.getDealerships();
-      }
-    );
-  }
-
   getCountries() {
     this.countries = JSON.parse(sessionStorage.getItem('countries') || '[]');
   }
 
   transformDate(date: string) {
     return new Date(date).toLocaleString();
+  }
+
+  getAllStockStatus() {
+    this.stockStatuses = JSON.parse(
+      sessionStorage.getItem('stock-status') || '{}'
+    );
   }
 
   getBranch(id: number): string {
@@ -303,22 +244,8 @@ export class PhoneListComponent {
     ).countryName;
   }
 
-  onBtnExport() {
-    const params = {
-      columnKeys: [
-        'stockImei',
-        'stockMemory',
-        'stockBatchNumber',
-        'stockBranchName',
-        'stockCountryName',
-        'stockStatusName',
-        'stockCreatedOn'
-      ],
-    };
-    this.gridApi.exportDataAsCsv(params);
-  }
-
   onGridReady(params: GridReadyEvent) {
     this.gridApi = params.api;
   }
+
 }

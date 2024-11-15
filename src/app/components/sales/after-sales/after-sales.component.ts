@@ -12,7 +12,6 @@ import {
   ColDef,
   GridApi,
   GridReadyEvent,
-  CsvExportModule,
 } from 'ag-grid-community';
 import { CommonModule } from '@angular/common';
 import { AfterSaleActionsComponent } from './after-sale-actions/after-sale-actions.component';
@@ -252,43 +251,6 @@ export class AfterSalesComponent {
 
   onGridReady(params: GridReadyEvent) {
     this.gridApi = params.api;
-  }
-
-  export(data: any[]) {
-    const filteredStockData = data.map((stock) => {
-      const {
-        stockBranchCode,
-        stockRegionCode,
-        stockCountryCode,
-        stockCreatedOn,
-        stockUpdatedOn,
-        ...filteredStock
-      } = stock;
-      return filteredStock;
-    });
-    const csv = this.convertJSON2CSV(filteredStockData);
-    const blob = new Blob([csv], { type: 'text/csv' });
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = `sales - ${new Date()}.csv`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  }
-
-  convertJSON2CSV(data: any) {
-    const keys = Object.keys(data[0]);
-    const csvRows = [keys.join(',').toUpperCase().replaceAll('STOCK', '')];
-
-    data.forEach((row: any) => {
-      const values = keys.map((key) => {
-        const escaped = ('' + row[key]).replace(/"/g, '\\"');
-        return `"${escaped}"`;
-      });
-      csvRows.push(values.join(','));
-    });
-
-    return csvRows.join('\n');
   }
 
 }

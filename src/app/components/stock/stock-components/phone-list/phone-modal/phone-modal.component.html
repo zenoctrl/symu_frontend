@@ -66,6 +66,15 @@
                   </mat-select>
               </mat-form-field>
 
+              <mat-form-field class="me-24 fs-16" appearance="outline" *ngIf="data.phone.stockBatchCode">
+                <mat-label>Stock Status</mat-label>
+                <mat-select [(ngModel)]="data.phone.stockStatusCode">
+                    <mat-option *ngFor="let status of stockStatuses" [value]="status.statusCode">
+                      {{ status.statusShortDesc.toUpperCase() }}
+                    </mat-option>
+                  </mat-select>
+              </mat-form-field>
+
             </div>
 
             <div *ngIf="data.title === 'Post Sale'">

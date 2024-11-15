@@ -108,11 +108,8 @@ export class InventoryModalComponent {
             this.SOME_FAILED_INSERT = true;
             this.successMessage += ` But failed to save ${res.failed}.`;
             this.REASON_FOR_FAILURE = res.symuErrorInfoList.map((error: any) => error.statusMessage);
+            this.export(res.data);
           }
-          // setTimeout(() => {
-          //   this.successMessage = '';
-          //   this.dialogRef.close('saved');
-          // }, 3000);
         } else {
         }
       },
@@ -139,6 +136,33 @@ export class InventoryModalComponent {
   viewCapturedIMEI() {
     if (this.CAPTURED_IMEI.length == 0) return;
     this.VIEW_CAPTURED_IMEI = !this.VIEW_CAPTURED_IMEI;
+  }
+
+  export(data: any[]) {
+    const filteredStockData = data.map((stock: any ) => stock.stockImei);
+    const csv = this.convertJSON2CSV(filteredStockData);
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `PHONE_IMEI_${new Date()}.csv`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+
+  convertJSON2CSV(data: any) {
+    const keys = Object.keys(data[0]);
+    const csvRows = [keys.join(',').toUpperCase().replaceAll('STOCK', '')];
+
+    data.forEach((row: any) => {
+      const values = keys.map((key) => {
+        const escaped = ('' + row[key]).replace(/"/g, '\\"');
+        return `"${escaped}"`;
+      });
+      csvRows.push(values.join(','));
+    });
+
+    return csvRows.join('\n');
   }
 
 }

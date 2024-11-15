@@ -1,0 +1,14 @@
+<mat-card class="w-100">
+    <mat-card-content>
+        <ag-grid-angular
+        class="ag-theme-quartz"
+        [rowData]="rowData"
+        [columnDefs]="colDefs"
+        [pagination]="true"
+        [paginationPageSize]="10"
+        [paginationPageSizeSelector]="[10,20,50,100]"
+        [gridOptions]="{domLayout: 'autoHeight'}"
+        (gridReady)="onGridReady($event)"
+      />
+    </mat-card-content>
+</mat-card>
