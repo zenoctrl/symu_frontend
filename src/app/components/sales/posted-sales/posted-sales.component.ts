@@ -117,6 +117,11 @@ export class PostedSalesComponent {
     );
   }
 
+  refresh() {
+    this.dataSource.data = [];
+    this.getPhones();
+  }
+
   getAllStockStatus() {
     this.stockStatuses = JSON.parse(
       sessionStorage.getItem('stock-status') || '{}'

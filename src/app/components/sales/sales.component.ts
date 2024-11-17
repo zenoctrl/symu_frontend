@@ -16,6 +16,6 @@ export class SalesComponent {
   }
 
   handlePostEvent() {
-    this.postedSalesComponent.getPhones();
+    this.postedSalesComponent.refresh();
   }
 }
