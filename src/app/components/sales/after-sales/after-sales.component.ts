@@ -47,6 +47,7 @@ export class AfterSalesComponent {
   page: number = 0; size: number = 100;
   RETRY_COUNT: number = 3;
   batches: StockBatch[] = [];
+  total!: number;
 
   rowData = [];
   gridApi!: GridApi;
@@ -143,7 +144,7 @@ export class AfterSalesComponent {
             ));
           }
           this.rowData = this.dataSource;
-
+          this.total = res.data.totalElements;
           // fetch some more if page is not last
           if (!res.data.last) {
             this.page++;
