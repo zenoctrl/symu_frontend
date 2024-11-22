@@ -12,7 +12,8 @@ export class SalesComponent {
   @ViewChild(PostedSalesComponent) postedSalesComponent!: PostedSalesComponent;
 
   handleCompleteEvent() {
-    this.afterSalesComponent.getPhones();
+    // this.afterSalesComponent.getPhones();
+    this.afterSalesComponent.refresh();
   }
 
   handlePostEvent() {

@@ -1,7 +1,7 @@
 <mat-card class="w-100">
     <mat-card-content><br>
-      <div class="d-flex justify-content-end">
-        <!-- <a id="add-btn" (click)="addPhone()">+ Add Phone</a> -->
+      <div id="top">
+        <p>Total Count: <b>{{ totalPhonesAvailableForSale }}</b></p>
         <a id="add-btn" *ngIf="
           (user.roleModel.roleName.toLowerCase().includes('director') ||
           user.roleModel.roleName.toLowerCase().includes('admin'))"  

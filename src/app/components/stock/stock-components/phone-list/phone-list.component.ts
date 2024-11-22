@@ -54,8 +54,9 @@ export class PhoneListComponent {
   isFetching!: boolean;
   dealerships: any[] = [];
   countries: Country[] = [];
-  page: number = 0; size: number = 100;
+  page: number = 0; size: number = 2000;
   RETRY_COUNT: number = 3;
+  totalPhonesAvailableForSale!: number;
 
   rowData = [];
   gridApi!: GridApi;
@@ -166,6 +167,7 @@ export class PhoneListComponent {
             ));
           }
           this.rowData = this.dataSource;
+          this.totalPhonesAvailableForSale = res.data.totalElements;
 
           // fetch some more if page is not last
           if (!res.data.last) {

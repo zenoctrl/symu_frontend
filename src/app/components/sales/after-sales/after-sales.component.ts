@@ -44,10 +44,12 @@ export class AfterSalesComponent {
   dealerships: any[] = [];
   stockStatuses!: StockStatus[];
   branches: Branch[] = [];
-  page: number = 0; size: number = 100;
+  page: number = 0; size: number = 2000;
   RETRY_COUNT: number = 3;
   batches: StockBatch[] = [];
-  total!: number;
+  totalPhonesSold!: number;
+  totalPhonesSoldToday!: number;
+  today: string = (new Date()).toLocaleDateString();
 
   rowData = [];
   gridApi!: GridApi;
@@ -144,7 +146,9 @@ export class AfterSalesComponent {
             ));
           }
           this.rowData = this.dataSource;
-          this.total = res.data.totalElements;
+          this.totalPhonesSold = res.data.totalElements;
+          this.totalPhonesSoldToday = this.rowData.filter((phone: any) => (new Date(phone.stockUpdatedOn)).toLocaleDateString() == this.today).length;
+
           // fetch some more if page is not last
           if (!res.data.last) {
             this.page++;
@@ -252,6 +256,11 @@ export class AfterSalesComponent {
 
   onGridReady(params: GridReadyEvent) {
     this.gridApi = params.api;
+  }
+
+  refresh() {
+    this.dataSource = [];
+    this.getPhones();
   }
 
 }

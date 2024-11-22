@@ -1,7 +1,7 @@
 <mat-card class="w-100">
   <mat-card-content><br>
     <div id="top">
-        <p>Total phones sold: <b>{{ total }}</b></p>
+        <p>Total Count: <b>{{ totalPhonesSold }}</b> | Today: <b>{{ totalPhonesSoldToday }}</b></p>
         <a id="add-btn" *ngIf="
           (user.roleModel.roleName.toLowerCase().includes('director') ||
           user.roleModel.roleName.toLowerCase().includes('admin'))"  

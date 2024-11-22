@@ -5,6 +5,16 @@
     background-color: #fafafa;
 }
 
+#top {
+    display: flex;
+    justify-content: space-between;
+}
+
+#top p {
+    margin-top: auto;
+    margin-bottom: 0;
+}
+
 #add-btn {
     background-color: #03c9d7;
     color: #fff;

@@ -35,7 +35,7 @@ export class PostedSalesComponent {
   dealerships: any[] = [];
   stockStatuses!: StockStatus[];
   countries: Country[] = [];
-  page: number = 0; size: number = 100;
+  page: number = 0; size: number = 2000;
   RETRY_COUNT: number = 3;
 
   @ViewChild('paginator') paginator!: MatPaginator;
