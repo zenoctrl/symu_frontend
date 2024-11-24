@@ -219,6 +219,7 @@ export class AfterSalesComponent {
       (res: any) => {
         this.isFetching = false;
         if (res.statusCode == 0) {
+          this.page = 0;
           this.dataSource = [];
           this.getPhones();
           this.openSnackBar('Default status updated successfully.', 'Close');
@@ -259,6 +260,7 @@ export class AfterSalesComponent {
   }
 
   refresh() {
+    this.page = 0;
     this.dataSource = [];
     this.getPhones();
   }

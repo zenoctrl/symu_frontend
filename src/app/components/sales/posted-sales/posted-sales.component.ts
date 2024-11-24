@@ -118,6 +118,7 @@ export class PostedSalesComponent {
   }
 
   refresh() {
+    this.page = 0;
     this.dataSource.data = [];
     this.getPhones();
   }
@@ -151,6 +152,7 @@ export class PostedSalesComponent {
     dialogRef.afterClosed().subscribe((res) => {
       if (res) {
         this.completeEvent.emit();
+        this.page = 0;
         this.dataSource.data = [];
         this.getPhones();
       }
@@ -165,6 +167,7 @@ export class PostedSalesComponent {
       (res: any) => {
         this.isFetching = false;
         if (res.statusCode == 0) {
+          this.page = 0;
           this.getPhones();
         } else {
           this.isFetching = false;

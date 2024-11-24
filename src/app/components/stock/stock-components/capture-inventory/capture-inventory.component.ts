@@ -19,7 +19,7 @@ export class CaptureInventoryComponent {
   dataSource = new MatTableDataSource<any[]>();
   displayedColumns: string[] = [];
   loading!: boolean;
-  page: number = 0; size: number = 100;
+  page: number = 0; size: number = 2000;
   RETRY_COUNT: number = 3;
   rowData = [];
   checkAll: boolean = false;
@@ -71,6 +71,7 @@ export class CaptureInventoryComponent {
 
     dialogRef.afterClosed().subscribe((res) => {
       if (res) {
+        this.page = 0;
         this.dataSource.data = [];
         this.getPhones();
       }
@@ -202,6 +203,7 @@ export class CaptureInventoryComponent {
         (res: any) => {
           this.loading = false;
           if (res.statusCode == 0) {
+            this.page = 0;
             this.dataSource.data = [];
             this.getPhones();
           } 

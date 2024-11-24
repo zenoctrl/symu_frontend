@@ -76,15 +76,15 @@ export const ENVIRONMENT = {
         updateDefaultStatus: '/symu/stock/updateDefaultStatus',
       },
       queryReceipt: '/symu/receipt/getAllByReceiptStockCode',
-      bulk : {
+      bulk: {
         create: '/symu/stock/createStockBulk',
-        approve: '/symu/stock/stockApproval'
-      }
+        approve: '/symu/stock/stockApproval',
+      },
     },
     dealership: {
       getAll: '/symu/dealership/getAllByCompanyCode',
       create: '/symu/dealership/createOrUpdateDealership',
-      update: '/symu/dealership/createOrUpdateDealership'
+      update: '/symu/dealership/createOrUpdateDealership',
     },
   },
 };
