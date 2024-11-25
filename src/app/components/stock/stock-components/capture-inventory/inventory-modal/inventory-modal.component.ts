@@ -134,12 +134,19 @@ export class InventoryModalComponent {
   }
 
   capture() {
-    setTimeout(() => {
-      if (!this.CAPTURED_IMEI.includes(this.IMEI) && /^\d{15}$/.test(this.IMEI)) {
-        this.CAPTURED_IMEI.push(this.IMEI);
-      } 
+    // setTimeout(() => {
+    //   if (!this.CAPTURED_IMEI.includes(this.IMEI) && /^\d{15}$/.test(this.IMEI)) {
+    //     this.CAPTURED_IMEI.push(this.IMEI);
+    //   } 
+    //   this.IMEI = "";
+    // }, 500);
+
+    this.errorMessage = isNaN(Number(this.IMEI)) ? 'Wrong IMEI input value' : '';
+
+    if (!this.CAPTURED_IMEI.includes(this.IMEI) && /^\d{15}$/.test(this.IMEI)) {
+      this.CAPTURED_IMEI.push(this.IMEI);
       this.IMEI = "";
-    }, 500);
+    } 
   }
 
   viewCapturedIMEI() {
