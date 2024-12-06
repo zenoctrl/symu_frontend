@@ -319,10 +319,16 @@ export class PhoneModalComponent {
       (batch: StockBatch) =>
         batch.stockModelCode == this.data.phone.stockModelCode && batch.batchStatus == 'AVAILABLE'
     );
-    if (this.batches.length > 0) {
+    
+    if (
+      this.batches.length > 0 &&
+      this.batches
+        .map((batch) => batch.code)
+        .includes(this.data.phone.stockBatchCode)
+    ) {
       this.errorMessage = '';
     } else {
-      this.errorMessage = "Model has no available batch.";
+      this.errorMessage = 'Model has no available batch.';
     }
     
   }
@@ -364,11 +370,12 @@ export class PhoneModalComponent {
       this.data.phone.stockCountryCode = this.user.userCountryCode;
       this.data.phone.stockBaseCurrency =
         this.user.countryEntity.countryCurrencyCode;
-      this.selectCountry();
+      // this.selectCountry();
       if (role.toLowerCase().includes('regional')) {
         this.data.phone.stockRegionCode = this.user.userRegionCode;
-        this.getBranches();
+        // this.getBranches();
       }
+      // this.getBranches();
     } else if (
       role.toLowerCase() == 'shop manager' ||
       role.toLowerCase() == 'field sales manager'
@@ -380,7 +387,9 @@ export class PhoneModalComponent {
       this.data.phone.stockBaseCurrency =
         this.user.countryEntity.countryCurrencyCode;
     }
+    this.getBranches();
     this.getModels();
+    // this.getBatch();
   }
 
   transformDate(date: string): string {
