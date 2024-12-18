@@ -12,6 +12,8 @@ export const ENVIRONMENT = {
       resetPassword: '',
       roles: {
         getAll: '/symu/role/getAllRoles',
+        create: '/symu/role/createOrUpdateRole',
+        update: '/symu/role/createOrUpdateRole',
       },
     },
     countries: {
