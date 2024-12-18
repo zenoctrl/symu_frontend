@@ -9,6 +9,7 @@ import { PhoneModelsComponent } from './components/stock/stock-components/phone-
 import { StockBatchComponent } from './components/stock/stock-components/stock-batch/stock-batch.component';
 import { CaptureInventoryComponent } from './components/stock/stock-components/capture-inventory/capture-inventory.component';
 import { ArchiveComponent } from './components/stock/stock-components/archive/archive.component';
+import { UsersComponent } from './components/users/users.component';
 
 const routes: Routes = [
   {
@@ -22,7 +23,8 @@ const routes: Routes = [
       { path: 'stock', component: CaptureInventoryComponent, canActivate: [AuthGuard] },
       { path: 'models', component: PhoneModelsComponent, canActivate: [AuthGuard] },
       { path: 'batches', component: StockBatchComponent, canActivate: [AuthGuard] },
-      { path: 'archive', component: ArchiveComponent, canActivate: [AuthGuard] }
+      { path: 'archive', component: ArchiveComponent, canActivate: [AuthGuard] },
+      { path: 'users', component: UsersComponent, canActivate: [AuthGuard] }
     ],
   },
 
