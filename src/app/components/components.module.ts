@@ -49,6 +49,8 @@ import { StockActionsComponent } from './stock/stock-components/phone-list/stock
 import { CaptureInventoryComponent } from './stock/stock-components/capture-inventory/capture-inventory.component';
 import { InventoryModalComponent } from './stock/stock-components/capture-inventory/inventory-modal/inventory-modal.component';
 import { ArchiveComponent } from './stock/stock-components/archive/archive.component';
+import { RoleModalComponent } from './users/users-components/role-modal/role-modal.component';
+import { RoleListComponent } from './users/users-components/role-list/role-list.component';
 
 @NgModule({
   imports: [
@@ -120,6 +122,8 @@ import { ArchiveComponent } from './stock/stock-components/archive/archive.compo
     StockActionsComponent,
     CaptureInventoryComponent,
     InventoryModalComponent,
+    RoleModalComponent,
+    RoleListComponent,
     // ArchiveComponent,
   ],
 })
