@@ -6,6 +6,7 @@ import { DataService } from 'src/app/services/data.service';
 import { ENVIRONMENT } from 'src/app/environments/environments';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
+import { Role } from '../role-list/role-list.component';
 
 export interface User {
   id?: string;
@@ -151,8 +152,10 @@ export class UserListComponent {
     this.data.get(ENVIRONMENT.baseUrl + endpoint).subscribe(
       (res: any) => {
         if (res.statusCode == 0) {
-          sessionStorage.setItem('roles', JSON.stringify(res.data));
-          this.roles = res.data;
+          this.roles = res.data.filter(
+            (role: Role) => role.roleStatus?.toUpperCase() != 'DELETED'
+          );
+          sessionStorage.setItem('roles', JSON.stringify(this.roles));
         } else {
           this.getRoles();
         }
