@@ -147,7 +147,7 @@ export class CaptureInventoryComponent {
 
   getDimensions(){
     if(window.innerWidth > window.innerHeight){
-      this.displayedColumns = ['#', 'imei', 'model', 'batch', 'branch', 'country'];
+      this.displayedColumns = ['#', 'imei', 'model', 'batch', 'branch', 'cluster', 'country'];
     }
     else if(window.innerWidth < window.innerHeight){
       this.displayedColumns = ['#', 'imei'];

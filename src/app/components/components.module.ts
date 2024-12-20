@@ -51,6 +51,7 @@ import { InventoryModalComponent } from './stock/stock-components/capture-invent
 import { ArchiveComponent } from './stock/stock-components/archive/archive.component';
 import { RoleModalComponent } from './users/users-components/role-modal/role-modal.component';
 import { RoleListComponent } from './users/users-components/role-list/role-list.component';
+import { ClustersComponent } from './setups/setups-components/clusters/clusters.component';
 
 @NgModule({
   imports: [
@@ -124,6 +125,7 @@ import { RoleListComponent } from './users/users-components/role-list/role-list.
     InventoryModalComponent,
     RoleModalComponent,
     RoleListComponent,
+    ClustersComponent,
     // ArchiveComponent,
   ],
 })

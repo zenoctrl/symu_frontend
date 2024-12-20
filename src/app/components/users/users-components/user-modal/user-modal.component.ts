@@ -7,6 +7,7 @@ import { ENVIRONMENT } from 'src/app/environments/environments';
 import { Country } from 'src/app/components/setups/setups-components/countries/countries.component';
 import { Region } from 'src/app/components/setups/setups-components/regions/regions.component';
 import { Branch } from 'src/app/components/setups/setups-components/branches/branches.component';
+import { Cluster } from 'cluster';
 
 @Component({
   selector: 'app-user-modal',
@@ -26,6 +27,12 @@ export class UserModalComponent {
   user: any;
   userMustBelongToRegion!: boolean;
   userMustBelongToBranch!: boolean;
+  userMustBelongToCluster!: boolean;
+  clusters!: Cluster[] | any;
+  showPersonalInformationFields: boolean = true;
+  showRoleLocationInformationFields!: boolean;
+  showOtherPersonalInformationFields!: boolean;
+  loadingClusters!: boolean; loadingClustersMessage!: string;
 
   constructor(
     public dialogRef: MatDialogRef<UserModalComponent>,
@@ -41,6 +48,53 @@ export class UserModalComponent {
     if (this.data.title == 'Edit User') {
       this.filterRegions();
       this.filterBranches();
+    }
+  }
+
+  onClose() {
+    this.dialogRef.close();
+  }
+
+  back() {
+    this.errorMessage = '';
+    if (this.showRoleLocationInformationFields) {
+      this.showPersonalInformationFields = true;
+      this.showRoleLocationInformationFields =
+        this.showOtherPersonalInformationFields = false;
+      return;
+    }
+
+    if (this.showOtherPersonalInformationFields) {
+      this.showRoleLocationInformationFields = true;
+      this.showPersonalInformationFields =
+        this.showOtherPersonalInformationFields = false;
+    }
+  }
+
+  next() {
+    if (this.showPersonalInformationFields) {
+      this.showRoleLocationInformationFields = true;
+      this.showPersonalInformationFields =
+        this.showOtherPersonalInformationFields = false;
+      return;
+    }
+
+    if (this.showRoleLocationInformationFields) {
+      if (
+        (this.userMustBelongToRegion && !this.data.user.userRegionCode) ||
+        (this.userMustBelongToBranch && !this.data.user.userBrnCode) ||
+        (this.userMustBelongToCluster && !this.data.user.userClusterCode)
+      ) {
+        if (this.userMustBelongToCluster && this.clusters.length == 0) {
+          this.errorMessage = 'Selected branch has no cluster.';
+          return;
+        }
+        this.errorMessage = 'Please complete the required location information.';
+        return;
+      }
+      this.showOtherPersonalInformationFields = true;
+      this.showPersonalInformationFields =
+        this.showRoleLocationInformationFields = false;
     }
   }
 
@@ -66,7 +120,7 @@ export class UserModalComponent {
       userBrnCode: user.userBrnCode,
       userRegionCode: user.userRegionCode,
       userCountryCode: user.userCountryCode,
-      userStatus: "ACTIVE"
+      userStatus: 'ACTIVE',
     };
     this.loading = true;
     const endpoint: string = ENVIRONMENT.endpoints.users.create;
@@ -95,21 +149,21 @@ export class UserModalComponent {
   }
 
   updateUser(user: any) {
-     const payload = {
-       code: user.code,
-       userFirstName: user.userFirstName,
-       userLastName: user.userLastName,
-       userEmail: user.userEmail,
-       userPhone: user.userPhone,
-       userId: user.userId,
-       userPassword: user.userPassword,
-       userRoleCode: user.userRoleCode,
-       userCompanyCode: this.user.userCompanyCode,
-       userBrnCode: user.userBrnCode,
-       userRegionCode: user.userRegionCode,
-       userCountryCode: user.userCountryCode,
-       userStatus: 'ACTIVE',
-     };
+    const payload = {
+      code: user.code,
+      userFirstName: user.userFirstName,
+      userLastName: user.userLastName,
+      userEmail: user.userEmail,
+      userPhone: user.userPhone,
+      userId: user.userId,
+      userPassword: user.userPassword,
+      userRoleCode: user.userRoleCode,
+      userCompanyCode: this.user.userCompanyCode,
+      userBrnCode: user.userBrnCode,
+      userRegionCode: user.userRegionCode,
+      userCountryCode: user.userCountryCode,
+      userStatus: 'ACTIVE',
+    };
     this.loading = true;
     const endpoint: string = ENVIRONMENT.endpoints.users.update;
     this._data.post(ENVIRONMENT.baseUrl + endpoint, payload).subscribe(
@@ -136,10 +190,6 @@ export class UserModalComponent {
     );
   }
 
-  onClose() {
-    this.dialogRef.close();
-  }
-
   getRoles() {
     this.roles = JSON.parse(sessionStorage.getItem('roles') || '{}');
   }
@@ -157,6 +207,7 @@ export class UserModalComponent {
       (country: Country) => country.code == this.data.user.userCountryCode
     );
     this.data.user.userPhone = `+${country?.countryCountryCode}`;
+    this.errorMessage = '';
   }
 
   filterRegions() {
@@ -170,6 +221,7 @@ export class UserModalComponent {
     this._branches = this.branches.filter(
       (branch: Branch) => branch.regionCode === this.data.user.userRegionCode
     );
+    this.errorMessage = '';
   }
 
   getUser() {
@@ -177,20 +229,74 @@ export class UserModalComponent {
   }
 
   selectRole(roleCode: number) {
-    const role: any = this.roles.find((r: any) => r.code == roleCode).roleName.toLowerCase();
+    const role: any = this.roles
+      .find((r: any) => r.code == roleCode)
+      .roleName.toLowerCase();
+    
+    // clear form and any error message
+    this.errorMessage = '';
+    this.userMustBelongToRegion =
+      this.userMustBelongToBranch =
+      this.userMustBelongToCluster =
+        false;
+    this.data.user.userCountryCode =
+      this.data.user.userRegionCode =
+      this.data.user.userBrnCode =
+      this.data.user.userClusterCode =
+        null;
     if (
       role.includes('region') ||
       role.includes('shop') ||
-      role.includes('field')
+      role.includes('field') ||
+      role.includes('cluster')
     ) {
       this.userMustBelongToRegion = true;
     }
 
     if (
       role.includes('shop') ||
-      role.includes('field')
+      role.includes('field') ||
+      role.includes('cluster')
     ) {
       this.userMustBelongToBranch = true;
     }
+
+    if (role.includes('cluster')) {
+      this.userMustBelongToCluster = true;
+      this.clusters = [];
+    }
+  }
+
+  getClusters() {
+    const endpoint: string = `${ENVIRONMENT.endpoints.clusters.getAll}?clusterBranchCode=${this.data.user.userBrnCode}`;
+    this.loadingClusters = true;
+    this.loadingClustersMessage = `Fetching clusters belonging to ${this._branches.find(
+      (b) => b.code == this.data.user.userBrnCode
+    )?.name}. Please wait.`;
+    this.errorMessage = '';
+    this._data.get(ENVIRONMENT.baseUrl + endpoint).subscribe(
+      (res: any) => {
+        this.loadingClusters = false;
+        if (res.statusCode == 0) {
+          this.clusters = res.data.filter(
+            (cluster: Cluster | any) =>
+              cluster.clusterStatus.toUpperCase() != 'DELETED'
+          );
+          if (this.clusters.length == 0) {
+            this.errorMessage = 'Selected branch has no cluster.';
+          }
+        } else {
+          this.errorMessage = res.message;
+        }
+      },
+      (error: any) => {
+        this.loadingClusters = false;
+        if (error.error.message !== undefined) {
+          this.errorMessage = error.error.message;
+        } else {
+          this.errorMessage = 'Internal server error. Please try again.';
+        }
+      }
+    );
   }
 }

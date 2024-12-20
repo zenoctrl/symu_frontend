@@ -26,77 +26,94 @@
       </div>
     </div>
     <div class="mt-20" *ngIf="!successMessage">
-      <mat-form-field class="me-24 fs-16" appearance="outline">
-        <mat-label>First Name</mat-label>
-        <input type="text" matInput [(ngModel)]="data.user.userFirstName" />
-      </mat-form-field>
 
-      <mat-form-field class="me-24 fs-16" appearance="outline">
-        <mat-label>Last Name</mat-label>
-        <input type="text" matInput [(ngModel)]="data.user.userLastName" />
-      </mat-form-field>
+      <div id="personal-information" *ngIf="showPersonalInformationFields">
+        <mat-form-field class="me-24 fs-16" appearance="outline">
+          <mat-label>First Name</mat-label>
+          <input type="text" matInput [(ngModel)]="data.user.userFirstName" />
+        </mat-form-field>
 
-      <mat-form-field class="me-24 fs-16" appearance="outline">
-        <mat-label>Identification Number</mat-label>
-        <input type="text" matInput [(ngModel)]="data.user.userId" />
-      </mat-form-field>
+        <mat-form-field class="me-24 fs-16" appearance="outline">
+          <mat-label>Last Name</mat-label>
+          <input type="text" matInput [(ngModel)]="data.user.userLastName" />
+        </mat-form-field>
 
-      <mat-form-field class="me-24 fs-16" appearance="outline" *ngIf="data.user.userId">
-        <mat-label>Email Address</mat-label>
-        <input type="email" matInput [(ngModel)]="data.user.userEmail" />
-      </mat-form-field>
+        <mat-form-field class="me-24 fs-16" appearance="outline">
+          <mat-label>Identification Number</mat-label>
+          <input type="text" matInput [(ngModel)]="data.user.userId" />
+        </mat-form-field>
 
-      <mat-form-field class="me-24 fs-16" appearance="outline" *ngIf="data.user.userEmail">
-        <mat-label>Role</mat-label>
-        <mat-select [(ngModel)]="data.user.userRoleCode" (selectionChange)="selectRole(data.user.userRoleCode)">
-          <mat-option *ngFor="let role of roles" [value]="role.code">
-            {{ role.roleName }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
+        <mat-form-field class="me-24 fs-16" appearance="outline">
+          <mat-label>Email Address</mat-label>
+          <input type="email" matInput [(ngModel)]="data.user.userEmail" />
+        </mat-form-field>
+      </div>
 
-      <mat-form-field class="me-24 fs-16" appearance="outline" *ngIf="data.user.userRoleCode">
-        <mat-label>Country</mat-label>
-        <mat-select [(ngModel)]="data.user.userCountryCode" (selectionChange)="selectCountry()">
-          <mat-option *ngFor="let country of countries" [value]="country.code">
-            {{ country.countryName }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
+      <div id="role-location-information" *ngIf="showRoleLocationInformationFields">
+        <mat-form-field class="me-24 fs-16" appearance="outline">
+          <mat-label>Role</mat-label>
+          <mat-select [(ngModel)]="data.user.userRoleCode" (selectionChange)="selectRole(data.user.userRoleCode)">
+            <mat-option *ngFor="let role of roles" [value]="role.code">
+              {{ role.roleName }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
 
-      <mat-form-field class="me-24 fs-16" appearance="outline" *ngIf="data.user.userCountryCode && userMustBelongToRegion">
-        <mat-label>Region</mat-label>
-        <mat-select [(ngModel)]="data.user.userRegionCode" (selectionChange)="filterBranches()">
-          <mat-option *ngFor="let region of _regions" [value]="region.code">
-            {{ region.regionName }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
+        <mat-form-field class="me-24 fs-16" appearance="outline">
+          <mat-label>Country</mat-label>
+          <mat-select [(ngModel)]="data.user.userCountryCode" (selectionChange)="selectCountry()">
+            <mat-option *ngFor="let country of countries" [value]="country.code">
+              {{ country.countryName }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
 
-      <mat-form-field class="me-24 fs-16" appearance="outline" *ngIf="data.user.userRegionCode && userMustBelongToBranch">
-        <mat-label>Branch</mat-label>
-        <mat-select [(ngModel)]="data.user.userBrnCode">
-          <mat-option *ngFor="let branch of _branches" [value]="branch.code">
-            {{ branch.name }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
+        <mat-form-field class="me-24 fs-16" appearance="outline" *ngIf="userMustBelongToRegion">
+          <mat-label>Region</mat-label>
+          <mat-select [(ngModel)]="data.user.userRegionCode" (selectionChange)="filterBranches()">
+            <mat-option *ngFor="let region of _regions" [value]="region.code">
+              {{ region.regionName }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
 
-      <mat-form-field class="me-24 fs-16" appearance="outline" *ngIf="data.user.userCountryCode">
-        <mat-label>Phone Number</mat-label>
-        <input type="text" matInput [(ngModel)]="data.user.userPhone" />
-      </mat-form-field>
+        <mat-form-field class="me-24 fs-16" appearance="outline" *ngIf="userMustBelongToBranch">
+          <mat-label>Branch</mat-label>
+          <mat-select [(ngModel)]="data.user.userBrnCode" (selectionChange)="getClusters()">
+            <mat-option *ngFor="let branch of _branches" [value]="branch.code">
+              {{ branch.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
 
+        <mat-form-field class="me-24 fs-16" appearance="outline" *ngIf="userMustBelongToCluster">
+          <mat-label>Cluster</mat-label>
+          <mat-select [(ngModel)]="data.user.userClusterCode">
+            <mat-option *ngFor="let cluster of clusters" [value]="cluster.code">
+              {{ cluster.clusterName }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <p *ngIf="loadingClusters">{{ loadingClustersMessage }}</p>
+      </div>
+      
+      <div id="other-personal-information" *ngIf="showOtherPersonalInformationFields">
+        <mat-form-field class="me-24 fs-16" appearance="outline">
+          <mat-label>Phone Number</mat-label>
+          <input type="text" matInput [(ngModel)]="data.user.userPhone" />
+        </mat-form-field>
 
-      <mat-form-field class="me-24 fs-16" appearance="outline" *ngIf="data.user.code === undefined && data.user.userCountryCode">
-        <mat-label>Password</mat-label>
-        <input type="password" matInput [(ngModel)]="data.user.userPassword" />
-      </mat-form-field>
+        <mat-form-field class="me-24 fs-16" appearance="outline" *ngIf="data.user.code === undefined">
+          <mat-label>Password</mat-label>
+          <input type="password" matInput [(ngModel)]="data.user.userPassword" />
+        </mat-form-field>
+      </div>
 
     </div>
   </div>
   <div mat-dialog-actions align="center" *ngIf="!successMessage">
-    <button id="cancel" mat-button (click)="onClose()">Cancel</button>
+    <button id="cancel" mat-button (click)="onClose()" *ngIf="showPersonalInformationFields">Cancel</button>
+    <button id="cancel" mat-button (click)="back()" *ngIf="showRoleLocationInformationFields || showOtherPersonalInformationFields">Back</button>
     <button id="save" mat-button *ngIf="loading">
       <mat-progress-spinner
         mode="indeterminate"
@@ -104,6 +121,52 @@
       ></mat-progress-spinner>
     </button>
     <button
+      id="save"
+      mat-button
+      disabled
+      *ngIf="
+        (showPersonalInformationFields && (!data.user.userFirstName || !data.user.userLastName || !data.user.userId || !data.user.userEmail)) ||
+        (showRoleLocationInformationFields && (!data.user.userRoleCode || !data.user.userCountryCode))
+      "
+    >
+      Next
+    </button>
+    <button
+      id="save"
+      mat-button
+      *ngIf="
+        (showPersonalInformationFields && data.user.userFirstName && data.user.userLastName && data.user.userId && data.user.userEmail) ||
+        (showRoleLocationInformationFields && data.user.userRoleCode && data.user.userCountryCode)
+      "
+      (click)="next()"
+      cdkFocusInitial
+    >
+      Next
+    </button>
+    <button
+      id="save"
+      mat-button
+      disabled
+      *ngIf="
+        !loading && showOtherPersonalInformationFields &&
+        (!data.user.userPhone || !data.user.userPassword)
+      "
+    >
+      Save
+    </button>
+    <button
+      id="save"
+      mat-button
+      *ngIf="
+        !loading && showOtherPersonalInformationFields &&
+        (data.user.userPhone && data.user.userPassword)
+      "
+      (click)="save()"
+      cdkFocusInitial
+    >
+      Save
+    </button>
+    <!-- <button
       id="save"
       mat-button
       disabled
@@ -131,6 +194,6 @@
       cdkFocusInitial
     >
       Save
-    </button>
+    </button> -->
   </div>
 </main>

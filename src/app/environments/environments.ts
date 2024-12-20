@@ -34,6 +34,12 @@ export const ENVIRONMENT = {
       update: '/symu/branch/createOrUpdateBranch',
       delete: '',
     },
+    clusters: {
+      getAll: '/symu/cluster/getAllClustersByBranch',
+      create: '/symu/cluster/createOrUpdateCluster',
+      update: '/symu/cluster/createOrUpdateCluster',
+      delete: '',
+    },
     phoneModels: {
       getAll: '/symu/stock-model/getAllStockModels',
       create: '/symu/stock-model/createOrUpdateStockModel',

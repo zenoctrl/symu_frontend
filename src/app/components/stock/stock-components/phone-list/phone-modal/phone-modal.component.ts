@@ -7,6 +7,7 @@ import { Country } from 'src/app/components/setups/setups-components/countries/c
 import { Region } from 'src/app/components/setups/setups-components/regions/regions.component';
 import { Branch } from 'src/app/components/setups/setups-components/branches/branches.component';
 import { StockBatch } from '../../stock-batch/stock-batch.component';
+import { Cluster } from 'cluster';
 
 @Component({
   selector: 'app-phone-modal',
@@ -29,6 +30,8 @@ export class PhoneModalComponent {
   userAssignedToBranch!: boolean;
   inValidIMEI!: boolean;
   stockStatuses: any[] = [];
+  clusters!: Cluster[] | any[];
+  clusterName!: string;
 
   constructor(
     public dialogRef: MatDialogRef<PhoneModalComponent>,
@@ -45,13 +48,14 @@ export class PhoneModalComponent {
       this.getModels();
       this.getBatch();
       this.getStatuses();
+      
 
-       const country = this.countries.find(
-         (country: Country) => country.code == this.data.phone.stockCountryCode
-       );
+      const country = this.countries.find(
+        (country: Country) => country.code == this.data.phone.stockCountryCode
+      );
 
-       if (this.data.title.toLowerCase().includes('post'))
-         this.data.phone.customerPhoneNumber = `+${country?.countryCountryCode}`;
+      if (this.data.title.toLowerCase().includes('post'))
+        this.data.phone.customerPhoneNumber = `+${country?.countryCountryCode}`;
     }
 
     if (this.data.title === 'Receipt') {
@@ -207,7 +211,9 @@ export class PhoneModalComponent {
       customerNationalId: phone.customerNationalId,
       customerName: phone.customerName,
       customerPhoneNumber: phone.customerPhoneNumber,
-      stockDealerCode: this.data.dealers.find((d: any) => d.dealerName == phone.tradingName).dealerCode,
+      stockDealerCode: this.data.dealers.find(
+        (d: any) => d.dealerName == phone.tradingName
+      ).dealerCode,
     };
     this.loading = true;
     const endpoint: string = ENVIRONMENT.endpoints.stock.phone.postSale;
@@ -215,7 +221,7 @@ export class PhoneModalComponent {
       (res: any) => {
         this.loading = false;
         if (res.statusCode == 0) {
-          this.data.title = "Receipt";
+          this.data.title = 'Receipt';
           this.receipt = res.data;
         } else {
         }
@@ -286,7 +292,7 @@ export class PhoneModalComponent {
     );
   }
 
-  onClose(string?:any) {
+  onClose(string?: any) {
     this.dialogRef.close(string);
   }
 
@@ -297,7 +303,9 @@ export class PhoneModalComponent {
 
   getModels() {
     this.models = JSON.parse(sessionStorage.getItem('models') || '[]').filter(
-      (model: DeviceModel) => model.modelStatus == 'AVAILABLE' && model.modelCountryCode == this.data.phone.stockCountryCode
+      (model: DeviceModel) =>
+        model.modelStatus == 'AVAILABLE' &&
+        model.modelCountryCode == this.data.phone.stockCountryCode
     );
   }
 
@@ -317,9 +325,10 @@ export class PhoneModalComponent {
       sessionStorage.getItem('stock-batches') || '[]'
     ).filter(
       (batch: StockBatch) =>
-        batch.stockModelCode == this.data.phone.stockModelCode && batch.batchStatus == 'AVAILABLE'
+        batch.stockModelCode == this.data.phone.stockModelCode &&
+        batch.batchStatus == 'AVAILABLE'
     );
-    
+
     if (
       this.batches.length > 0 &&
       this.batches
@@ -330,23 +339,24 @@ export class PhoneModalComponent {
     } else {
       this.errorMessage = 'Model has no available batch.';
     }
-    
   }
 
   selectCountry() {
     this.data.phone.stockBaseCurrency = this.countries.find(
       (country: Country) => country.code === this.data.phone.stockCountryCode
     )?.countryCurrencyCode;
-    this.data.phone.stockRegionCode = this.data.phone.stockBranchCode = this.data.phone.stockMemory = null;
+    this.data.phone.stockRegionCode =
+      this.data.phone.stockBranchCode =
+      this.data.phone.stockMemory =
+        null;
     this.getModels();
     this.getRegions();
   }
 
   getRegions() {
-    this.regions = JSON.parse(
-      sessionStorage.getItem('regions') || '[]'
-    ).filter(
-      (region: Region) => region.regionCountryCode === this.data.phone.stockCountryCode
+    this.regions = JSON.parse(sessionStorage.getItem('regions') || '[]').filter(
+      (region: Region) =>
+        region.regionCountryCode === this.data.phone.stockCountryCode
     );
   }
 
@@ -356,6 +366,7 @@ export class PhoneModalComponent {
     ).filter(
       (branch: Branch) => branch.regionCode === this.data.phone.stockRegionCode
     );
+    this.getClusters();
   }
 
   getUser() {
@@ -393,7 +404,7 @@ export class PhoneModalComponent {
   }
 
   transformDate(date: string): string {
-    return (new Date(date)).toLocaleString();
+    return new Date(date).toLocaleString();
   }
 
   checkInput(input: string) {
@@ -402,6 +413,39 @@ export class PhoneModalComponent {
   }
 
   getStatuses() {
-    this.stockStatuses = JSON.parse(sessionStorage.getItem('stock-statuses') || '[]').filter((s: any) => s.statusName.toLowerCase().includes('available') || s.statusName.toLowerCase().includes('missing') || s.statusName.toLowerCase().includes('lost'));
+    this.stockStatuses = JSON.parse(
+      sessionStorage.getItem('stock-statuses') || '[]'
+    ).filter(
+      (s: any) =>
+        s.statusName.toLowerCase().includes('available') ||
+        s.statusName.toLowerCase().includes('missing') ||
+        s.statusName.toLowerCase().includes('lost')
+    );
+  }
+
+  getClusters() {
+    const endpoint: string = `${ENVIRONMENT.endpoints.clusters.getAll}?clusterBranchCode=${this.data.phone.stockBranchCode}`;
+    this._data.get(ENVIRONMENT.baseUrl + endpoint).subscribe(
+      (res: any) => {
+        if (res.statusCode == 0) {
+          this.clusters = res.data.filter(
+            (cluster: Cluster | any) =>
+              cluster.clusterStatus.toUpperCase() == 'ACTIVE'
+          );
+          this.clusterName = this.clusters.find(
+            (c) => c.clusterBranchCode == this.data.phone.stockBranchCode
+          ).clusterName;
+        } else {
+          this.errorMessage = res.message;
+        }
+      },
+      (error: any) => {
+        if (error.error.message !== undefined) {
+          this.errorMessage = error.error.message;
+        } else {
+          this.errorMessage = 'Internal server error. Please try again.';
+        }
+      }
+    );
   }
 }

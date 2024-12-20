@@ -20,21 +20,30 @@
             <div *ngIf="!VIEW_CAPTURED_IMEI">
 
               <mat-form-field class="me-24 fs-16" appearance="outline">
-                  <mat-label>Branch</mat-label>
-                  <mat-select [(ngModel)]="data.stock.stockBranchCode" (selectionChange)="filterModels()">
-                    <mat-option *ngFor="let branch of branches" [value]="branch.code">
-                      {{ branch.name }}
-                    </mat-option>
-                  </mat-select>
+                <mat-label>Branch</mat-label>
+                <mat-select [(ngModel)]="data.stock.stockBranchCode" (selectionChange)="filterModels(); getClusters();">
+                  <mat-option *ngFor="let branch of branches" [value]="branch.code">
+                    {{ branch.name }}
+                  </mat-option>
+                </mat-select>
               </mat-form-field>
 
               <mat-form-field class="me-24 fs-16" appearance="outline">
-                  <mat-label>Model</mat-label>
-                  <mat-select [(ngModel)]="data.stock.stockModelCode" (selectionChange)="filterBatches()">
-                    <mat-option *ngFor="let model of _models" [value]="model.code">
-                      {{ model.modelName }}
-                    </mat-option>
-                  </mat-select>
+                <mat-label>Cluster</mat-label>
+                <mat-select [(ngModel)]="data.stock.stockClusterCode">
+                  <mat-option *ngFor="let cluster of clusters" [value]="cluster.code">
+                    {{ cluster.clusterName }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+
+              <mat-form-field class="me-24 fs-16" appearance="outline">
+                <mat-label>Model</mat-label>
+                <mat-select [(ngModel)]="data.stock.stockModelCode" (selectionChange)="filterBatches()">
+                  <mat-option *ngFor="let model of _models" [value]="model.code">
+                    {{ model.modelName }}
+                  </mat-option>
+                </mat-select>
               </mat-form-field>
 
                <mat-form-field class="me-24 fs-16" appearance="outline">

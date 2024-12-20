@@ -5,11 +5,12 @@ import { ENVIRONMENT } from 'src/app/environments/environments';
 import { Branch } from 'src/app/components/setups/setups-components/branches/branches.component';
 import { DeviceModel } from '../../phone-models/phone-models.component';
 import { StockBatch } from '../../stock-batch/stock-batch.component';
+import { Cluster } from 'cluster';
 
 @Component({
   selector: 'app-inventory-modal',
   templateUrl: './inventory-modal.component.html',
-  styleUrls: ['./inventory-modal.component.scss']
+  styleUrls: ['./inventory-modal.component.scss'],
 })
 export class InventoryModalComponent {
   user: any;
@@ -21,18 +22,18 @@ export class InventoryModalComponent {
   batches: StockBatch[] = [];
   _models: DeviceModel[] = [];
   _batches: StockBatch[] = [];
-  IMEI: any; 
+  IMEI: any;
   CAPTURED_IMEI: string[] = [];
   VIEW_CAPTURED_IMEI: boolean = false;
   SOME_FAILED_INSERT: boolean = false;
   REASON_FOR_FAILURE: string[] = [];
+  clusters!: Cluster[] | any;
 
   constructor(
     public dialogRef: MatDialogRef<InventoryModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private _data: DataService
   ) {}
-
 
   ngOnInit() {
     this.getBranches();
@@ -44,14 +45,38 @@ export class InventoryModalComponent {
     this.branches = JSON.parse(sessionStorage.getItem('branches') || '[]');
   }
 
+  getClusters() {
+    const endpoint: string = `${ENVIRONMENT.endpoints.clusters.getAll}?clusterBranchCode=${this.data.stock.stockBranchCode}`;
+    this._data.get(ENVIRONMENT.baseUrl + endpoint).subscribe(
+      (res: any) => {
+        if (res.statusCode == 0) {
+          this.clusters = res.data.filter(
+            (cluster: Cluster | any) =>
+              cluster.clusterStatus.toUpperCase() == 'ACTIVE'
+          );
+        } else {
+          this.errorMessage = res.message;
+        }
+      },
+      (error: any) => {
+        if (error.error.message !== undefined) {
+          this.errorMessage = error.error.message;
+        } else {
+          this.errorMessage = 'Internal server error. Please try again.';
+        }
+      }
+    );
+  }
+
   getDeviceModels() {
     const endpoint: string = ENVIRONMENT.endpoints.phoneModels.getAll;
     this._data.get(ENVIRONMENT.baseUrl + endpoint).subscribe(
       (res: any) => {
         if (res.statusCode == 0) {
           this.models = res.data.filter(
-            (model: DeviceModel) => model.modelStatus == 'AVAILABLE');
-        } 
+            (model: DeviceModel) => model.modelStatus == 'AVAILABLE'
+          );
+        }
       },
       (error: any) => {}
     );
@@ -72,30 +97,34 @@ export class InventoryModalComponent {
   filterModels() {
     this._models = this.models.filter(
       (model: DeviceModel) =>
-        model.modelCountryCode == this.branches.find(branch => branch.code === this.data.stock.stockBranchCode)?.countryCode
+        model.modelCountryCode ==
+        this.branches.find(
+          (branch) => branch.code === this.data.stock.stockBranchCode
+        )?.countryCode
     );
   }
 
   filterBatches() {
     this._batches = this.batches.filter(
       (batch: StockBatch) =>
-        batch.stockModelCode == this.data.stock.stockModelCode && batch.batchStatus == 'AVAILABLE'
+        batch.stockModelCode == this.data.stock.stockModelCode &&
+        batch.batchStatus == 'AVAILABLE'
     );
     if (this._batches.length > 0) {
       this.errorMessage = '';
     } else {
-      this.errorMessage = "Model has no available batch.";
+      this.errorMessage = 'Model has no available batch.';
     }
-    
   }
 
-  onClose(string?:any) {
+  onClose(string?: any) {
     this.dialogRef.close(string);
   }
 
   save() {
     this.data.stock.stockCreatedBy = this.data.user.code;
     this.data.stock.stockImei = this.CAPTURED_IMEI;
+    delete this.data.stock.stockBranchCode;
     this.loading = true;
     this.errorMessage = this.successMessage = '';
     const endpoint: string = ENVIRONMENT.endpoints.stock.bulk.create;
@@ -103,24 +132,28 @@ export class InventoryModalComponent {
       (res: any) => {
         this.loading = false;
         if (res.statusCode == 0) {
-          if(res.data.length > 0) this.export(res.data);
+          if (res.data.length > 0) this.export(res.data);
 
           if (res.success > 0 && res.failed == 0) {
             this.successMessage = `${res.success} added successfully.`;
-          }  
-          
+          }
+
           if (res.success > 0 && res.failed > 0) {
             this.SOME_FAILED_INSERT = true;
             this.successMessage = `Saved ${res.success} successfully. But failed to save ${res.failed}.`;
-            this.REASON_FOR_FAILURE = res.symuErrorInfoList.map((error: any) => `${error.statusDesc} -  ${error.statusMessage}`);
+            this.REASON_FOR_FAILURE = res.symuErrorInfoList.map(
+              (error: any) => `${error.statusDesc} -  ${error.statusMessage}`
+            );
           }
-          
+
           if (res.success == 0 && res.failed > 0) {
             this.SOME_FAILED_INSERT = true;
             this.errorMessage = `Failed to save any of the IMEI.`;
-            this.REASON_FOR_FAILURE = res.symuErrorInfoList.map((error: any) => `${error.statusDesc} -  ${error.statusMessage}`);
+            this.REASON_FOR_FAILURE = res.symuErrorInfoList.map(
+              (error: any) => `${error.statusDesc} -  ${error.statusMessage}`
+            );
           }
-        } 
+        }
       },
       (error: any) => {
         this.loading = false;
@@ -130,23 +163,25 @@ export class InventoryModalComponent {
           this.errorMessage = 'Internal server error. Please try again.';
         }
       }
-    )
+    );
   }
 
   capture() {
     // setTimeout(() => {
     //   if (!this.CAPTURED_IMEI.includes(this.IMEI) && /^\d{15}$/.test(this.IMEI)) {
     //     this.CAPTURED_IMEI.push(this.IMEI);
-    //   } 
+    //   }
     //   this.IMEI = "";
     // }, 500);
 
-    this.errorMessage = isNaN(Number(this.IMEI)) ? 'Wrong IMEI input value' : '';
+    this.errorMessage = isNaN(Number(this.IMEI))
+      ? 'Wrong IMEI input value'
+      : '';
 
     if (!this.CAPTURED_IMEI.includes(this.IMEI) && /^\d{15}$/.test(this.IMEI)) {
       this.CAPTURED_IMEI.push(this.IMEI);
-      this.IMEI = "";
-    } 
+      this.IMEI = '';
+    }
   }
 
   viewCapturedIMEI() {
@@ -157,10 +192,35 @@ export class InventoryModalComponent {
   export(data: any[]) {
     const filteredStockData = data.map((stock) => {
       const {
-        code, stockCompanyCode, stockBatchCode, stockBranchCode, stockRegionCode, stockCountryCode, stockCreatedOn, stockUpdatedOn,
-        stockAgnCode, stockModelCode, stockMemory, stockBuyingPrice, stockSellingPrice, stockProfit, stockStatusCode, stockBaseCurrency,
-        stockDefaulted, stockCustomerCode, stockCreatedBy, stockUpdatedBy, stockSoldBy, stockTradeName, stockDealerCode, stockStatusDescription,
-        stockStatusName, statusShortDesc, stockBranchName, stockCountryName, stockBatchNumber,
+        code,
+        stockCompanyCode,
+        stockBatchCode,
+        stockBranchCode,
+        stockRegionCode,
+        stockCountryCode,
+        stockCreatedOn,
+        stockUpdatedOn,
+        stockAgnCode,
+        stockModelCode,
+        stockMemory,
+        stockBuyingPrice,
+        stockSellingPrice,
+        stockProfit,
+        stockStatusCode,
+        stockBaseCurrency,
+        stockDefaulted,
+        stockCustomerCode,
+        stockCreatedBy,
+        stockUpdatedBy,
+        stockSoldBy,
+        stockTradeName,
+        stockDealerCode,
+        stockStatusDescription,
+        stockStatusName,
+        statusShortDesc,
+        stockBranchName,
+        stockCountryName,
+        stockBatchNumber,
         ...filteredStock
       } = stock;
       return filteredStock;
@@ -189,5 +249,4 @@ export class InventoryModalComponent {
 
     return csvRows.join('\n');
   }
-
 }

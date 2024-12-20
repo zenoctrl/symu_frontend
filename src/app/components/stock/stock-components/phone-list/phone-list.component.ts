@@ -54,9 +54,11 @@ export class PhoneListComponent {
   isFetching!: boolean;
   dealerships: any[] = [];
   countries: Country[] = [];
-  page: number = 0; size: number = 2000;
+  page: number = 0;
+  size: number = 2000;
   RETRY_COUNT: number = 3;
   totalPhonesAvailableForSale!: number;
+  permissionToEditDenied: boolean = false;
 
   rowData = [];
   gridApi!: GridApi;
@@ -67,6 +69,11 @@ export class PhoneListComponent {
     {
       headerName: 'Branch',
       field: 'stockBranchName',
+      filter: true,
+    },
+    {
+      headerName: 'Cluster',
+      field: 'stockClusterName',
       filter: true,
     },
     {
@@ -84,20 +91,20 @@ export class PhoneListComponent {
       field: 'stockCreatedOn',
       filter: 'agDateColumnFilter',
       valueGetter: (params) => {
-        const date = new Date(params.data.stockCreatedOn); 
+        const date = new Date(params.data.stockCreatedOn);
         return date.toLocaleDateString();
       },
       filterParams: {
         comparator: (filterLocalDateAtMidnight: Date, cellValue: Date) => {
           const cellDate = new Date(cellValue);
           if (cellDate < filterLocalDateAtMidnight) {
-              return -1;
+            return -1;
           } else if (cellDate > filterLocalDateAtMidnight) {
-              return 1;
+            return 1;
           }
           return 0;
-        }
-      }
+        },
+      },
     },
     {
       headerName: 'Actions',
@@ -151,20 +158,35 @@ export class PhoneListComponent {
             role.toLowerCase().includes('admin') ||
             role.toLowerCase() == 'sales manager'
           ) {
-            this.dataSource = this.dataSource.concat(res.data.content.filter(
-              (phone: any) =>
-                phone.stockCountryCode == this.user.userCountryCode
-            ));
+            this.dataSource = this.dataSource.concat(
+              res.data.content.filter(
+                (phone: any) =>
+                  phone.stockCountryCode == this.user.userCountryCode
+              )
+            );
           } else if (role.toLowerCase().includes('region')) {
-            this.dataSource = this.dataSource.concat(res.data.content.filter(
-              (phone: any) =>
-                phone.stockRegionCode == this.user.userRegionCode
-            ));
+            this.dataSource = this.dataSource.concat(
+              res.data.content.filter(
+                (phone: any) =>
+                  phone.stockRegionCode == this.user.userRegionCode
+              )
+            );
+          } else if (
+            role.toLowerCase().includes('shop') ||
+            role.toLowerCase().includes('field')
+          ) {
+            this.dataSource = this.dataSource.concat(
+              res.data.content.filter(
+                (phone: any) => phone.stockBranchCode == this.user.userBrnCode
+              )
+            );
           } else {
-            this.dataSource = this.dataSource.concat(res.data.content.filter(
-              (phone: any) =>
-                phone.stockBranchCode == this.user.userBrnCode
-            ));
+            this.dataSource = this.dataSource.concat(
+              res.data.content.filter(
+                (phone: any) =>
+                  phone.stockClusterCode == this.user.userClusterCode
+              )
+            );
           }
           this.rowData = this.dataSource;
           this.totalPhonesAvailableForSale = res.data.totalElements;
@@ -173,8 +195,7 @@ export class PhoneListComponent {
           if (!res.data.last) {
             this.page++;
             this.getPhones();
-          } 
-
+          }
         } else {
           if (this.RETRY_COUNT > 0) {
             setTimeout(() => {
@@ -182,7 +203,10 @@ export class PhoneListComponent {
               this.RETRY_COUNT--;
             }, 3000);
           } else {
-            this.openSnackBar('Failed to fetch resources. Please refresh page.', 'Close');
+            this.openSnackBar(
+              'Failed to fetch resources. Please refresh page.',
+              'Close'
+            );
           }
         }
       },
@@ -193,13 +217,25 @@ export class PhoneListComponent {
             this.RETRY_COUNT--;
           }, 3000);
         } else {
-          this.openSnackBar('Failed to fetch resources. Please refresh page.', 'Close');
+          this.openSnackBar(
+            'Failed to fetch resources. Please refresh page.',
+            'Close'
+          );
         }
       }
     );
   }
 
   editPhone(event: any) {
+
+    if (event.title.toLowerCase().includes('edit') && this.permissionToEditDenied) {
+      this.openSnackBar(
+        'Permission denied.',
+        'Close'
+      );
+      return;
+    }
+
     const dialogRef = this.dialog.open(PhoneModalComponent, {
       data: {
         phone: event.phone,
@@ -220,7 +256,6 @@ export class PhoneListComponent {
           this.postEvent.emit();
         }
       }
-      
     });
   }
 
@@ -267,6 +302,10 @@ export class PhoneListComponent {
         (column: string) => !column.includes('price')
       );
     }
+    
+    if (role.toLowerCase().includes('cluster')) {
+      this.permissionToEditDenied = true;
+    }
   }
 
   getDealerships() {
@@ -312,9 +351,10 @@ export class PhoneListComponent {
         'stockMemory',
         'stockBatchNumber',
         'stockBranchName',
+        'stockClusterName',
         'stockCountryName',
         'stockStatusName',
-        'stockCreatedOn'
+        'stockCreatedOn',
       ],
     };
     this.gridApi.exportDataAsCsv(params);

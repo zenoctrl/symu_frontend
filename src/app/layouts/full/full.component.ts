@@ -89,7 +89,8 @@ export class FullComponent {
 
     if (!role.toLowerCase().includes('director')) {
       this.sidebarMenu = this.sidebarMenu.filter(
-        (menu: sidebarMenu) => !menu.link.includes('admin')
+        (menu: sidebarMenu) =>
+          !menu.link.includes('admin') && !menu.link.includes('users')
       );
     }
 

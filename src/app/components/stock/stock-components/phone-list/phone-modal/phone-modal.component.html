@@ -48,6 +48,15 @@
                   </mat-select>
               </mat-form-field>
 
+              <mat-form-field class="me-24 fs-16" appearance="outline">
+                <mat-label>Cluster</mat-label>
+                <mat-select [(ngModel)]="data.phone.stockClusterCode">
+                  <mat-option *ngFor="let cluster of clusters" [value]="cluster.code">
+                    {{ cluster.clusterName }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+
               <mat-form-field class="me-24 fs-16" appearance="outline" *ngIf="data.phone.stockRegionCode && data.phone.stockBranchCode">
                   <mat-label>Model</mat-label>
                   <mat-select [(ngModel)]="data.phone.stockMemory" (selectionChange)="selectModel()">
@@ -180,7 +189,8 @@
                 </table>
                 <hr>
                 <p class="d-flex"><span>Gross Total</span> <span class="fw-bold" style="margin-left: auto;">{{ data.phone.stockBaseCurrency + ' ' + receipt.receiptAmount }}</span></p>
-                <p style="text-align: center;"><em>Thank You.</em></p>
+                <p style="text-align: center; margin-top: 2px; margin-bottom: 0;"><em>Served by {{ receipt.receiptCreatedBy }} at {{ clusterName }}</em></p>
+                <p style="text-align: center; margin-top: 0;"><em>Thank You</em></p>
               </div>
             </div>
             
