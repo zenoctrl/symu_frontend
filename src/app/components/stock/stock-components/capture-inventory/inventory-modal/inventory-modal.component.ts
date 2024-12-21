@@ -46,6 +46,7 @@ export class InventoryModalComponent {
   }
 
   getClusters() {
+    this.errorMessage = '';
     const endpoint: string = `${ENVIRONMENT.endpoints.clusters.getAll}?clusterBranchCode=${this.data.stock.stockBranchCode}`;
     this._data.get(ENVIRONMENT.baseUrl + endpoint).subscribe(
       (res: any) => {
@@ -54,6 +55,9 @@ export class InventoryModalComponent {
             (cluster: Cluster | any) =>
               cluster.clusterStatus.toUpperCase() == 'ACTIVE'
           );
+          if (this.clusters.length == 0) {
+            this.errorMessage = 'Selected branch has no cluster.';
+          }
         } else {
           this.errorMessage = res.message;
         }
@@ -124,7 +128,6 @@ export class InventoryModalComponent {
   save() {
     this.data.stock.stockCreatedBy = this.data.user.code;
     this.data.stock.stockImei = this.CAPTURED_IMEI;
-    delete this.data.stock.stockBranchCode;
     this.loading = true;
     this.errorMessage = this.successMessage = '';
     const endpoint: string = ENVIRONMENT.endpoints.stock.bulk.create;
@@ -136,6 +139,14 @@ export class InventoryModalComponent {
 
           if (res.success > 0 && res.failed == 0) {
             this.successMessage = `${res.success} added successfully.`;
+            this.data.stock.stockBranchCode =
+              this.data.stock.stockClusterCode =
+              this.data.stock.stockModelCode =
+                this.data.stock.stockBatchCode = null;
+                this.CAPTURED_IMEI = [];
+            setTimeout(() => {
+              this.successMessage = '';
+            }, 3000);
           }
 
           if (res.success > 0 && res.failed > 0) {
@@ -167,12 +178,6 @@ export class InventoryModalComponent {
   }
 
   capture() {
-    // setTimeout(() => {
-    //   if (!this.CAPTURED_IMEI.includes(this.IMEI) && /^\d{15}$/.test(this.IMEI)) {
-    //     this.CAPTURED_IMEI.push(this.IMEI);
-    //   }
-    //   this.IMEI = "";
-    // }, 500);
 
     this.errorMessage = isNaN(Number(this.IMEI))
       ? 'Wrong IMEI input value'
@@ -221,6 +226,7 @@ export class InventoryModalComponent {
         stockBranchName,
         stockCountryName,
         stockBatchNumber,
+        stockClusterCode,
         ...filteredStock
       } = stock;
       return filteredStock;
