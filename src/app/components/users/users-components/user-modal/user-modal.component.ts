@@ -28,7 +28,7 @@ export class UserModalComponent {
   userMustBelongToRegion!: boolean;
   userMustBelongToBranch!: boolean;
   userMustBelongToCluster!: boolean;
-  clusters!: Cluster[] | any;
+  clusters!: Cluster[] | any[];
   showPersonalInformationFields: boolean = true;
   showRoleLocationInformationFields!: boolean;
   showOtherPersonalInformationFields!: boolean;
@@ -38,17 +38,14 @@ export class UserModalComponent {
     public dialogRef: MatDialogRef<UserModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private _data: DataService
-  ) {
+  ) {}
+
+  ngOnInit() {
     this.getUser();
     this.getRoles();
     this.getLocations();
-  }
-
-  ngOnInit() {
-    if (this.data.title == 'Edit User') {
-      this.filterRegions();
-      this.filterBranches();
-    }
+    
+    
   }
 
   onClose() {
@@ -117,6 +114,7 @@ export class UserModalComponent {
       userPassword: user.userPassword,
       userRoleCode: user.userRoleCode,
       userCompanyCode: this.user.userCompanyCode,
+      userClusterCode: user.userClusterCode,
       userBrnCode: user.userBrnCode,
       userRegionCode: user.userRegionCode,
       userCountryCode: user.userCountryCode,
@@ -159,6 +157,7 @@ export class UserModalComponent {
       userPassword: user.userPassword,
       userRoleCode: user.userRoleCode,
       userCompanyCode: this.user.userCompanyCode,
+      userClusterCode: user.userClusterCode,
       userBrnCode: user.userBrnCode,
       userRegionCode: user.userRegionCode,
       userCountryCode: user.userCountryCode,
@@ -198,6 +197,34 @@ export class UserModalComponent {
     this.countries = JSON.parse(sessionStorage.getItem('countries') || '[]');
     this.regions = JSON.parse(sessionStorage.getItem('regions') || '[]');
     this.branches = JSON.parse(sessionStorage.getItem('branches') || '[]');
+
+    if (this.data.title == 'Edit User') {
+      this.filterRegions();
+      this.filterBranches();
+      this.getClusters();
+      const role: any = this.data.user.roleModel.roleName.toLowerCase();
+
+      if (
+        role.includes('region') ||
+        role.includes('shop') ||
+        role.includes('field') ||
+        role.includes('cluster')
+      ) {
+        this.userMustBelongToRegion = true;
+      }
+
+      if (
+        role.includes('shop') ||
+        role.includes('field') ||
+        role.includes('cluster')
+      ) {
+        this.userMustBelongToBranch = true;
+      }
+
+      if (role.includes('cluster')) {
+        this.userMustBelongToCluster = true;
+      }
+    }
   }
 
   selectCountry() {
@@ -280,7 +307,7 @@ export class UserModalComponent {
         if (res.statusCode == 0) {
           this.clusters = res.data.filter(
             (cluster: Cluster | any) =>
-              cluster.clusterStatus.toUpperCase() != 'DELETED'
+              cluster.clusterStatus.toUpperCase() == 'ACTIVE'
           );
           if (this.clusters.length == 0) {
             this.errorMessage = 'Selected branch has no cluster.';

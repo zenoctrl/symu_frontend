@@ -43,6 +43,7 @@
               <p class="mb-0 fw-medium op-5" *ngIf="user.roleModel.roleName.toLowerCase().includes('admin')">{{ user.countryEntity.countryName }}</p>
               <p class="mb-0 fw-medium op-5" *ngIf="user.roleModel.roleName.toLowerCase().includes('regional') || user.roleModel.roleName.toLowerCase() == 'sales manager'">{{ user.regionEntity ?  user.regionEntity.regionName + ', ' + user.countryEntity.countryName : user.countryEntity.countryName }}</p>
               <p class="mb-0 fw-medium op-5" *ngIf="user.roleModel.roleName.toLowerCase().includes('shop') || user.roleModel.roleName.toLowerCase().includes('field')">{{ user.branchEntity.name + ', ' + user.countryEntity.countryName }}</p>
+              <p class="mb-0 fw-medium op-5" *ngIf="user.roleModel.roleName.toLowerCase().includes('cluster')">{{ user.clusterEntity.clusterName + ', ' + user.branchEntity.name + ', ' + user.countryEntity.countryName }}</p>
             </td>
           </ng-container>
   
