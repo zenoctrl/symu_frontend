@@ -31,7 +31,6 @@ export class PhoneModalComponent {
   inValidIMEI!: boolean;
   stockStatuses: any[] = [];
   clusters!: Cluster[] | any[];
-  clusterName!: string;
 
   constructor(
     public dialogRef: MatDialogRef<PhoneModalComponent>,
@@ -432,9 +431,6 @@ export class PhoneModalComponent {
             (cluster: Cluster | any) =>
               cluster.clusterStatus.toUpperCase() == 'ACTIVE'
           );
-          this.clusterName = this.clusters.find(
-            (c) => c.clusterBranchCode == this.data.phone.stockBranchCode
-          ).clusterName;
         } else {
           this.errorMessage = res.message;
         }
