@@ -1,4 +1,10 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA, Output, ViewChild, EventEmitter } from '@angular/core';
+import {
+  Component,
+  CUSTOM_ELEMENTS_SCHEMA,
+  Output,
+  ViewChild,
+  EventEmitter,
+} from '@angular/core';
 import {
   MatDialog,
   MAT_DIALOG_DATA,
@@ -227,12 +233,11 @@ export class PhoneListComponent {
   }
 
   editPhone(event: any) {
-
-    if (event.title.toLowerCase().includes('edit') && this.permissionToEditDenied) {
-      this.openSnackBar(
-        'Permission denied.',
-        'Close'
-      );
+    if (
+      event.title.toLowerCase().includes('edit') &&
+      this.permissionToEditDenied
+    ) {
+      this.openSnackBar('Permission denied.', 'Close');
       return;
     }
 
@@ -302,8 +307,8 @@ export class PhoneListComponent {
         (column: string) => !column.includes('price')
       );
     }
-    
-    if (role.toLowerCase().includes('cluster')) {
+
+    if (role.toLowerCase().includes('sales executive')) {
       this.permissionToEditDenied = true;
     }
   }
