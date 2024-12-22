@@ -1,8 +1,16 @@
+a {
+    margin-right: 10px;
+}
+
 a:hover {
     text-decoration: underline;
     cursor: pointer;
 }
 
-.edit {
+#edit {
     color: #00c292;
+}
+
+#revert {
+    color: #ff0000;
 }

@@ -10,13 +10,4 @@ import { PostedSalesComponent } from './posted-sales/posted-sales.component';
 export class SalesComponent {
   @ViewChild(AfterSalesComponent) afterSalesComponent!: AfterSalesComponent;
   @ViewChild(PostedSalesComponent) postedSalesComponent!: PostedSalesComponent;
-
-  handleCompleteEvent() {
-    // this.afterSalesComponent.getPhones();
-    this.afterSalesComponent.refresh();
-  }
-
-  handlePostEvent() {
-    this.postedSalesComponent.refresh();
-  }
 }

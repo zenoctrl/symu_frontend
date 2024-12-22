@@ -20,9 +20,14 @@ export class AfterSaleActionsComponent implements ICellRendererAngularComp {
     return true;
   }
 
-  update($event: Event) {
+  update(event: Event) {
     if (this.params.update instanceof Function) {
-      this.params.update(this.params.node.data);
+      const params = {
+        event: event,
+        phone: this.params.node.data,
+        title: (event.target as HTMLAnchorElement).textContent,
+      };
+      this.params.update(params);
     }
   }
 }
