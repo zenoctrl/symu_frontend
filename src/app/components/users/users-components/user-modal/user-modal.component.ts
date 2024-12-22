@@ -32,7 +32,8 @@ export class UserModalComponent {
   showPersonalInformationFields: boolean = true;
   showRoleLocationInformationFields!: boolean;
   showOtherPersonalInformationFields!: boolean;
-  loadingClusters!: boolean; loadingClustersMessage!: string;
+  loadingClusters!: boolean;
+  loadingClustersMessage!: string;
 
   constructor(
     public dialogRef: MatDialogRef<UserModalComponent>,
@@ -44,8 +45,6 @@ export class UserModalComponent {
     this.getUser();
     this.getRoles();
     this.getLocations();
-    
-    
   }
 
   onClose() {
@@ -86,7 +85,8 @@ export class UserModalComponent {
           this.errorMessage = 'Selected branch has no cluster.';
           return;
         }
-        this.errorMessage = 'Please complete the required location information.';
+        this.errorMessage =
+          'Please complete the required location information.';
         return;
       }
       this.showOtherPersonalInformationFields = true;
@@ -201,7 +201,6 @@ export class UserModalComponent {
     if (this.data.title == 'Edit User') {
       this.filterRegions();
       this.filterBranches();
-      this.getClusters();
       const role: any = this.data.user.roleModel.roleName.toLowerCase();
 
       if (
@@ -222,6 +221,7 @@ export class UserModalComponent {
       }
 
       if (role.includes('cluster')) {
+        this.getClusters();
         this.userMustBelongToCluster = true;
       }
     }
@@ -259,7 +259,7 @@ export class UserModalComponent {
     const role: any = this.roles
       .find((r: any) => r.code == roleCode)
       .roleName.toLowerCase();
-    
+
     // clear form and any error message
     this.errorMessage = '';
     this.userMustBelongToRegion =
@@ -297,9 +297,9 @@ export class UserModalComponent {
   getClusters() {
     const endpoint: string = `${ENVIRONMENT.endpoints.clusters.getAll}?clusterBranchCode=${this.data.user.userBrnCode}`;
     this.loadingClusters = true;
-    this.loadingClustersMessage = `Fetching clusters belonging to ${this._branches.find(
-      (b) => b.code == this.data.user.userBrnCode
-    )?.name}. Please wait.`;
+    this.loadingClustersMessage = `Fetching clusters belonging to ${
+      this._branches.find((b) => b.code == this.data.user.userBrnCode)?.name
+    }. Please wait.`;
     this.errorMessage = '';
     this._data.get(ENVIRONMENT.baseUrl + endpoint).subscribe(
       (res: any) => {

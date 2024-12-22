@@ -7,6 +7,7 @@ import { ENVIRONMENT } from 'src/app/environments/environments';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { Role } from '../role-list/role-list.component';
+import { Cluster } from 'cluster';
 
 export interface User {
   id?: string;
@@ -98,7 +99,6 @@ export class UserListComponent {
       }
     });
   }
-
 
   deleteUser(user: any) {
     const payload = {
