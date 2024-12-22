@@ -151,28 +151,32 @@ export class ClustersComponent {
   }
 
   deleteCluster(cluster: Cluster) {
-    this.loading = true;
-    cluster.clusterStatus = 'DELETED';
-    this.successMessage = this.errorMessage = '';
-    const endpoint: string = ENVIRONMENT.endpoints.clusters.update;
-    this._data.post(ENVIRONMENT.baseUrl + endpoint, cluster).subscribe(
-      (res: any) => {
-        this.loading = false;
-        if (res.statusCode == 0) {
-          this.successMessage = 'Cluster deleted successfully';
-          this.getClusters();
-        } else {
-          this.errorMessage = res.message;
+    let message: string = `Are you sure you want to delete ${cluster.clusterName}?`;
+
+    if (window.confirm(message)) {
+      this.loading = true;
+      cluster.clusterStatus = 'DELETED';
+      this.successMessage = this.errorMessage = '';
+      const endpoint: string = ENVIRONMENT.endpoints.clusters.update;
+      this._data.post(ENVIRONMENT.baseUrl + endpoint, cluster).subscribe(
+        (res: any) => {
+          this.loading = false;
+          if (res.statusCode == 0) {
+            this.successMessage = 'Cluster deleted successfully';
+            this.getClusters();
+          } else {
+            this.errorMessage = res.message;
+          }
+        },
+        (error: any) => {
+          this.loading = false;
+          if (error.error.message !== undefined) {
+            this.errorMessage = error.error.message;
+          } else {
+            this.errorMessage = 'Internal server error. Please try again.';
+          }
         }
-      },
-      (error: any) => {
-        this.loading = false;
-        if (error.error.message !== undefined) {
-          this.errorMessage = error.error.message;
-        } else {
-          this.errorMessage = 'Internal server error. Please try again.';
-        }
-      }
-    );
+      );
+    }
   }
 }

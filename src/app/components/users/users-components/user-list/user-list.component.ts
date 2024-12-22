@@ -101,44 +101,49 @@ export class UserListComponent {
   }
 
   deleteUser(user: any) {
-    const payload = {
-      code: user.code,
-      userFirstName: user.userFirstName,
-      userLastName: user.userLastName,
-      userEmail: user.userEmail,
-      userPhone: user.userPhone,
-      userId: user.userId,
-      userPassword: user.userPassword,
-      userRoleCode: user.userRoleCode,
-      userCompanyCode: this.user.userCompanyCode,
-      userBrnCode: user.userBrnCode,
-      userRegionCode: user.userRegionCode,
-      userCountryCode: user.userCountryCode,
-      userStatus: 'DELETED',
-    };
-    this.isFetching = true;
-    const endpoint: string = ENVIRONMENT.endpoints.users.update;
-    this.data.post(ENVIRONMENT.baseUrl + endpoint, payload).subscribe(
-      (res: any) => {
-        this.isFetching = false;
-        if (res.statusCode == 0) {
-          this.openSnackBar('User deleted successfully.', 'Close');
-          this.getUsers();
-        } else {
-          this.openSnackBar(res.message, 'Close');
+
+    let message: string = `Are you sure you want to delete ${user.userFirstName}?`;
+    if (window.confirm(message)) {
+      const payload = {
+        code: user.code,
+        userFirstName: user.userFirstName,
+        userLastName: user.userLastName,
+        userEmail: user.userEmail,
+        userPhone: user.userPhone,
+        userId: user.userId,
+        userPassword: user.userPassword,
+        userRoleCode: user.userRoleCode,
+        userCompanyCode: this.user.userCompanyCode,
+        userBrnCode: user.userBrnCode,
+        userRegionCode: user.userRegionCode,
+        userCountryCode: user.userCountryCode,
+        userStatus: 'DELETED',
+      };
+      this.isFetching = true;
+      const endpoint: string = ENVIRONMENT.endpoints.users.update;
+      this.data.post(ENVIRONMENT.baseUrl + endpoint, payload).subscribe(
+        (res: any) => {
+          this.isFetching = false;
+          if (res.statusCode == 0) {
+            this.openSnackBar('User deleted successfully.', 'Close');
+            this.getUsers();
+          } else {
+            this.openSnackBar(res.message, 'Close');
+          }
+        },
+        (error: any) => {
+          this.isFetching = false;
+          let message;
+          if (error.error.message !== undefined) {
+            message = error.error.message;
+          } else {
+            message = 'Internal server error. Please try again.';
+          }
+          this.openSnackBar(message, 'Close');
         }
-      },
-      (error: any) => {
-        this.isFetching = false;
-        let message;
-        if (error.error.message !== undefined) {
-          message = error.error.message;
-        } else {
-          message = 'Internal server error. Please try again.';
-        }
-        this.openSnackBar(message, 'Close');
-      }
-    );
+      );
+    }
+
   }
 
   openSnackBar(message: string, action: string) {

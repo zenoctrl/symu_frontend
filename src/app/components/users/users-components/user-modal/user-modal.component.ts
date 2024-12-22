@@ -1,7 +1,7 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { DataService } from 'src/app/services/data.service';
-import { v4 as uuidv4} from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 import { User } from '../user-list/user-list.component';
 import { ENVIRONMENT } from 'src/app/environments/environments';
 import { Country } from 'src/app/components/setups/setups-components/countries/countries.component';
@@ -207,7 +207,7 @@ export class UserModalComponent {
         role.includes('region') ||
         role.includes('shop') ||
         role.includes('field') ||
-        role.includes('cluster')
+        role.includes('sales executive')
       ) {
         this.userMustBelongToRegion = true;
       }
@@ -215,12 +215,12 @@ export class UserModalComponent {
       if (
         role.includes('shop') ||
         role.includes('field') ||
-        role.includes('cluster')
+        role.includes('sales executive')
       ) {
         this.userMustBelongToBranch = true;
       }
 
-      if (role.includes('cluster')) {
+      if (role.includes('sales executive')) {
         this.getClusters();
         this.userMustBelongToCluster = true;
       }
@@ -275,7 +275,7 @@ export class UserModalComponent {
       role.includes('region') ||
       role.includes('shop') ||
       role.includes('field') ||
-      role.includes('cluster')
+      role.includes('sales executive')
     ) {
       this.userMustBelongToRegion = true;
     }
@@ -283,12 +283,12 @@ export class UserModalComponent {
     if (
       role.includes('shop') ||
       role.includes('field') ||
-      role.includes('cluster')
+      role.includes('sales executive')
     ) {
       this.userMustBelongToBranch = true;
     }
 
-    if (role.includes('cluster')) {
+    if (role.includes('sales executive')) {
       this.userMustBelongToCluster = true;
       this.clusters = [];
     }
