@@ -42,7 +42,11 @@ export class InventoryModalComponent {
   }
 
   getBranches() {
-    this.branches = JSON.parse(sessionStorage.getItem('branches') || '[]');
+    this.branches = JSON.parse(sessionStorage.getItem('branches') || '[]').sort((a: any, b: any) => {
+      if (a.name.toLowerCase() < b.name.toLowerCase()) return -1;
+      if (a.name.toLowerCase() > b.name.toLowerCase()) return 1;
+      return 0;
+    });
   }
 
   getClusters() {

@@ -229,7 +229,8 @@ export class AfterSalesComponent {
       this.colDefs = this.colDefs.filter(
         (column: any) =>
           !column.headerName.toLowerCase().includes('currency') &&
-          !column.headerName.toLowerCase().includes('price')
+          !column.headerName.toLowerCase().includes('price') &&
+          !column.headerName.toLowerCase().includes('action')
       );
     }
 
@@ -252,12 +253,12 @@ export class AfterSalesComponent {
       return;
     }
 
-    if (event.title.toLowerCase() == 'update status') {
+    if (event.title.toLowerCase().includes('status')) {
       this.updateDefaultStatus(event.phone);
       return;
     }
 
-    if (event.title.toLowerCase() == 'revert sale') {
+    if (event.title.toLowerCase().includes('revert')) {
       this.updateStockStatus(event.phone, 'posted');
       return;
     }
@@ -297,7 +298,7 @@ export class AfterSalesComponent {
   }
 
   updateStockStatus(stock: any, status: string) {
-    
+
     let statusCode;
 
     if (this.stockStatuses.length > 0) {

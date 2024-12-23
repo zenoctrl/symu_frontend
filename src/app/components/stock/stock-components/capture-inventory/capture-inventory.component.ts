@@ -54,7 +54,11 @@ export class CaptureInventoryComponent {
     }
 
     // approve stock permission
-    if (role === 'director' || role === 'field sales manager') {
+    if (
+      role === 'director' ||
+      role.includes('admin')  ||
+      role === 'field sales manager'
+    ) {
       this.canUpdateStockStatus = true;
     }
   }
