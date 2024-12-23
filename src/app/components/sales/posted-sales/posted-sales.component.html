@@ -20,6 +20,7 @@
             <th mat-header-cell *matHeaderCellDef> IMEI </th>
             <td mat-cell *matCellDef="let phone">
               <p class="mb-0 fw-medium">{{ phone.stockImei }}</p>
+              <p class="mb-0 fw-medium op-5">{{ phone.stockMemory }}</p>
             </td>
           </ng-container>
   
@@ -39,12 +40,11 @@
             </td>
           </ng-container>
 
-          <!-- Price Column -->
-          <ng-container matColumnDef="price" *ngIf="user.roleModel.roleName.toLowerCase().includes('admin')">
-            <th mat-header-cell *matHeaderCellDef> Price </th>
+          <!-- Cluster Column -->
+          <ng-container matColumnDef="cluster">
+            <th mat-header-cell *matHeaderCellDef> Cluster </th>
             <td mat-cell *matCellDef="let phone">
-              <p class="mb-0 fw-medium"><span class="op-5">Buying: </span>{{ phone.stockBaseCurrency + ' ' + phone.stockBuyingPrice }}</p>
-              <p class="mb-0 fw-medium"><span class="op-5">Selling: </span>{{ phone.stockBaseCurrency + ' ' + phone.stockSellingPrice }}</p>
+              <p class="mb-0 fw-medium">{{ phone.stockClusterName }}</p>
             </td>
           </ng-container>
 
@@ -53,6 +53,14 @@
             <th mat-header-cell *matHeaderCellDef> Branch </th>
             <td mat-cell *matCellDef="let phone">
               <p class="mb-0 fw-medium">{{ phone.stockBranchName }}</p>
+            </td>
+          </ng-container>
+
+          <!-- Country Column -->
+          <ng-container matColumnDef="country">
+            <th mat-header-cell *matHeaderCellDef> Country </th>
+            <td mat-cell *matCellDef="let phone">
+              <p class="mb-0 fw-medium">{{ phone.stockCountryName }}</p>
             </td>
           </ng-container>
   

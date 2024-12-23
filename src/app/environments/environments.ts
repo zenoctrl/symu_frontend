@@ -12,6 +12,8 @@ export const ENVIRONMENT = {
       resetPassword: '',
       roles: {
         getAll: '/symu/role/getAllRoles',
+        create: '/symu/role/createOrUpdateRole',
+        update: '/symu/role/createOrUpdateRole',
       },
     },
     countries: {
@@ -30,6 +32,12 @@ export const ENVIRONMENT = {
       getAll: '/symu/branch/getBranches',
       create: '/symu/branch/createOrUpdateBranch',
       update: '/symu/branch/createOrUpdateBranch',
+      delete: '',
+    },
+    clusters: {
+      getAll: '/symu/cluster/getAllClustersByBranch',
+      create: '/symu/cluster/createOrUpdateCluster',
+      update: '/symu/cluster/createOrUpdateCluster',
       delete: '',
     },
     phoneModels: {

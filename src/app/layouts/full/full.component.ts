@@ -76,14 +76,29 @@ export class FullComponent {
       icon: 'settings',
       menu: 'Admin',
     },
+    {
+      link: '/users',
+      icon: 'users',
+      menu: 'Users',
+    }
   ];
 
   getUser() {
     this.user = JSON.parse(sessionStorage.getItem('user') || '{}');
     const role = this.user.roleModel.roleName;
-    
+
     if (!role.toLowerCase().includes('director')) {
-      this.sidebarMenu = this.sidebarMenu.filter((menu: sidebarMenu) => !menu.link.includes('admin'));
+      this.sidebarMenu = this.sidebarMenu.filter(
+        (menu: sidebarMenu) =>
+          !menu.link.includes('admin') && !menu.link.includes('users')
+      );
+    }
+
+    if (role.toLowerCase().includes('sales executive')) {
+      this.sidebarMenu = this.sidebarMenu.filter(
+        (menu: sidebarMenu) =>
+          menu.link.includes('sales')
+      );
     }
 
     if (sessionStorage.getItem('countries') == null) {
@@ -109,7 +124,6 @@ export class FullComponent {
     if (sessionStorage.getItem('stock-statuses') == null) {
       this.getStockStatuses();
     }
-    
   }
 
   logout() {
@@ -187,7 +201,6 @@ export class FullComponent {
       (res: any) => {
         if (res.statusCode == 0) {
           sessionStorage.setItem('models', JSON.stringify(res.data));
-          
         } else {
           this.getDeviceModels();
         }
@@ -204,7 +217,6 @@ export class FullComponent {
       (res: any) => {
         if (res.statusCode == 0) {
           sessionStorage.setItem('stock-statuses', JSON.stringify(res.data));
-          
         } else {
           this.getStockStatuses();
         }

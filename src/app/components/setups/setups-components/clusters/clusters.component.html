@@ -1,0 +1,79 @@
+<main>
+
+    <h1 mat-dialog-title>
+        <span>{{ data.title }}</span> 
+        <img src="assets/images/close.png" alt="" (click)="onClose()"> 
+    </h1>
+    
+    <div mat-dialog-content>
+        <div class="mt-20" *ngIf="successMessage || errorMessage">
+          <div *ngIf="errorMessage" class="alert alert-danger alert-text-danger d-flex fs-14 align-items-center rounded mb-16" role="alert">
+            <i-feather name="alert-circle" class="text-danger feather-base me-12"></i-feather>
+            {{ errorMessage }}
+          </div>
+          <div *ngIf="successMessage" class="alert alert-success alert-text-success d-flex fs-14 align-items-center rounded mb-16" role="alert">
+            <i-feather name="alert-circle" class="text-success feather-base me-12"></i-feather>
+            {{ successMessage }}
+          </div>
+        </div>
+        <p>Branch: <b>{{ data.branch.name }}</b></p>
+        <div id="form">
+            <mat-form-field class="me-24 fs-16" appearance="outline">
+                <mat-label>Name</mat-label>
+                <input type="text" matInput [(ngModel)]="cluster.clusterName">
+            </mat-form-field>
+
+            <mat-form-field class="me-24 fs-16" appearance="outline">
+                <mat-label>Status</mat-label>
+                <mat-select [(ngModel)]="cluster.clusterStatus">
+                  <mat-option *ngFor="let status of statuses" [value]="status">
+                    {{ status }}
+                  </mat-option>
+                </mat-select>
+            </mat-form-field>
+            <button id="save" mat-button *ngIf="!cluster.clusterName || !cluster.clusterStatus">Save</button>
+            <button id="save" mat-button *ngIf="cluster.clusterName && cluster.clusterStatus" (click)="save()">Save</button>
+        </div>
+
+        <mat-progress-bar *ngIf="loading" mode="indeterminate"></mat-progress-bar>
+        
+        <div class="table-responsive">
+            <table mat-table [dataSource]="dataSource" class="text-nowrap w-100">
+    
+            <!-- Name Column -->
+            <ng-container matColumnDef="name">
+                <th mat-header-cell *matHeaderCellDef> Name </th>
+                <td mat-cell *matCellDef="let cluster">
+                <p class="mb-0 fw-medium">{{ cluster.clusterName }}</p>
+                </td>
+            </ng-container>
+
+            <!-- Status Column -->
+            <ng-container matColumnDef="status">  
+                <th mat-header-cell *matHeaderCellDef> Status </th>
+                <td mat-cell *matCellDef="let cluster">
+                <p class="mb-0 fw-medium">
+                    <span class="mb-0 fw-medium rounded-pill badge badge-success" *ngIf="cluster.clusterStatus === 'ACTIVE'">{{ cluster.clusterStatus }}</span>
+                    <span class="mb-0 fw-medium rounded-pill badge badge-danger" *ngIf="cluster.clusterStatus === 'INACTIVE'">{{ cluster.clusterStatus }}</span>
+                </p>
+                </td>
+            </ng-container>
+    
+            <!-- Action Column -->
+            <ng-container matColumnDef="action">
+                <th mat-header-cell *matHeaderCellDef> Action </th>
+                <td mat-cell *matCellDef="let cluster">
+                <div class="action">
+                    <a class="edit" (click)="editCluster(cluster)">Edit</a>
+                    <a class="delete" (click)="deleteCluster(cluster)">Delete</a>
+                </div>
+                </td>
+            </ng-container>
+    
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+            <mat-paginator #paginator [pageSize]="5" showFirstLastButtons aria-label="Select page"></mat-paginator>
+      </div>
+    </div>
+</main>

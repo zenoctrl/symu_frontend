@@ -25,7 +25,6 @@ import { CommonModule } from '@angular/common';
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class ArchiveComponent {
-
   user: any;
   displayedColumns: string[] = [
     'id',
@@ -42,7 +41,8 @@ export class ArchiveComponent {
   isFetching!: boolean;
   dealerships: any[] = [];
   countries: Country[] = [];
-  page: number = 0; size: number = 100;
+  page: number = 0;
+  size: number = 100;
   RETRY_COUNT: number = 3;
 
   rowData = [];
@@ -54,6 +54,11 @@ export class ArchiveComponent {
     {
       headerName: 'Branch',
       field: 'stockBranchName',
+      filter: true,
+    },
+    {
+      headerName: 'Cluster',
+      field: 'stockClusterName',
       filter: true,
     },
     {
@@ -72,20 +77,20 @@ export class ArchiveComponent {
       field: 'stockCreatedOn',
       filter: 'agDateColumnFilter',
       valueGetter: (params) => {
-        const date = new Date(params.data.stockCreatedOn); 
+        const date = new Date(params.data.stockCreatedOn);
         return date.toLocaleDateString();
       },
       filterParams: {
         comparator: (filterLocalDateAtMidnight: Date, cellValue: Date) => {
           const cellDate = new Date(cellValue);
           if (cellDate < filterLocalDateAtMidnight) {
-              return -1;
+            return -1;
           } else if (cellDate > filterLocalDateAtMidnight) {
-              return 1;
+            return 1;
           }
           return 0;
-        }
-      }
+        },
+      },
     },
     {
       headerName: 'Actions',
@@ -124,29 +129,44 @@ export class ArchiveComponent {
             role.toLowerCase().includes('admin') ||
             role.toLowerCase() == 'sales manager'
           ) {
-            this.dataSource = this.dataSource.concat(res.data.content.filter(
-              (phone: any) =>
-                phone.stockCountryCode == this.user.userCountryCode
-            ));
+            this.dataSource = this.dataSource.concat(
+              res.data.content.filter(
+                (phone: any) =>
+                  phone.stockCountryCode == this.user.userCountryCode
+              )
+            );
           } else if (role.toLowerCase().includes('region')) {
-            this.dataSource = this.dataSource.concat(res.data.content.filter(
-              (phone: any) =>
-                phone.stockRegionCode == this.user.userRegionCode
-            ));
+            this.dataSource = this.dataSource.concat(
+              res.data.content.filter(
+                (phone: any) =>
+                  phone.stockRegionCode == this.user.userRegionCode
+              )
+            );
+          } else if (
+            role.toLowerCase().includes('shop') ||
+            role.toLowerCase().includes('field')
+          ) {
+            this.dataSource = this.dataSource.concat(
+              res.data.content.filter(
+                (phone: any) => phone.stockBranchCode == this.user.userBrnCode
+              )
+            );
           } else {
-            this.dataSource = this.dataSource.concat(res.data.content.filter(
-              (phone: any) =>
-                phone.stockBranchCode == this.user.userBrnCode
-            ));
+            this.dataSource = this.dataSource.concat(
+              res.data.content.filter(
+                (phone: any) =>
+                  phone.stockClusterCode == this.user.userClusterCode
+              )
+            );
           }
+          
           this.rowData = [...new Set(this.rowData.concat(this.dataSource))];
 
           // fetch some more if page is not last
           if (!res.data.last) {
             this.page++;
             this.getPhones(status);
-          } 
-
+          }
         } else {
           if (this.RETRY_COUNT > 0) {
             setTimeout(() => {
@@ -154,7 +174,10 @@ export class ArchiveComponent {
               this.RETRY_COUNT--;
             }, 3000);
           } else {
-            this.openSnackBar('Failed to fetch resources. Please refresh page.', 'Close');
+            this.openSnackBar(
+              'Failed to fetch resources. Please refresh page.',
+              'Close'
+            );
           }
         }
       },
@@ -165,7 +188,10 @@ export class ArchiveComponent {
             this.RETRY_COUNT--;
           }, 3000);
         } else {
-          this.openSnackBar('Failed to fetch resources. Please refresh page.', 'Close');
+          this.openSnackBar(
+            'Failed to fetch resources. Please refresh page.',
+            'Close'
+          );
         }
       }
     );
@@ -173,7 +199,10 @@ export class ArchiveComponent {
 
   editPhone(event: any) {
     if (event.title.toLowerCase().includes('post')) {
-      this.openSnackBar(`Posting a ${event.phone.stockStatusName.toLowerCase()} is not allowed.`, 'Close');
+      this.openSnackBar(
+        `Posting a ${event.phone.stockStatusName.toLowerCase()} is not allowed.`,
+        'Close'
+      );
       return;
     }
 
@@ -195,7 +224,6 @@ export class ArchiveComponent {
         this.getPhones('MISSING');
         this.getPhones('LOST');
       }
-      
     });
   }
 
@@ -247,5 +275,4 @@ export class ArchiveComponent {
   onGridReady(params: GridReadyEvent) {
     this.gridApi = params.api;
   }
-
 }

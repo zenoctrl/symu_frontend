@@ -23,10 +23,11 @@ export class PostedSalesComponent {
   displayedColumns: string[] = [
     'id',
     'imei',
-    'model',
-    'price',
-    'status',
+    // 'model',
+    // 'status',
+    'cluster',
     'branch',
+    'country',
     'action',
   ];
   dataSource = new MatTableDataSource<any[]>();
@@ -81,11 +82,22 @@ export class PostedSalesComponent {
               (phone: any) =>
                 phone.stockRegionCode == this.user.userRegionCode
             ));
+          } else if (
+            role.toLowerCase().includes('shop') ||
+            role.toLowerCase().includes('field')
+          ) {
+            this.dataSource.data = this.dataSource.data.concat(
+              res.data.content.filter(
+                (phone: any) => phone.stockBranchCode == this.user.userBrnCode
+              )
+            );
           } else {
-            this.dataSource.data = this.dataSource.data.concat(res.data.content.filter(
-              (phone: any) =>
-                phone.stockBranchCode == this.user.userBrnCode
-            ));
+            this.dataSource.data = this.dataSource.data.concat(
+              res.data.content.filter(
+                (phone: any) =>
+                  phone.stockClusterCode == this.user.userClusterCode
+              )
+            );
           }
           
           // fetch some more if page is not last

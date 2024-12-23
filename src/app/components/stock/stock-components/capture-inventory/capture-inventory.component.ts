@@ -25,7 +25,8 @@ export class CaptureInventoryComponent {
   checkAll: boolean = false;
   checkedStockCodes: string[] = [];
   canAddStock!: boolean;
-  canApproveStock!: boolean;
+  canUpdateStockStatus!: boolean;
+  stockStatuses: any[] = [];
 
   @ViewChild('paginator') paginator!: MatPaginator;
 
@@ -39,6 +40,7 @@ export class CaptureInventoryComponent {
     this.getUser();
     this.getPhones();
     this.getDimensions();
+    this.getStockStatuses();
   }
 
 
@@ -52,8 +54,12 @@ export class CaptureInventoryComponent {
     }
 
     // approve stock permission
-    if (role === 'director' || role === 'field sales manager') {
-      this.canApproveStock = true;
+    if (
+      role === 'director' ||
+      role.includes('admin')  ||
+      role === 'field sales manager'
+    ) {
+      this.canUpdateStockStatus = true;
     }
   }
 
@@ -147,7 +153,7 @@ export class CaptureInventoryComponent {
 
   getDimensions(){
     if(window.innerWidth > window.innerHeight){
-      this.displayedColumns = ['#', 'imei', 'model', 'batch', 'branch', 'country'];
+      this.displayedColumns = ['#', 'imei', 'model', 'batch', 'branch', 'cluster', 'country'];
     }
     else if(window.innerWidth < window.innerHeight){
       this.displayedColumns = ['#', 'imei'];
@@ -179,22 +185,42 @@ export class CaptureInventoryComponent {
     }
   }
 
-  approveStock() {
+  updateStockStatus(status: string) {
 
     if (this.checkedStockCodes.length == 0 || this.loading) return;
 
-    if (!this.canApproveStock) {
+    if (!this.canUpdateStockStatus) {
       this.openSnackBar('Permission denied.', 'Close');
       return;
     }
 
     const numberOfPhones = this.checkedStockCodes.length;
-    const message: string = `Confirm approval of ${numberOfPhones + (numberOfPhones == 1 ? ' phone' : ' phones')} to the stock.`;
+    let message;
+    let statusCode;
+
+    if (this.stockStatuses.length > 0) {
+      statusCode = this.stockStatuses.find(s => s.statusShortDesc.toLowerCase() == status).statusCode;
+    } else {
+      this.openSnackBar('Missing stock statuses.', 'Close');
+      return;
+    }
+
+    if (status == 'available') {
+      message = `Confirm approval of ${
+        numberOfPhones + (numberOfPhones == 1 ? ' phone' : ' phones')
+      } to the stock.`;
+    }
+    
+    if (status == 'deleted') {
+      message = `Confirm deleting ${
+        numberOfPhones + (numberOfPhones == 1 ? ' phone' : ' phones')
+      } from the stock.`;
+    }
 
     if (window.confirm(message)) {
       const payload = {
         userCode: this.user.code,
-        nextStatusCode: 2,
+        nextStatusCode: statusCode,
         stockCode: this.checkedStockCodes
       }
       this.loading = true;
@@ -225,6 +251,23 @@ export class CaptureInventoryComponent {
   search(event: Event) {
     const text = (event.target as HTMLInputElement).value;
     this.dataSource.filter = text.trim().toLowerCase();
+  }
+
+  getStockStatuses() {
+    const endpoint: string = ENVIRONMENT.endpoints.stock.status.getAll;
+    this.data.get(ENVIRONMENT.baseUrl + endpoint).subscribe(
+      (res: any) => {
+        this.loading = false;
+        if (res.statusCode == 0) {
+          this.stockStatuses = res.data;
+        }
+      },
+      (error: any) => {
+        setTimeout(() => {
+          this.getStockStatuses();
+        }, 3000);
+      }
+    );
   }
 
 

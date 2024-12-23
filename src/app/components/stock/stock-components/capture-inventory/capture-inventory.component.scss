@@ -5,11 +5,20 @@
     background-color: #fafafa;
 }
 
-#add-btn {
-    background-color: #03c9d7;
+.btn {
     color: #fff;
     border-radius: 10px;
     padding: 10px;
     cursor: pointer;
     margin-left: 5px;
+    min-width: 100px;
+    text-align: center;
+}
+
+#add-btn {
+    background-color: #03c9d7;
+}
+
+#delete-btn {
+    background-color: #ff0000;
 }

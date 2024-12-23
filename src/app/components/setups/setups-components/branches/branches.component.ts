@@ -12,6 +12,7 @@ import { Region } from '../regions/regions.component';
 import { Country } from '../countries/countries.component';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
+import { ClustersComponent } from '../clusters/clusters.component';
 
 export interface Branch {
   code?: string;
@@ -106,6 +107,16 @@ export class BranchesComponent {
       if (res) {
         this.getBranches();
       }
+    });
+  }
+
+  viewCluster(branch: Branch) {
+    const dialogRef = this.dialog.open(ClustersComponent, {
+      data: {
+        branch: branch,
+        title: 'Clusters',
+      },
+      disableClose: true,
     });
   }
 

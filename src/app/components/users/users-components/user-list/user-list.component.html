@@ -1,66 +1,126 @@
 <mat-card class="w-100">
-    <mat-card-content>
+  <mat-card-content>
+    <div class="d-flex justify-content-end">
+      <a id="add-btn" (click)="addUser()">+ Add User</a>
+    </div>
 
-      <div class="d-flex justify-content-end">
-        <a id="add-btn" (click)="addUser()">+ Add User</a>
-      </div>
+    <br />
+    <mat-progress-bar
+      *ngIf="isFetching"
+      mode="indeterminate"
+    ></mat-progress-bar>
 
-      <br>
-      <mat-progress-bar *ngIf="isFetching" mode="indeterminate"></mat-progress-bar>
-  
-      <div class="table-responsive">
-        <table mat-table [dataSource]="dataSource" class="text-nowrap w-100">
-  
-          <!-- Id Column -->
-          <ng-container matColumnDef="id">
-            <th mat-header-cell *matHeaderCellDef> # </th>
-            <td mat-cell class="fw-medium" *matCellDef="let user"> {{ dataSource.filteredData.indexOf(user) + 1 }} </td>
-          </ng-container>
-  
-          <!-- Name/ID Column -->
-          <ng-container matColumnDef="username">
-            <th mat-header-cell *matHeaderCellDef> Name </th>
-            <td mat-cell *matCellDef="let user">
-              <p class="mb-0 fw-medium">{{ user.userFirstName + ' ' + user.userLastName }}</p>
-              <p class="mb-0 fw-medium OP-5">{{ user.userId }}</p>
-            </td>
-          </ng-container>
+    <div class="table-responsive">
+      <table mat-table [dataSource]="dataSource" class="text-nowrap w-100">
+        <!-- Id Column -->
+        <ng-container matColumnDef="id">
+          <th mat-header-cell *matHeaderCellDef>#</th>
+          <td mat-cell class="fw-medium" *matCellDef="let user">
+            {{ dataSource.filteredData.indexOf(user) + 1 }}
+          </td>
+        </ng-container>
 
-          <!-- Contact Column -->
-          <ng-container matColumnDef="contacts">
-            <th mat-header-cell *matHeaderCellDef> Contact </th>
-            <td mat-cell *matCellDef="let user">
-              <p class="mb-0 fw-medium"><a [href]="'tel:' + user.userPhone">{{ user.userPhone }}</a></p>
-              <p class="mb-0 fw-normal op-5"><a [href]="'mailto:' + user.userEmail">{{ user.userEmail }}</a></p>
-            </td>
-          </ng-container>
-  
-          <!-- Role Column -->
-          <ng-container matColumnDef="role">
-            <th mat-header-cell *matHeaderCellDef> Role </th>
-            <td mat-cell *matCellDef="let user">
-              <p class="mb-0 fw-medium">{{ user.roleModel.roleName }}</p>
-              <p class="mb-0 fw-medium op-5" *ngIf="user.roleModel.roleName.toLowerCase().includes('admin')">{{ user.countryEntity.countryName }}</p>
-              <p class="mb-0 fw-medium op-5" *ngIf="user.roleModel.roleName.toLowerCase().includes('regional') || user.roleModel.roleName.toLowerCase() == 'sales manager'">{{ user.regionEntity ?  user.regionEntity.regionName + ', ' + user.countryEntity.countryName : user.countryEntity.countryName }}</p>
-              <p class="mb-0 fw-medium op-5" *ngIf="user.roleModel.roleName.toLowerCase().includes('shop') || user.roleModel.roleName.toLowerCase().includes('field')">{{ user.branchEntity.name + ', ' + user.countryEntity.countryName }}</p>
-            </td>
-          </ng-container>
-  
-          <!-- Action Column -->
-          <ng-container matColumnDef="action">
-            <th mat-header-cell *matHeaderCellDef> Action </th>
-            <td mat-cell *matCellDef="let user">
-              <div class="action">
-                <a class="edit" (click)="editUser(user)">Edit</a>
-                <a class="delete" (click)="deleteUser(user)">Delete</a>
+        <!-- Name/ID Column -->
+        <ng-container matColumnDef="username">
+          <th mat-header-cell *matHeaderCellDef>Name</th>
+          <td mat-cell *matCellDef="let user">
+            <p class="mb-0 fw-medium">
+              {{ user.userFirstName + " " + user.userLastName }}
+            </p>
+            <p class="mb-0 fw-medium OP-5">{{ user.userId }}</p>
+          </td>
+        </ng-container>
+
+        <!-- Contact Column -->
+        <ng-container matColumnDef="contacts">
+          <th mat-header-cell *matHeaderCellDef>Contact</th>
+          <td mat-cell *matCellDef="let user">
+            <p class="mb-0 fw-medium">
+              <a [href]="'tel:' + user.userPhone">{{ user.userPhone }}</a>
+            </p>
+            <p class="mb-0 fw-normal op-5">
+              <a [href]="'mailto:' + user.userEmail">{{ user.userEmail }}</a>
+            </p>
+          </td>
+        </ng-container>
+
+        <!-- Role Column -->
+        <ng-container matColumnDef="role">
+          <th mat-header-cell *matHeaderCellDef>Role</th>
+          <td mat-cell *matCellDef="let user">
+            <p class="mb-0 fw-medium">{{ user.roleModel.roleName }}</p>
+            <p
+              class="mb-0 fw-medium op-5"
+              *ngIf="user.roleModel.roleName.toLowerCase().includes('admin')"
+            >
+              {{ user.countryEntity.countryName }}
+            </p>
+            <p
+              class="mb-0 fw-medium op-5"
+              *ngIf="
+                user.roleModel.roleName.toLowerCase().includes('regional') ||
+                user.roleModel.roleName.toLowerCase() == 'sales manager'
+              "
+            >
+              {{
+                user.regionEntity
+                  ? user.regionEntity.regionName +
+                    ", " +
+                    user.countryEntity.countryName
+                  : user.countryEntity.countryName
+              }}
+            </p>
+            <p
+              class="mb-0 fw-medium op-5"
+              *ngIf="
+                user.roleModel.roleName.toLowerCase().includes('shop') ||
+                user.roleModel.roleName.toLowerCase().includes('field')
+              "
+            >
+              {{
+                user.branchEntity.name + ", " + user.countryEntity.countryName
+              }}
+            </p>
+            <p
+              class="mb-0 fw-medium op-5"
+              *ngIf="
+                user.roleModel.roleName
+                  .toLowerCase()
+                  .includes('sales executive')
+              "
+            >
+              {{
+                user.clusterEntity.clusterName +
+                  ", " +
+                  user.branchEntity.name +
+                  ", " +
+                  user.countryEntity.countryName
+              }}
+            </p>
+          </td>
+        </ng-container>
+
+        <!-- Action Column -->
+        <ng-container matColumnDef="action">
+          <th mat-header-cell *matHeaderCellDef>Action</th>
+          <td mat-cell *matCellDef="let user">
+            <div class="action">
+              <a class="edit" (click)="editUser(user)">Edit</a>
+              <a class="delete" (click)="deleteUser(user)">Delete</a>
             </div>
-            </td>
-          </ng-container>
-  
-          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-        </table>
-        <mat-paginator #paginator [pageSize]="10" [pageSizeOptions]="[10, 25]" showFirstLastButtons aria-label="Select page"></mat-paginator>
-      </div>
-    </mat-card-content>
-  </mat-card>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+      <mat-paginator
+        #paginator
+        [pageSize]="10"
+        [pageSizeOptions]="[10, 25]"
+        showFirstLastButtons
+        aria-label="Select page"
+      ></mat-paginator>
+    </div>
+  </mat-card-content>
+</mat-card>

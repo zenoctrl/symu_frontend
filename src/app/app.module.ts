@@ -8,8 +8,6 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
-// import { ZXingScannerModule } from '@zxing/ngx-scanner';
-// Angular Data Grid Component
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -37,7 +35,6 @@ import { ComponentsModule } from './components/components.module';
     MatTabsModule,
     MatTableModule,
     MatPaginatorModule,
-    // ZXingScannerModule,
   ],
   providers: [],
   bootstrap: [AppComponent],
