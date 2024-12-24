@@ -26,6 +26,7 @@ export class InventoryModalComponent {
   CAPTURED_IMEI: string[] = [];
   VIEW_CAPTURED_IMEI: boolean = false;
   SOME_FAILED_INSERT: boolean = false;
+  STOCK_ADDED: boolean = false;
   REASON_FOR_FAILURE: string[] = [];
   clusters!: Cluster[] | any;
 
@@ -143,6 +144,7 @@ export class InventoryModalComponent {
 
           if (res.success > 0 && res.failed == 0) {
             this.successMessage = `${res.success} added successfully.`;
+            this.STOCK_ADDED = true;
             this.data.stock.stockBranchCode =
               this.data.stock.stockClusterCode =
               this.data.stock.stockModelCode =
@@ -154,7 +156,7 @@ export class InventoryModalComponent {
           }
 
           if (res.success > 0 && res.failed > 0) {
-            this.SOME_FAILED_INSERT = true;
+            this.SOME_FAILED_INSERT = this.STOCK_ADDED = true;
             this.successMessage = `Saved ${res.success} successfully. But failed to save ${res.failed}.`;
             this.REASON_FOR_FAILURE = res.symuErrorInfoList.map(
               (error: any) => `${error.statusDesc} -  ${error.statusMessage}`
