@@ -23,7 +23,7 @@
                 <mat-label>Branch</mat-label>
                 <mat-select [(ngModel)]="data.stock.stockBranchCode" (selectionChange)="filterModels(); getClusters();">
                   <mat-option *ngFor="let branch of branches" [value]="branch.code">
-                    {{ branch.name }}
+                    {{ branch.name?.toUpperCase() }}
                   </mat-option>
                 </mat-select>
               </mat-form-field>
@@ -32,7 +32,7 @@
                 <mat-label>Cluster</mat-label>
                 <mat-select [(ngModel)]="data.stock.stockClusterCode">
                   <mat-option *ngFor="let cluster of clusters" [value]="cluster.code">
-                    {{ cluster.clusterName }}
+                    {{ cluster.clusterName?.toUpperCase() }}
                   </mat-option>
                 </mat-select>
               </mat-form-field>
@@ -81,13 +81,11 @@
         </div>
     </div>
 
-    <div mat-dialog-actions align="center" *ngIf="!successMessage && (data.title === 'Add Stock')">
-        <button id="cancel" mat-button (click)="onClose()">Cancel</button>
+    <div mat-dialog-actions align="center">
+        <button id="cancel" mat-button *ngIf="!STOCK_ADDED" (click)="onClose()">Cancel</button>
+        <button id="cancel" mat-button *ngIf="STOCK_ADDED" (click)="onClose('success')">Cancel</button>
         <button id="save" mat-button *ngIf="loading"><mat-progress-spinner mode="indeterminate" diameter="25"></mat-progress-spinner></button>
         <button id="save" mat-button disabled *ngIf="!loading && (CAPTURED_IMEI.length < 1  || !data.stock.stockBranchCode || !data.stock.stockModelCode || !data.stock.stockBatchCode)">Save</button>
         <button id="save" mat-button *ngIf="!loading && ((CAPTURED_IMEI.length > 0 && data.stock.stockBranchCode  && data.stock.stockModelCode && data.stock.stockBatchCode))" (click)="save()" cdkFocusInitial>Save</button>
-    </div>
-    <div mat-dialog-actions align="center" *ngIf="successMessage">
-      <button id="cancel" mat-button (click)="onClose('success')">Close</button>
     </div>
 </main>
