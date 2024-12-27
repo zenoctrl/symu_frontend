@@ -96,6 +96,7 @@ export class PhoneModalComponent {
       stockStatusCode: 2, // set to available (price has been set already on model & batch)
       stockCreatedBy: this.user.code,
       stockBatchCode: this.data.phone.stockBatchCode,
+      stockClusterCode: this.data.phone.stockClusterCode
     };
     this.loading = true;
     const endpoint: string = ENVIRONMENT.endpoints.stock.phone.create;
@@ -142,6 +143,7 @@ export class PhoneModalComponent {
       stockCreatedBy: this.data.phone.stockCreatedBy,
       stockUpdatedBy: this.user.code,
       stockBatchCode: this.data.phone.stockBatchCode,
+      stockClusterCode: this.data.phone.stockClusterCode,
     };
     this.loading = true;
     const endpoint: string = ENVIRONMENT.endpoints.stock.phone.update;
