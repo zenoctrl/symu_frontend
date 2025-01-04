@@ -32,7 +32,7 @@
 
               <mat-form-field class="me-24 fs-16" appearance="outline" *ngIf="data.phone.stockCountryCode && !userAssignedToBranch && user.roleModel.roleName.toLowerCase() != 'regional manager'">
                   <mat-label>Region</mat-label>
-                  <mat-select [(ngModel)]="data.phone.stockRegionCode" (selectionChange)="getBranches()">
+                  <mat-select [(ngModel)]="data.phone.stockRegionCode" (selectionChange)="selectRegion()">
                     <mat-option *ngFor="let region of regions" [value]="region.code">
                       {{ region.regionName }}
                     </mat-option>
@@ -41,7 +41,7 @@
 
               <mat-form-field class="me-24 fs-16" appearance="outline" *ngIf="data.phone.stockRegionCode && !userAssignedToBranch">
                   <mat-label>Branch</mat-label>
-                  <mat-select [(ngModel)]="data.phone.stockBranchCode">
+                  <mat-select [(ngModel)]="data.phone.stockBranchCode" (selectionChange)="getClusters()">
                     <mat-option *ngFor="let branch of branches" [value]="branch.code">
                       {{ branch.name }}
                     </mat-option>

@@ -44,6 +44,7 @@ export class PhoneModalComponent {
     if (this.data.title === 'Edit Phone' || this.data.title === 'Post Sale') {
       this.getRegions();
       this.getBranches();
+      this.getClusters();
       this.getModels();
       this.getBatch();
       this.getStatuses();
@@ -348,7 +349,7 @@ export class PhoneModalComponent {
     )?.countryCurrencyCode;
     this.data.phone.stockRegionCode =
       this.data.phone.stockBranchCode =
-      this.data.phone.stockMemory =
+      this.data.phone.stockClusterCode =
         null;
     this.getModels();
     this.getRegions();
@@ -361,13 +362,18 @@ export class PhoneModalComponent {
     );
   }
 
+  selectRegion() {
+    this.getBranches();
+    this.data.phone.stockBranchCode = this.data.phone.stockClusterCode = null;
+  }
+
   getBranches() {
     this.branches = JSON.parse(
       sessionStorage.getItem('branches') || '[]'
     ).filter(
       (branch: Branch) => branch.regionCode === this.data.phone.stockRegionCode
     );
-    this.getClusters();
+    this.clusters = [];
   }
 
   getUser() {
