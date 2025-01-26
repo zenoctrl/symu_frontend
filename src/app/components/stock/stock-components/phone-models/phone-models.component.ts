@@ -71,7 +71,11 @@ export class PhoneModelsComponent {
         if (res.statusCode == 0) {
           sessionStorage.setItem('models', JSON.stringify(res.data));
           const role = this.user.roleModel.roleName;
-          const models = res.data;
+          const models = res.data.sort((a: any, b: any) => {
+            if (a.modelName.toLowerCase() < b.modelName.toLowerCase()) return -1;
+            if (a.modelName.toLowerCase() > b.modelName.toLowerCase()) return 1;
+            return 0;
+          });
           if (role.toLowerCase().includes('director')) {
             this.dataSource.data = models;
           } else {
