@@ -13,3 +13,8 @@ button {
 mat-progress-spinner circle {
     stroke: #fafafa;
 }
+
+// on mat-menu
+mat-progress-spinner#loading-btn circle {
+    stroke: #00c292 !important;
+}
