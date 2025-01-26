@@ -25,3 +25,37 @@
   width: 32px;
   height: 32px;
 }
+
+.btn {
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+.btn:hover {
+  text-decoration: underline;
+}
+
+#change-password-btn, #save-btn {
+  color: #00c292;
+}
+
+#password-form {
+  display: none;
+}
+
+#password-form > div {
+  display: flex;
+}
+
+#cancel-btn {
+  color: #e46a76;
+}
+
+#save-btn {
+  display: flex;
+  align-items: center;
+}
+
+#save-btn span {
+  margin-left: 5px;
+}

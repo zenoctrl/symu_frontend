@@ -1,11 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, HostListener  } from '@angular/core';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Observable } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
-import { User } from 'src/app/components/users/users-components/user-list/user-list.component';
 import { Router } from '@angular/router';
 import { ENVIRONMENT } from 'src/app/environments/environments';
 import { DataService } from 'src/app/services/data.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 interface sidebarMenu {
   link: string;
@@ -22,7 +22,8 @@ export class FullComponent {
   search: boolean = false;
   year: number = new Date().getFullYear();
   user: any;
-
+  loading!: boolean;
+  password!: string;
   isHandset$: Observable<boolean> = this.breakpointObserver
     .observe(Breakpoints.Handset)
     .pipe(
@@ -30,12 +31,16 @@ export class FullComponent {
       shareReplay()
     );
 
+  private timeoutId: any;
+
   constructor(
     private breakpointObserver: BreakpointObserver,
     private route: Router,
-    private data: DataService
+    private data: DataService,
+    public snackBar: MatSnackBar
   ) {
     this.getUser();
+    this.resetTimer();
   }
 
   routerActive: string = 'activelink';
@@ -226,4 +231,81 @@ export class FullComponent {
       }
     );
   }
+
+  togglePasswordForm(event: Event, displayProperty: string = 'none') {
+    event.stopPropagation();
+    const form = document.querySelector('#password-form') as HTMLDivElement;
+    form.style.display = displayProperty;
+
+    const toggleButton = document.querySelector('#change-password-btn') as HTMLAnchorElement;
+    toggleButton.style.display = displayProperty == 'block' ? 'none' : 'block';
+
+    this.password = '';
+  }
+
+  openSnackBar(message: string, action: string) {
+    this.snackBar.open(message, action, {
+      duration: 5000,
+    });
+  }
+
+  updatePassword() {
+      const payload = {
+        code: this.user.code,
+        userFirstName: this.user.userFirstName,
+        userLastName: this.user.userLastName,
+        userEmail: this.user.userEmail,
+        userPhone: this.user.userPhone,
+        userId: this.user.userId,
+        userPassword: this.password,
+        userRoleCode: this.user.userRoleCode,
+        userCompanyCode: this.user.userCompanyCode,
+        userClusterCode: this.user.userClusterCode,
+        userBrnCode: this.user.userBrnCode,
+        userRegionCode: this.user.userRegionCode,
+        userCountryCode: this.user.userCountryCode,
+        userStatus: this.user.userStatus,
+      };
+      this.loading = true;
+      const endpoint: string = ENVIRONMENT.endpoints.users.update;
+      this.data.post(ENVIRONMENT.baseUrl + endpoint, payload).subscribe(
+        (res: any) => {
+          this.loading = false;
+          let message;
+          if (res.statusCode == 0) {
+            const form = document.querySelector('#password-form') as HTMLDivElement;
+            form.style.display = 'none';
+
+            const toggleButton = document.querySelector('#change-password-btn') as HTMLAnchorElement;
+            toggleButton.style.display = 'block';
+
+            this.password = '';
+            message = 'Password changed successfully';
+          } else {
+            message = res.message;
+          }
+          this.openSnackBar(message, 'Close');
+        },
+        (error: any) => {
+          this.loading = false;
+          let message;
+          if (error.error.message !== undefined) {
+            message = error.error.message;
+          } else {
+            message = 'Internal server error. Please try again.';
+          }
+          this.openSnackBar(message, 'Close');
+        }
+      );
+    }
+
+    @HostListener('keydown', ['$event'])
+    @HostListener('mouseover', ['$event'])
+    resetTimer(event?: Event) {
+      clearTimeout(this.timeoutId);
+      this.timeoutId = setTimeout(() => {
+        this.logout();
+      }, 30000);
+    }
+
 }

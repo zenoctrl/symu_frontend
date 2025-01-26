@@ -40,20 +40,59 @@
         <button mat-button class="fs-16 pt-4 pb-4 ps-8 pe-8 text-light-muted d-flex align-items-center" [matMenuTriggerFor]="menu">
           <div class="d-flex align-items-center">
             <img id="avatar" src="assets/images/avatar.jpeg" class="rounded-circle" alt="">
-            <span class="fw-bold ms-8">{{ user.userFirstName }}</span>
             <i-feather name="chevron-down" class="feather-base"></i-feather>
           </div>
         </button>
         <mat-menu #menu="matMenu" class="profile-dropdown">
           <div class="p-16 mb-4">
-            <button mat-menu-item class="fs-16">Account</button>
-            <button mat-menu-item class="fs-16">Change Password</button>
+            <p>Name: <span class="op-5">{{ user.userFirstName + ' ' +  user.userLastName}}</span></p>
+            <p>Role: <span class="op-5">{{ user.roleModel.roleName }}</span></p>
+            <p 
+              *ngIf="
+                user.roleModel.roleName.toLowerCase().includes('director') || 
+                user.roleModel.roleName.toLowerCase().includes('admin')"
+            >
+              Country: <span class="op-5">{{ user.countryEntity.countryName }}</span>
+            </p>
+            <p
+              *ngIf="
+                user.roleModel.roleName.toLowerCase().includes('regional') ||
+                user.roleModel.roleName.toLowerCase() == 'sales manager'
+              "
+            >
+              Region: <span class="op-5">{{ user.regionEntity.regionName + ", " + user.countryEntity.countryName }}</span>
+            </p>
+            <p
+              *ngIf="
+                user.roleModel.roleName.toLowerCase().includes('shop') ||
+                user.roleModel.roleName.toLowerCase().includes('field')
+              "
+            >
+              Branch: <span class="op-5">{{ user.branchEntity.name + ", " + user.countryEntity.countryName }}</span>
+            </p>
+            <p *ngIf="user.roleModel.roleName.toLowerCase().includes('sales executive')">
+              Cluster: <span class="op-5">{{ user.clusterEntity.clusterName + ", " + user.branchEntity.name + ", " + user.countryEntity.countryName }}</span>
+            </p>
+            <a id="change-password-btn" class="btn" (click)="togglePasswordForm($event, 'block')">Change Password</a>
+            <div id="password-form" class="mb-0" (click)="$event.stopPropagation()">
+              <!-- <input type="text" class="w-100 p-8" name="" id="" placeholder="New Password" [(ngModel)]="password"> -->
+              <mat-form-field class="w-100 mb-0" appearance="outline">
+                <mat-label>New Password</mat-label>
+                <input type="password" matInput [(ngModel)]="password" />
+              </mat-form-field>
+              <div>
+                <a id="cancel-btn" class="btn" (click)="togglePasswordForm($event)" *ngIf="!loading">Cancel</a>
+                <a id="save-btn" class="btn" *ngIf="!loading" (click)="updatePassword()">Save</a>
+                <a id="save-btn" *ngIf="loading"><mat-progress-spinner id="loading-btn" mode="indeterminate" diameter="15"></mat-progress-spinner><span>Saving...</span></a>
+              </div>
+            </div>
           </div>
 
           <hr>
 
           <div class="p-16">
-            <button mat-flat-button color="accent" class="w-100 text-white" (click)="logout()">Logout</button>
+            <button mat-flat-button color="accent" class="w-100 text-white" *ngIf="!loading" (click)="logout()">Logout</button>
+            <button mat-flat-button disabled color="accent" class="w-100 text-white" *ngIf="loading">Logout</button>
           </div>
 
         </mat-menu>
@@ -67,7 +106,7 @@
       </div>
     </div>
 
-    <p class="text-center pb-24 fs-16">© {{ year }} All rights reserved by Symu.</p>
+    <p class="text-center pb-24 fs-16">© 2024-{{ year }} All rights reserved by Symu.</p>
 
   </mat-sidenav-content>
 
