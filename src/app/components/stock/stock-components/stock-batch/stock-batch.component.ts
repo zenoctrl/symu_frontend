@@ -38,6 +38,7 @@ export class StockBatchComponent {
     'number',
     'model',
     'price',
+    'total',
     'status',
     'date',
     'action',
@@ -82,7 +83,7 @@ export class StockBatchComponent {
         if (res.statusCode == 0) {
           sessionStorage.setItem('stock-batches', JSON.stringify(res.data));
           const role = this.user.roleModel.roleName;
-          const batches = res.data;
+          const batches = res.data.reverse();
           if (role.toLowerCase().includes('director')) {
             this.dataSource.data = batches;
           } else {
