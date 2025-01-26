@@ -84,7 +84,11 @@ export class InventoryModalComponent {
         if (res.statusCode == 0) {
           this.models = res.data.filter(
             (model: DeviceModel) => model.modelStatus == 'AVAILABLE'
-          );
+          ).sort((a: any, b: any) => {
+            if (a.modelName.toLowerCase() < b.modelName.toLowerCase()) return -1;
+            if (a.modelName.toLowerCase() > b.modelName.toLowerCase()) return 1;
+            return 0;
+          });
         }
       },
       (error: any) => {}
@@ -118,7 +122,11 @@ export class InventoryModalComponent {
       (batch: StockBatch) =>
         batch.stockModelCode == this.data.stock.stockModelCode &&
         batch.batchStatus == 'AVAILABLE'
-    );
+    ).sort((a: any, b: any) => {
+      if (a.batchDate.toLowerCase() < b.batchDate.toLowerCase()) return 1;
+      if (a.batchDate.toLowerCase() > b.batchDate.toLowerCase()) return -1;
+      return 0;
+    });;
     if (this._batches.length > 0) {
       this.errorMessage = '';
     } else {
