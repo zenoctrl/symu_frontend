@@ -61,7 +61,7 @@
     <div mat-dialog-actions align="center" *ngIf="!successMessage">
         <button id="cancel" mat-button (click)="onClose()">Cancel</button>
         <button id="save" mat-button *ngIf="loading"><mat-progress-spinner mode="indeterminate" diameter="25"></mat-progress-spinner></button>
-        <button id="save" mat-button disabled *ngIf="!loading && (!data.stockBatch.batchNo || !data.stockBatch.batchStatus || !data.stockBatch.stockBatchCountryCode || !data.stockBatch.stockModelCode || !data.stockBatch.batchBuyingPrice)">Save</button>
-        <button id="save" mat-button *ngIf="!loading && (data.stockBatch.batchNo && data.stockBatch.batchStatus && data.stockBatch.stockBatchCountryCode && data.stockBatch.stockModelCode && data.stockBatch.batchBuyingPrice)" (click)="save()" cdkFocusInitial>Save</button>
+        <button id="save" mat-button disabled *ngIf="!loading && (!data.stockBatch.batchNo || !data.stockBatch.batchStatus || !data.stockBatch.stockBatchCountryCode || !data.stockBatch.stockModelCode || !data.stockBatch.batchBuyingPrice || !data.stockBatch.batchTotalNumber)">Save</button>
+        <button id="save" mat-button *ngIf="!loading && (data.stockBatch.batchNo && data.stockBatch.batchStatus && data.stockBatch.stockBatchCountryCode && data.stockBatch.stockModelCode && data.stockBatch.batchBuyingPrice && data.stockBatch.batchTotalNumber)" (click)="save()" cdkFocusInitial>Save</button>
     </div>
 </main>

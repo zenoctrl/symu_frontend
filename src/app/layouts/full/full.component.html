@@ -43,8 +43,8 @@
             <i-feather name="chevron-down" class="feather-base"></i-feather>
           </div>
         </button>
-        <mat-menu #menu="matMenu" class="profile-dropdown">
-          <div class="p-16 mb-4">
+        <mat-menu #menu="matMenu" class="profile-dropdown" >
+          <div class="p-16 mb-4" (mouseover)="resetTimer($event)">
             <p>Name: <span class="op-5">{{ user.userFirstName + ' ' +  user.userLastName}}</span></p>
             <p>Role: <span class="op-5">{{ user.roleModel.roleName }}</span></p>
             <p 

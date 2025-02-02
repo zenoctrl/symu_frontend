@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { ENVIRONMENT } from 'src/app/environments/environments';
 import { DataService } from 'src/app/services/data.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialog } from '@angular/material/dialog';
 
 interface sidebarMenu {
   link: string;
@@ -37,7 +38,8 @@ export class FullComponent {
     private breakpointObserver: BreakpointObserver,
     private route: Router,
     private data: DataService,
-    public snackBar: MatSnackBar
+    public snackBar: MatSnackBar,
+    private dialog: MatDialog
   ) {
     this.getUser();
     this.resetTimer();
@@ -301,11 +303,15 @@ export class FullComponent {
 
     @HostListener('keydown', ['$event'])
     @HostListener('mouseover', ['$event'])
+    @HostListener('click', ['$event'])
     resetTimer(event?: Event) {
+      console.log('reset timer');
       clearTimeout(this.timeoutId);
       this.timeoutId = setTimeout(() => {
+        this.openSnackBar('You were logged out due to inactivity.', 'Close');
+        this.dialog.closeAll();
         this.logout();
-      }, 30000);
+      }, 5 * 60 * 1000);
     }
 
 }

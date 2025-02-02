@@ -48,7 +48,7 @@
             <th mat-header-cell *matHeaderCellDef> Total </th>
             <td mat-cell *matCellDef="let batch">
               <p class="mb-0 fw-medium" *ngIf="batch?.batchTotalNumber">{{ batch?.batchTotalNumber }}</p>
-              <p class="mb-0 fw-medium op-5" *ngIf="batch?.batchTotalAllocated && batch?.batchTotalSold">Allocated: {{ batch?.batchTotalAllocated }} | Sold: {{ batch?.batchTotalSold }}</p>
+              <p class="mb-0 fw-medium op-5" *ngIf="batch?.batchTotalAllocated && batch?.batchTotalApproved">Added: {{ batch?.batchTotalAllocated }} | Approved: {{ batch?.batchTotalApproved }}</p>
             </td>
           </ng-container>
 
