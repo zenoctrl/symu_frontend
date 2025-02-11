@@ -4,7 +4,9 @@
             <input type="text" name="" id="search" placeholder="Seach ..." (keyup)="search($event)">
             <a id="add-btn" class="btn" (click)="addPhone()">Add</a>
             <a id="add-btn" class="btn" *ngIf="dataSource.data.length > 0" (click)="updateStockStatus('available')">Approve</a>
-            <a id="delete-btn" class="btn" *ngIf="dataSource.data.length > 0" (click)="updateStockStatus('deleted')">Delete</a>
+            
+            <!-- only director & admin can delete stock -->
+            <a id="delete-btn" class="btn" *ngIf="canAddStock && dataSource.data.length > 0" (click)="updateStockStatus('deleted')">Delete</a>
         </div>
 
         <br>
