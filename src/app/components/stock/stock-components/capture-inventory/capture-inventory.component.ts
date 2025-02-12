@@ -26,6 +26,9 @@ export class CaptureInventoryComponent {
   checkedStockCodes: string[] = [];
   canAddStock!: boolean;
   canUpdateStockStatus!: boolean;
+  showAddBtn!: boolean;
+  showApproveBtn!: boolean;
+  showDeleteBtn!: boolean;
   stockStatuses: any[] = [];
 
   @ViewChild('paginator') paginator!: MatPaginator;
@@ -51,15 +54,17 @@ export class CaptureInventoryComponent {
     // add stock permission
     if (role === 'director' || role.includes('admin')) {
       this.canAddStock = true;
+      this.showAddBtn = this.showApproveBtn = this.showDeleteBtn = true;
     }
 
     // approve stock permission
     if (
-      role === 'director' ||
-      role.includes('admin')  ||
-      role === 'field sales manager'
+      role.includes('field sales manager') ||
+      role.includes('sales executive') ||
+      role.includes('shop')
     ) {
       this.canUpdateStockStatus = true;
+      this.showApproveBtn = true;
     }
   }
 

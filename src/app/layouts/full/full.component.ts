@@ -104,7 +104,7 @@ export class FullComponent {
     if (role.toLowerCase().includes('sales executive')) {
       this.sidebarMenu = this.sidebarMenu.filter(
         (menu: sidebarMenu) =>
-          menu.link.includes('sales')
+          menu.link.includes('sales') || menu.link.includes('stock')
       );
     }
 
