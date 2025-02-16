@@ -73,9 +73,9 @@
             <p *ngIf="user.roleModel.roleName.toLowerCase().includes('sales executive')">
               Cluster: <span class="op-5">{{ user.clusterEntity.clusterName + ", " + user.branchEntity.name + ", " + user.countryEntity.countryName }}</span>
             </p>
-            <a id="change-password-btn" class="btn" (click)="togglePasswordForm($event, 'block')">Change Password</a>
+            <!-- PASSWORD CHANGE -->
+            <!-- <a id="change-password-btn" class="btn" (click)="togglePasswordForm($event, 'block')">Change Password</a>
             <div id="password-form" class="mb-0" (click)="$event.stopPropagation()">
-              <!-- <input type="text" class="w-100 p-8" name="" id="" placeholder="New Password" [(ngModel)]="password"> -->
               <mat-form-field class="w-100 mb-0" appearance="outline">
                 <mat-label>New Password</mat-label>
                 <input type="password" matInput [(ngModel)]="password" />
@@ -85,7 +85,7 @@
                 <a id="save-btn" class="btn" *ngIf="!loading" (click)="updatePassword()">Save</a>
                 <a id="save-btn" *ngIf="loading"><mat-progress-spinner id="loading-btn" mode="indeterminate" diameter="15"></mat-progress-spinner><span>Saving...</span></a>
               </div>
-            </div>
+            </div> -->
           </div>
 
           <hr>

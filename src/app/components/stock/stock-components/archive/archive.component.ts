@@ -117,48 +117,51 @@ export class ArchiveComponent {
 
   getPhones(status: string) {
     this.isFetching = true;
-    const endpoint: string = `${ENVIRONMENT.endpoints.stock.phone.getAll}?companyCode=${this.user.userCompanyCode}&statusShortDesc=${status}&page=${this.page}&size=${this.size}`;
+    let countryCode = this.user.roleModel.roleName.toLowerCase().includes('director') ? null : this.user.userCountryCode;
+    const endpoint: string = `${ENVIRONMENT.endpoints.stock.phone.getAll}?companyCode=${this.user.userCompanyCode}&stockCountryCode=${countryCode}&stockRegionCode=${this.user.userRegionCode}&stockBranchCode=${this.user.userBrnCode}&stockClusterCode=${this.user.userClusterCode}&statusShortDesc=${status}&page=${this.page}&size=${this.size}`;
     this.data.get(ENVIRONMENT.baseUrl + endpoint).subscribe(
       (res: any) => {
         this.isFetching = false;
         if (res.statusCode == 0) {
-          const role = this.user.roleModel.roleName;
-          if (role.toLowerCase().includes('director')) {
-            this.dataSource = this.dataSource.concat(res.data.content);
-          } else if (
-            role.toLowerCase().includes('admin') ||
-            role.toLowerCase() == 'sales manager'
-          ) {
-            this.dataSource = this.dataSource.concat(
-              res.data.content.filter(
-                (phone: any) =>
-                  phone.stockCountryCode == this.user.userCountryCode
-              )
-            );
-          } else if (role.toLowerCase().includes('region')) {
-            this.dataSource = this.dataSource.concat(
-              res.data.content.filter(
-                (phone: any) =>
-                  phone.stockRegionCode == this.user.userRegionCode
-              )
-            );
-          } else if (
-            role.toLowerCase().includes('shop') ||
-            role.toLowerCase().includes('field')
-          ) {
-            this.dataSource = this.dataSource.concat(
-              res.data.content.filter(
-                (phone: any) => phone.stockBranchCode == this.user.userBrnCode
-              )
-            );
-          } else {
-            this.dataSource = this.dataSource.concat(
-              res.data.content.filter(
-                (phone: any) =>
-                  phone.stockClusterCode == this.user.userClusterCode
-              )
-            );
-          }
+          // const role = this.user.roleModel.roleName;
+          // if (role.toLowerCase().includes('director')) {
+          //   this.dataSource = this.dataSource.concat(res.data.content);
+          // } else if (
+          //   role.toLowerCase().includes('admin') ||
+          //   role.toLowerCase() == 'sales manager'
+          // ) {
+          //   this.dataSource = this.dataSource.concat(
+          //     res.data.content.filter(
+          //       (phone: any) =>
+          //         phone.stockCountryCode == this.user.userCountryCode
+          //     )
+          //   );
+          // } else if (role.toLowerCase().includes('region')) {
+          //   this.dataSource = this.dataSource.concat(
+          //     res.data.content.filter(
+          //       (phone: any) =>
+          //         phone.stockRegionCode == this.user.userRegionCode
+          //     )
+          //   );
+          // } else if (
+          //   role.toLowerCase().includes('shop') ||
+          //   role.toLowerCase().includes('field')
+          // ) {
+          //   this.dataSource = this.dataSource.concat(
+          //     res.data.content.filter(
+          //       (phone: any) => phone.stockBranchCode == this.user.userBrnCode
+          //     )
+          //   );
+          // } else {
+          //   this.dataSource = this.dataSource.concat(
+          //     res.data.content.filter(
+          //       (phone: any) =>
+          //         phone.stockClusterCode == this.user.userClusterCode
+          //     )
+          //   );
+          // }
+
+          this.dataSource = this.dataSource.concat(res.data.content);
           
           this.rowData = [...new Set(this.rowData.concat(this.dataSource))];
 

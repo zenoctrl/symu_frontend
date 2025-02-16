@@ -311,7 +311,7 @@ export class FullComponent {
         this.openSnackBar('You were logged out due to inactivity.', 'Close');
         this.dialog.closeAll();
         this.logout();
-      }, 5 * 60 * 1000);
+      }, 60 * 60 * 1000);
     }
 
 }

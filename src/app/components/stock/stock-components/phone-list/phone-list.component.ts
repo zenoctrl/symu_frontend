@@ -152,49 +152,52 @@ export class PhoneListComponent {
 
   getPhones() {
     this.isFetching = true;
-    const endpoint: string = `${ENVIRONMENT.endpoints.stock.phone.getAll}?companyCode=${this.user.userCompanyCode}&statusShortDesc=AVAILABLE&page=${this.page}&size=${this.size}`;
+    let countryCode = this.user.roleModel.roleName.toLowerCase().includes('director') ? null : this.user.userCountryCode;
+    const endpoint: string = `${ENVIRONMENT.endpoints.stock.phone.getAll}?companyCode=${this.user.userCompanyCode}&stockCountryCode=${countryCode}&stockRegionCode=${this.user.userRegionCode}&stockBranchCode=${this.user.userBrnCode}&stockClusterCode=${this.user.userClusterCode}&statusShortDesc=AVAILABLE&page=${this.page}&size=${this.size}`;
     this.data.get(ENVIRONMENT.baseUrl + endpoint).subscribe(
       (res: any) => {
         this.isFetching = false;
         if (res.statusCode == 0) {
-          const role = this.user.roleModel.roleName;
-          if (role.toLowerCase().includes('director')) {
-            this.dataSource = this.dataSource.concat(res.data.content);
-          } else if (
-            role.toLowerCase().includes('admin') ||
-            role.toLowerCase() == 'sales manager'
-          ) {
-            this.dataSource = this.dataSource.concat(
-              res.data.content.filter(
-                (phone: any) =>
-                  phone.stockCountryCode == this.user.userCountryCode
-              )
-            );
-          } else if (role.toLowerCase().includes('region')) {
-            this.dataSource = this.dataSource.concat(
-              res.data.content.filter(
-                (phone: any) =>
-                  phone.stockRegionCode == this.user.userRegionCode
-              )
-            );
-          } else if (
-            role.toLowerCase().includes('shop') ||
-            role.toLowerCase().includes('field')
-          ) {
-            this.dataSource = this.dataSource.concat(
-              res.data.content.filter(
-                (phone: any) => phone.stockBranchCode == this.user.userBrnCode
-              )
-            );
-          } else {
-            this.dataSource = this.dataSource.concat(
-              res.data.content.filter(
-                (phone: any) =>
-                  phone.stockClusterCode == this.user.userClusterCode
-              )
-            );
-          }
-          this.rowData = this.dataSource;
+          // const role = this.user.roleModel.roleName;
+          // if (role.toLowerCase().includes('director')) {
+          //   this.dataSource = this.dataSource.concat(res.data.content);
+          // } else if (
+          //   role.toLowerCase().includes('admin') ||
+          //   role.toLowerCase() == 'sales manager'
+          // ) {
+          //   this.dataSource = this.dataSource.concat(
+          //     res.data.content.filter(
+          //       (phone: any) =>
+          //         phone.stockCountryCode == this.user.userCountryCode
+          //     )
+          //   );
+          // } else if (role.toLowerCase().includes('region')) {
+          //   this.dataSource = this.dataSource.concat(
+          //     res.data.content.filter(
+          //       (phone: any) =>
+          //         phone.stockRegionCode == this.user.userRegionCode
+          //     )
+          //   );
+          // } else if (
+          //   role.toLowerCase().includes('shop') ||
+          //   role.toLowerCase().includes('field')
+          // ) {
+          //   this.dataSource = this.dataSource.concat(
+          //     res.data.content.filter(
+          //       (phone: any) => phone.stockBranchCode == this.user.userBrnCode
+          //     )
+          //   );
+          // } else {
+          //   this.dataSource = this.dataSource.concat(
+          //     res.data.content.filter(
+          //       (phone: any) =>
+          //         phone.stockClusterCode == this.user.userClusterCode
+          //     )
+          //   );
+          // }
+          // this.rowData = this.dataSource;
+
+          this.rowData = this.dataSource.concat(res.data.content);
           this.totalPhonesAvailableForSale = res.data.totalElements;
 
           // fetch some more if page is not last

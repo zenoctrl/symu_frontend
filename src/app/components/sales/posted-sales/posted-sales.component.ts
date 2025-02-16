@@ -60,45 +60,49 @@ export class PostedSalesComponent {
 
   getPhones() {
     this.isFetching = true;
-    const endpoint: string = `${ENVIRONMENT.endpoints.stock.phone.getAll}?companyCode=${this.user.userCompanyCode}&statusShortDesc=POSTED&page=${this.page}&size=${this.size}`;
+    let countryCode = this.user.roleModel.roleName.toLowerCase().includes('director') ? null : this.user.userCountryCode;
+    const endpoint: string = `${ENVIRONMENT.endpoints.stock.phone.getAll}?companyCode=${this.user.userCompanyCode}&stockCountryCode=${countryCode}&stockRegionCode=${this.user.userRegionCode}&stockBranchCode=${this.user.userBrnCode}&stockClusterCode=${this.user.userClusterCode}&statusShortDesc=POSTED&page=${this.page}&size=${this.size}`;
     this.data.get(ENVIRONMENT.baseUrl + endpoint).subscribe(
       (res: any) => {
         this.isFetching = false;
         this.dataSource.paginator = this.paginator;
         if (res.statusCode == 0) {
-          const role = this.user.roleModel.roleName;
-          if (role.toLowerCase().includes('director')) {
-            this.dataSource.data = this.dataSource.data.concat(res.data.content);
-          } else if (
-            role.toLowerCase().includes('admin') ||
-            role.toLowerCase() == 'sales manager'
-          ) {
-            this.dataSource.data = this.dataSource.data.concat(res.data.content.filter(
-              (phone: any) =>
-                phone.stockCountryCode == this.user.userCountryCode
-            ));
-          } else if (role.toLowerCase().includes('region')) {
-            this.dataSource.data = this.dataSource.data.concat(res.data.content.filter(
-              (phone: any) =>
-                phone.stockRegionCode == this.user.userRegionCode
-            ));
-          } else if (
-            role.toLowerCase().includes('shop') ||
-            role.toLowerCase().includes('field')
-          ) {
-            this.dataSource.data = this.dataSource.data.concat(
-              res.data.content.filter(
-                (phone: any) => phone.stockBranchCode == this.user.userBrnCode
-              )
-            );
-          } else {
-            this.dataSource.data = this.dataSource.data.concat(
-              res.data.content.filter(
-                (phone: any) =>
-                  phone.stockClusterCode == this.user.userClusterCode
-              )
-            );
-          }
+          // const role = this.user.roleModel.roleName;
+          // if (role.toLowerCase().includes('director')) {
+          //   this.dataSource.data = this.dataSource.data.concat(res.data.content);
+          // } else if (
+          //   role.toLowerCase().includes('admin') ||
+          //   role.toLowerCase() == 'sales manager'
+          // ) {
+          //   this.dataSource.data = this.dataSource.data.concat(res.data.content.filter(
+          //     (phone: any) =>
+          //       phone.stockCountryCode == this.user.userCountryCode
+          //   ));
+          // } else if (role.toLowerCase().includes('region')) {
+          //   this.dataSource.data = this.dataSource.data.concat(res.data.content.filter(
+          //     (phone: any) =>
+          //       phone.stockRegionCode == this.user.userRegionCode
+          //   ));
+          // } else if (
+          //   role.toLowerCase().includes('shop') ||
+          //   role.toLowerCase().includes('field')
+          // ) {
+          //   this.dataSource.data = this.dataSource.data.concat(
+          //     res.data.content.filter(
+          //       (phone: any) => phone.stockBranchCode == this.user.userBrnCode
+          //     )
+          //   );
+          // } else {
+          //   this.dataSource.data = this.dataSource.data.concat(
+          //     res.data.content.filter(
+          //       (phone: any) =>
+          //         phone.stockClusterCode == this.user.userClusterCode
+          //     )
+          //   );
+          // }
+          
+          this.dataSource.paginator = this.paginator;
+          this.dataSource.data = this.dataSource.data.concat(res.data.content);
           
           // fetch some more if page is not last
           if (!res.data.last) {

@@ -54,6 +54,7 @@ export class CaptureInventoryComponent {
     // add stock permission
     if (role === 'director' || role.includes('admin')) {
       this.canAddStock = true;
+      this.canUpdateStockStatus = true;
       this.showAddBtn = this.showApproveBtn = this.showDeleteBtn = true;
     }
 
@@ -91,34 +92,38 @@ export class CaptureInventoryComponent {
 
   getPhones() {
     this.loading = true;
-    const endpoint: string = `${ENVIRONMENT.endpoints.stock.phone.getAll}?companyCode=${this.user.userCompanyCode}&statusShortDesc=PRICES&page=${this.page}&size=${this.size}`;
+    let countryCode = this.user.roleModel.roleName.toLowerCase().includes('director') ? null : this.user.userCountryCode;
+    const endpoint: string = `${ENVIRONMENT.endpoints.stock.phone.getAll}?companyCode=${this.user.userCompanyCode}&stockCountryCode=${countryCode}&stockRegionCode=${this.user.userRegionCode}&stockBranchCode=${this.user.userBrnCode}&stockClusterCode=${this.user.userClusterCode}&statusShortDesc=PRICES&page=${this.page}&size=${this.size}`;
     this.data.get(ENVIRONMENT.baseUrl + endpoint).subscribe(
       (res: any) => {
         this.loading = false;
         if (res.statusCode == 0) {
-          const role = this.user.roleModel.roleName;
+          // const role = this.user.roleModel.roleName;
+          // this.dataSource.paginator = this.paginator;
+          // if (role.toLowerCase().includes('director')) {
+          //   this.dataSource.data = this.dataSource.data.concat(res.data.content);
+          // } else if (
+          //   role.toLowerCase().includes('admin') ||
+          //   role.toLowerCase() == 'sales manager'
+          // ) {
+          //   this.dataSource.data = this.dataSource.data.concat(res.data.content.filter(
+          //     (phone: any) =>
+          //       phone.stockCountryCode == this.user.userCountryCode
+          //   ));
+          // } else if (role.toLowerCase().includes('region')) {
+          //   this.dataSource.data = this.dataSource.data.concat(res.data.content.filter(
+          //     (phone: any) =>
+          //       phone.stockRegionCode == this.user.userRegionCode
+          //   ));
+          // } else {
+          //   this.dataSource.data = this.dataSource.data.concat(res.data.content.filter(
+          //     (phone: any) =>
+          //       phone.stockBranchCode == this.user.userBrnCode
+          //   ));
+          // }
+
           this.dataSource.paginator = this.paginator;
-          if (role.toLowerCase().includes('director')) {
-            this.dataSource.data = this.dataSource.data.concat(res.data.content);
-          } else if (
-            role.toLowerCase().includes('admin') ||
-            role.toLowerCase() == 'sales manager'
-          ) {
-            this.dataSource.data = this.dataSource.data.concat(res.data.content.filter(
-              (phone: any) =>
-                phone.stockCountryCode == this.user.userCountryCode
-            ));
-          } else if (role.toLowerCase().includes('region')) {
-            this.dataSource.data = this.dataSource.data.concat(res.data.content.filter(
-              (phone: any) =>
-                phone.stockRegionCode == this.user.userRegionCode
-            ));
-          } else {
-            this.dataSource.data = this.dataSource.data.concat(res.data.content.filter(
-              (phone: any) =>
-                phone.stockBranchCode == this.user.userBrnCode
-            ));
-          }
+          this.dataSource.data = this.dataSource.data.concat(res.data.content);
 
           // fetch some more if page is not last
           if (!res.data.last) {
