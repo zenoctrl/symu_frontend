@@ -196,8 +196,8 @@ export class PhoneListComponent {
           //   );
           // }
           // this.rowData = this.dataSource;
-
-          this.rowData = this.dataSource.concat(res.data.content);
+          this.dataSource = this.dataSource.concat(res.data.content);
+          this.rowData = this.dataSource;
           this.totalPhonesAvailableForSale = res.data.totalElements;
 
           // fetch some more if page is not last

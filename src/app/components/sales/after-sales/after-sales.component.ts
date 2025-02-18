@@ -180,7 +180,8 @@ export class AfterSalesComponent {
           //   );
           // }
           // this.rowData = this.dataSource;
-          this.rowData = this.dataSource.concat(res.data.content);
+          this.dataSource = this.dataSource.concat(res.data.content);
+          this.rowData = this.dataSource;
           this.totalPhonesSold = res.data.totalElements;
           this.totalPhonesSoldToday = this.rowData.filter(
             (phone: any) =>
