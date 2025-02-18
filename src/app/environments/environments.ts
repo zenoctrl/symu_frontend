@@ -82,6 +82,7 @@ export const ENVIRONMENT = {
         closeSale: '/symu/stock/stockCloseSale',
         rejectSale: '/symu/stock/stockRejectPostedSale',
         updateDefaultStatus: '/symu/stock/updateDefaultStatus',
+        search: '/symu/stock/getAllStockDetailsByImei'
       },
       queryReceipt: '/symu/receipt/getAllByReceiptStockCode',
       bulk: {
