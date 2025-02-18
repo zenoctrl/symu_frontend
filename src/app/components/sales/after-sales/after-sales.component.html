@@ -1,13 +1,32 @@
 <mat-card class="w-100">
   <mat-card-content><br>
     <div id="top">
-        <p>Total Count: <b>{{ totalPhonesSold }}</b> | Today: <b>{{ totalPhonesSoldToday }}</b></p>
-        <a id="add-btn" *ngIf="
+        <div id="left">
+
+          <div class="form-input">
+            <label for="">IMEI</label>
+            <input type="text" id="search" class="input search-input" placeholder="Seach..." (keydown)="search($event)">
+          </div>
+
+          <div class="form-input">
+            <label for="">Start Date</label>
+            <input type="date" class="input search-input" name="start-date" [max]="today" (change)="setDate($event)">
+          </div>
+          <div class="form-input">
+            <label for="">End Date</label>
+            <input type="date" class="input search-input" name="end-date" [max]="today" (change)="setDate($event)">
+          </div>
+          <input type="button" class="input" value="Filter Sales" *ngIf="startDate && endDate" (click)="refresh()">
+          <input type="button" class="input" [value]="clearButtonValue" *ngIf="searchOn" (click)="clear()">
+          <input type="button" class="input" value="Download" *ngIf="
           (user.roleModel.roleName.toLowerCase().includes('director') ||
           user.roleModel.roleName.toLowerCase().includes('admin'))"  
-          (click)="onBtnExport()">Export Data</a>
+          (click)="onBtnExport()">
+        </div>
+        <p>Total: <b>{{ totalPhonesSold }}</b></p>
     </div>
     <br />
+    
     <mat-progress-bar *ngIf="isFetching" mode="indeterminate"></mat-progress-bar>
     <ag-grid-angular
       class="ag-theme-quartz"

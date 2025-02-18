@@ -44,7 +44,6 @@ export class AfterSalesComponent {
   batches: StockBatch[] = [];
   totalPhonesSold!: number;
   totalPhonesSoldToday!: number;
-  today: string = new Date().toLocaleDateString();
   permissionToUpdateStatusDenied: boolean = false;
   permissionToRevertSaleDenied: boolean = false;
 
@@ -75,7 +74,7 @@ export class AfterSalesComponent {
     {
       headerName: 'Date Sold',
       field: 'stockUpdatedOn',
-      filter: 'agDateColumnFilter',
+      // filter: 'agDateColumnFilter',
       valueGetter: (params) => {
         const date = new Date(params.data.stockUpdatedOn);
         return date.toLocaleDateString();
@@ -124,6 +123,10 @@ export class AfterSalesComponent {
       cellRendererParams: { update: this.afterSaleStockAction.bind(this) },
     },
   ];
+  date = new Date(); 
+  today: any = `${this.date.getFullYear()}-${(this.date.getMonth() + 1).toString().padStart(2, '0')}-${this.date.getDate().toString().padStart(2, '0')}`;
+  startDate: any = null; endDate: any = null;
+  searchOn!: boolean; clearButtonValue!: string;
 
   constructor(private data: DataService, public snackBar: MatSnackBar) {}
 
@@ -137,56 +140,14 @@ export class AfterSalesComponent {
     this.isFetching = true;
     let countryCode = this.user.roleModel.roleName.toLowerCase().includes('director') ? null : this.user.userCountryCode;
 
-    const endpoint: string = `${ENVIRONMENT.endpoints.stock.phone.getAllStockDetails}?companyCode=${this.user.userCompanyCode}&stockCountryCode=${countryCode}&stockRegionCode=${this.user.userRegionCode}&stockBranchCode=${this.user.userBrnCode}&stockClusterCode=${this.user.userClusterCode}&page=${this.page}&size=${this.size}`;
+    const endpoint: string = `${ENVIRONMENT.endpoints.stock.phone.getAllStockDetails}?companyCode=${this.user.userCompanyCode}&stockCountryCode=${countryCode}&stockRegionCode=${this.user.userRegionCode}&stockBranchCode=${this.user.userBrnCode}&stockClusterCode=${this.user.userClusterCode}&stockDateFrom=${this.startDate}&stockDateTo=${this.endDate}&page=${this.page}&size=${this.size}`;
     this.data.get(ENVIRONMENT.baseUrl + endpoint).subscribe(
       (res: any) => {
         this.isFetching = false;
         if (res.statusCode == 0) {
-          // const role = this.user.roleModel.roleName;
-          // if (role.toLowerCase().includes('director')) {
-          //   this.dataSource = this.dataSource.concat(res.data.content);
-          // } else if (
-          //   role.toLowerCase().includes('admin') ||
-          //   role.toLowerCase() == 'sales manager'
-          // ) {
-          //   this.dataSource = this.dataSource.concat(
-          //     res.data.content.filter(
-          //       (phone: any) =>
-          //         phone.stockCountryCode == this.user.userCountryCode
-          //     )
-          //   );
-          // } else if (role.toLowerCase().includes('region')) {
-          //   this.dataSource = this.dataSource.concat(
-          //     res.data.content.filter(
-          //       (phone: any) =>
-          //         phone.stockRegionCode == this.user.userRegionCode
-          //     )
-          //   );
-          // } else if (
-          //   role.toLowerCase().includes('shop') ||
-          //   role.toLowerCase().includes('field')
-          // ) {
-          //   this.dataSource = this.dataSource.concat(
-          //     res.data.content.filter(
-          //       (phone: any) => phone.stockBranchCode == this.user.userBrnCode
-          //     )
-          //   );
-          // } else {
-          //   this.dataSource = this.dataSource.concat(
-          //     res.data.content.filter(
-          //       (phone: any) =>
-          //         phone.stockClusterCode == this.user.userClusterCode
-          //     )
-          //   );
-          // }
-          // this.rowData = this.dataSource;
           this.dataSource = this.dataSource.concat(res.data.content);
           this.rowData = this.dataSource;
           this.totalPhonesSold = res.data.totalElements;
-          this.totalPhonesSoldToday = this.rowData.filter(
-            (phone: any) =>
-              new Date(phone.stockUpdatedOn).toLocaleDateString() == this.today
-          ).length;
 
           // fetch some more if page is not last
           if (!res.data.last) {
@@ -391,4 +352,100 @@ export class AfterSalesComponent {
     this.dataSource = [];
     this.getPhones();
   }
+
+  search(event: KeyboardEvent){
+    const inputElement = document.querySelector('#search') as HTMLInputElement;
+    console.log(inputElement.value);
+    if (inputElement.value) {
+      this.searchOn = true;
+      this.clearButtonValue = 'Clear Search';
+      if (isNaN(Number(inputElement.value))) {
+        inputElement.style.borderColor = "#ff0000";
+        return;
+      } 
+      inputElement.style.borderColor = "#f2f3f4";
+      if (event.key.toLowerCase() == 'enter') {
+        this.searchPhones(inputElement.value);
+      }
+    } else {
+      inputElement.value = "";
+      inputElement.style.borderColor = "#f2f3f4";
+      this.searchOn = false;
+    }
+    
+  }
+
+  clear() {
+    this.searchOn = false;
+    this.startDate = this.endDate = null;
+    const searchInputElements = Array.from(document.querySelectorAll('.search-input') as unknown as HTMLCollectionOf<HTMLInputElement>);
+    searchInputElements.forEach((searchInputElement) => {
+      searchInputElement.value = "";
+      searchInputElement.style.borderColor =  "#f2f3f4";
+    });
+    this.refresh();
+  }
+
+  setDate(event: Event) {
+    const inputElement = event.target as HTMLInputElement;
+    const date = inputElement.getAttribute('name')?.toLowerCase();
+    if (date?.includes('start')) {
+      this.startDate = inputElement.value;
+    } else {
+      this.endDate = inputElement.value;
+    }
+
+    if (this.startDate && this.endDate) {
+      this.searchOn = true;
+      this.clearButtonValue = "Clear Filter";
+    }
+  }
+
+  searchPhones(IMEI: string) {
+    this.isFetching = true;
+    this.dataSource = [];
+    const endpoint: string = `${ENVIRONMENT.endpoints.stock.phone.search}?stockImei=${IMEI}&stockStatusCode=4&page=${this.page}&size=${this.size}`;
+    this.data.get(ENVIRONMENT.baseUrl + endpoint).subscribe(
+      (res: any) => {
+        this.isFetching = false;
+        if (res.statusCode == 0) {
+          this.dataSource = this.dataSource.concat(res.data.content);
+          this.rowData = this.dataSource;
+          this.totalPhonesSold = res.data.totalElements;
+
+          // fetch some more if page is not last
+          if (!res.data.last) {
+            this.page++;
+            this.getPhones();
+          } 
+        } else {
+          if (this.RETRY_COUNT > 0) {
+            setTimeout(() => {
+              this.getPhones();
+              this.RETRY_COUNT--;
+            }, 3000);
+          } else {
+            this.openSnackBar(
+              'Failed to fetch resources. Please refresh page.',
+              'Close'
+            );
+          }
+        }
+      },
+      (error: any) => {
+        if (this.RETRY_COUNT > 0) {
+          setTimeout(() => {
+            this.getPhones();
+            this.RETRY_COUNT--;
+          }, 3000);
+        } else {
+          this.openSnackBar(
+            'Failed to fetch resources. Please refresh page.',
+            'Close'
+          );
+        }
+      }
+    );
+  }
+
 }
