@@ -404,6 +404,7 @@ export class AfterSalesComponent {
   searchPhones(IMEI: string) {
     this.isFetching = true;
     this.dataSource = [];
+    this.page = 0;
     const endpoint: string = `${ENVIRONMENT.endpoints.stock.phone.search}?stockImei=${IMEI}&stockStatusCode=4&page=${this.page}&size=${this.size}`;
     this.data.get(ENVIRONMENT.baseUrl + endpoint).subscribe(
       (res: any) => {
@@ -412,12 +413,6 @@ export class AfterSalesComponent {
           this.dataSource = this.dataSource.concat(res.data.content);
           this.rowData = this.dataSource;
           this.totalPhonesSold = res.data.totalElements;
-
-          // fetch some more if page is not last
-          if (!res.data.last) {
-            this.page++;
-            this.getPhones();
-          } 
         } else {
           if (this.RETRY_COUNT > 0) {
             setTimeout(() => {
