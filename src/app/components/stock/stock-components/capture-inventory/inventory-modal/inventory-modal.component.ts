@@ -48,6 +48,11 @@ export class InventoryModalComponent {
       if (a.name.toLowerCase() > b.name.toLowerCase()) return 1;
       return 0;
     });
+    const user = JSON.parse(sessionStorage.getItem('user') || '{}');
+    const role: string = user.roleModel.roleName.toLowerCase();
+    if (!role.toLowerCase().includes('director')) {
+      this.branches = this.branches.filter(b => b.countryCode == user.userCountryCode);
+    }
   }
 
   getClusters() {
