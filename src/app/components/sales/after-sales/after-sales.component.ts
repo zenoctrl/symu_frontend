@@ -416,7 +416,7 @@ export class AfterSalesComponent {
         } else {
           if (this.RETRY_COUNT > 0) {
             setTimeout(() => {
-              this.getPhones();
+              this.searchPhones(IMEI);
               this.RETRY_COUNT--;
             }, 3000);
           } else {
@@ -430,7 +430,7 @@ export class AfterSalesComponent {
       (error: any) => {
         if (this.RETRY_COUNT > 0) {
           setTimeout(() => {
-            this.getPhones();
+            this.searchPhones(IMEI);
             this.RETRY_COUNT--;
           }, 3000);
         } else {
