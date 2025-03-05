@@ -38,6 +38,7 @@ export class PostedSalesComponent {
   countries: Country[] = [];
   page: number = 0; size: number = 2000;
   RETRY_COUNT: number = 3;
+  showRejectButton!: boolean;
 
   @ViewChild('paginator') paginator!: MatPaginator;
   @Output() completeEvent = new EventEmitter<any>();
@@ -67,39 +68,6 @@ export class PostedSalesComponent {
         this.isFetching = false;
         this.dataSource.paginator = this.paginator;
         if (res.statusCode == 0) {
-          // const role = this.user.roleModel.roleName;
-          // if (role.toLowerCase().includes('director')) {
-          //   this.dataSource.data = this.dataSource.data.concat(res.data.content);
-          // } else if (
-          //   role.toLowerCase().includes('admin') ||
-          //   role.toLowerCase() == 'sales manager'
-          // ) {
-          //   this.dataSource.data = this.dataSource.data.concat(res.data.content.filter(
-          //     (phone: any) =>
-          //       phone.stockCountryCode == this.user.userCountryCode
-          //   ));
-          // } else if (role.toLowerCase().includes('region')) {
-          //   this.dataSource.data = this.dataSource.data.concat(res.data.content.filter(
-          //     (phone: any) =>
-          //       phone.stockRegionCode == this.user.userRegionCode
-          //   ));
-          // } else if (
-          //   role.toLowerCase().includes('shop') ||
-          //   role.toLowerCase().includes('field')
-          // ) {
-          //   this.dataSource.data = this.dataSource.data.concat(
-          //     res.data.content.filter(
-          //       (phone: any) => phone.stockBranchCode == this.user.userBrnCode
-          //     )
-          //   );
-          // } else {
-          //   this.dataSource.data = this.dataSource.data.concat(
-          //     res.data.content.filter(
-          //       (phone: any) =>
-          //         phone.stockClusterCode == this.user.userClusterCode
-          //     )
-          //   );
-          // }
           
           this.dataSource.paginator = this.paginator;
           this.dataSource.data = this.dataSource.data.concat(res.data.content);
@@ -218,6 +186,15 @@ export class PostedSalesComponent {
       this.displayedColumns = this.displayedColumns.filter(
         (column: string) => !column.includes('price')
       );
+    }
+
+    if (
+      role.toLowerCase().includes('director') || 
+      role.toLowerCase().includes('admin') || 
+      role.toLowerCase().includes('shop') || 
+      role.toLowerCase().includes('field')
+    ) {
+      this.showRejectButton = true;
     }
   }
 
