@@ -11,7 +11,9 @@
             {{ successMessage }}
           </div>
         </div>
-        <div class="mt-20" *ngIf="!successMessage">
+
+        <!-- ADD or EDIT BATCH -->
+        <div class="mt-20" *ngIf="!successMessage && !data.title.toLowerCase().includes('details')">
 
             <mat-form-field class="me-24 fs-16" appearance="outline">
                 <mat-label>Batch Number</mat-label>
@@ -58,10 +60,50 @@
 
         </div>
     </div>
-    <div mat-dialog-actions align="center" *ngIf="!successMessage">
+    <div mat-dialog-actions align="center" *ngIf="!successMessage && !data.title.toLowerCase().includes('details')">
         <button id="cancel" mat-button (click)="onClose()">Cancel</button>
         <button id="save" mat-button *ngIf="loading"><mat-progress-spinner mode="indeterminate" diameter="25"></mat-progress-spinner></button>
         <button id="save" mat-button disabled *ngIf="!loading && (!data.stockBatch.batchNo || !data.stockBatch.batchStatus || !data.stockBatch.stockBatchCountryCode || !data.stockBatch.stockModelCode || !data.stockBatch.batchBuyingPrice || !data.stockBatch.batchTotalNumber)">Save</button>
         <button id="save" mat-button *ngIf="!loading && (data.stockBatch.batchNo && data.stockBatch.batchStatus && data.stockBatch.stockBatchCountryCode && data.stockBatch.stockModelCode && data.stockBatch.batchBuyingPrice && data.stockBatch.batchTotalNumber)" (click)="save()" cdkFocusInitial>Save</button>
+    </div>
+
+    <!-- VIEW BATCH DETAILS -->
+    <div  *ngIf="data.title.toLowerCase().includes('details')">
+      <table>
+        <tr>
+          <td>Batch Number</td>
+          <td>{{ data.stockBatch.batchNo }}</td>
+        </tr>
+        <tr>
+          <td>Date Created</td>
+          <td>{{ transformDate(data.stockBatch.batchDate) }}</td>
+        </tr>
+        <tr>
+          <td>Model</td>
+          <td>{{ data.stockBatch.stockModelEntity.modelName }}</td>
+        </tr>
+        <tr>
+          <td>Buying Price</td>
+          <td>{{ data.stockBatch.countryEntity.countryCurrencyCode + ' ' + data.stockBatch.batchBuyingPrice }} </td>
+        </tr>
+        <tr>
+          <td>Status</td>
+          <td> 
+            <span class="mb-0 fw-medium rounded-pill badge badge-danger" *ngIf="data.stockBatch.batchStatus == 'COMPLETED'">{{ data.stockBatch.batchStatus }} </span>
+            <span class="mb-0 fw-medium rounded-pill badge badge-success" *ngIf="data.stockBatch.batchStatus == 'AVAILABLE'">{{ data.stockBatch.batchStatus }} </span>
+          </td>
+        </tr>
+        <tr *ngIf="data.stockBatch.batchTotalNumber">
+          <td>Total Number</td>
+          <td>{{ data.stockBatch.batchTotalNumber }} </td>
+        </tr>
+        <tr *ngFor="let stat of stats">
+          <td>{{ stat.stockStatusName.toLowerCase().includes('pending') ? 'Pending Approval' : stat.stockStatusName }}</td>
+          <td>{{ stat.stockStatusCount }}</td>
+        </tr>
+      </table>
+    </div>
+    <div mat-dialog-actions align="center" *ngIf="data.title.toLowerCase().includes('details')">
+      <button id="cancel" mat-button (click)="onClose()">Close</button>
     </div>
 </main>

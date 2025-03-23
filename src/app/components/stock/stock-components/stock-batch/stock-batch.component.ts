@@ -37,7 +37,7 @@ export class StockBatchComponent {
     'id',
     'number',
     'model',
-    'price',
+    // 'price',
     'total',
     'status',
     'date',
@@ -112,6 +112,13 @@ export class StockBatchComponent {
       if (res) {
         this.getAllStockBatch();
       }
+    });
+  }
+
+  viewStockDetails(stockBatch: StockBatch) {
+    const dialogRef = this.dialog.open(BatchModalComponent, {
+      data: { stockBatch: stockBatch, title: `Batch Details - #${stockBatch.batchNo}` },
+      disableClose: true,
     });
   }
 
