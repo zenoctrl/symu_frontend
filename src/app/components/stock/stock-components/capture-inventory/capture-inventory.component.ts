@@ -98,29 +98,6 @@ export class CaptureInventoryComponent {
       (res: any) => {
         this.loading = false;
         if (res.statusCode == 0) {
-          // const role = this.user.roleModel.roleName;
-          // this.dataSource.paginator = this.paginator;
-          // if (role.toLowerCase().includes('director')) {
-          //   this.dataSource.data = this.dataSource.data.concat(res.data.content);
-          // } else if (
-          //   role.toLowerCase().includes('admin') ||
-          //   role.toLowerCase() == 'sales manager'
-          // ) {
-          //   this.dataSource.data = this.dataSource.data.concat(res.data.content.filter(
-          //     (phone: any) =>
-          //       phone.stockCountryCode == this.user.userCountryCode
-          //   ));
-          // } else if (role.toLowerCase().includes('region')) {
-          //   this.dataSource.data = this.dataSource.data.concat(res.data.content.filter(
-          //     (phone: any) =>
-          //       phone.stockRegionCode == this.user.userRegionCode
-          //   ));
-          // } else {
-          //   this.dataSource.data = this.dataSource.data.concat(res.data.content.filter(
-          //     (phone: any) =>
-          //       phone.stockBranchCode == this.user.userBrnCode
-          //   ));
-          // }
 
           this.dataSource.paginator = this.paginator;
           this.dataSource.data = this.dataSource.data.concat(res.data.content);
@@ -166,7 +143,7 @@ export class CaptureInventoryComponent {
       this.displayedColumns = ['#', 'imei', 'model', 'batch', 'branch', 'cluster', 'country'];
     }
     else if(window.innerWidth < window.innerHeight){
-      this.displayedColumns = ['#', 'imei'];
+      this.displayedColumns = ['#', 'imei', 'branch'];
     }
   }
 
