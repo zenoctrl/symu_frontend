@@ -20,15 +20,22 @@ export class BatchModalComponent {
   models: DeviceModel[] = [];
   _models: DeviceModel[] = [];
   statuses: string[] = ['AVAILABLE', 'COMPLETED'];
+  fetchingStatistics!: boolean;
+  stats: any;
 
   constructor(
     public dialogRef: MatDialogRef<BatchModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private _data: DataService
-  ) {
+  ) {}
+
+  ngOnInit() {
     this.getCountries();
     this.getDeviceModels();
     this.getUser();
+    if (this.data.title.toLowerCase().includes('details')) {
+      this.getStatistics(this.data.stockBatch.code);
+    }
   }
 
   save() {
@@ -132,5 +139,32 @@ export class BatchModalComponent {
     )?.countryCurrencyCode;
     this.data.stockBatch.stockModelCode =
       this.data.stockBatch.batchBuyingPrice = null;
+  }
+
+  getStatistics(code: number) {
+    this.fetchingStatistics = true;
+    const endpoint: string = `${ENVIRONMENT.endpoints.stock.batch.getStatistics}?stockBatchCode=${code}`;
+    this._data.get(ENVIRONMENT.baseUrl + endpoint).subscribe(
+      (res: any) => {
+        this.fetchingStatistics = false;
+        if (res.statusCode == 0) {
+          this.stats = res.data;
+        } else {
+          this.errorMessage = res.message;
+        }
+      },
+      (error: any) => {
+        this.fetchingStatistics = false;
+        if (error.error.message !== undefined) {
+          this.errorMessage = error.error.message;
+        } else {
+          this.errorMessage = 'Internal server error. Please try again.';
+        }
+      }
+    );
+  }
+
+  transformDate(date: string) {
+    return (new Date(date)).toDateString();
   }
 }

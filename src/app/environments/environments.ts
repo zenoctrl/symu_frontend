@@ -70,6 +70,7 @@ export const ENVIRONMENT = {
         create: '/symu/stock-batch/createOrUpdateStockBatch',
         update: '/symu/stock-batch/createOrUpdateStockBatch',
         delete: '',
+        getStatistics: '/symu/stock-batch/getStockBatchStatistics'
       },
       phone: {
         getAll: '/symu/stock/getAllStock',

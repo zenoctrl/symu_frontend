@@ -1,5 +1,5 @@
 main {
-    max-width: 400px;
+    width: 400px;
 }
 
 main > div {
@@ -24,4 +24,19 @@ button {
 #save {
     background-color: #03c9d7;
     color: #fff;
+}
+
+table {
+    width: 100%;
+    padding: 10px;
+}
+
+
+table td:first-child {
+    color: #979797;
+}
+
+table td:last-child {
+    padding-left: 5px;
+    text-align: right;
 }

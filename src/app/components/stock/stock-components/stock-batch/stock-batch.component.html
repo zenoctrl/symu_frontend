@@ -31,6 +31,7 @@
             <th mat-header-cell *matHeaderCellDef> Model </th>
             <td mat-cell *matCellDef="let batch">
               <p class="mb-0 fw-medium">{{ batch?.stockModelEntity?.modelName }}</p>
+              <p class="mb-0 fw-medium op-5">{{ batch?.countryEntity?.countryName }}</p>
             </td>
           </ng-container>
 
@@ -48,7 +49,7 @@
             <th mat-header-cell *matHeaderCellDef> Total </th>
             <td mat-cell *matCellDef="let batch">
               <p class="mb-0 fw-medium" *ngIf="batch?.batchTotalNumber">{{ batch?.batchTotalNumber }}</p>
-              <p class="mb-0 fw-medium op-5" *ngIf="batch?.batchTotalAllocated && batch?.batchTotalApproved">Added: {{ batch?.batchTotalAllocated }} | Approved: {{ batch?.batchTotalApproved }}</p>
+              <!-- <p class="mb-0 fw-medium op-5" *ngIf="batch?.batchTotalAllocated && batch?.batchTotalApproved">Added: {{ batch?.batchTotalAllocated }} | Approved: {{ batch?.batchTotalApproved }}</p> -->
             </td>
           </ng-container>
 
@@ -77,6 +78,7 @@
             <td mat-cell *matCellDef="let batch">
               <div class="action">
                 <a class="edit" (click)="editStockBatch(batch)">Edit</a>
+                <a class="edit" (click)="viewStockDetails(batch)">View Details</a>
                 <!-- <a class="delete" (click)="deleteDeviceModel(batch)">Delete</a> -->
             </div>
             </td>
