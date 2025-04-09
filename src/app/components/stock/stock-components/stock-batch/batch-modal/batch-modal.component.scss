@@ -1,5 +1,9 @@
 main {
-    width: 400px;
+    min-width: 400px;
+}
+
+div#form {
+    max-width: 400px;
 }
 
 main > div {
@@ -26,6 +30,10 @@ button {
     color: #fff;
 }
 
+div#batch-details {
+    padding: 10px;
+}
+
 table {
     width: 100%;
     padding: 10px;
@@ -36,7 +44,45 @@ table td:first-child {
     color: #979797;
 }
 
-table td:last-child {
+table td:last-child, th:last-child {
     padding-left: 5px;
     text-align: right;
+}
+
+td.stock-link:hover {
+    cursor: pointer;
+    color: blue;
+    text-decoration: underline;
+}
+
+h5 {
+    display: flex;
+    justify-content: space-between;
+    font-weight: lighter;
+}
+
+span#loading {
+    position: relative;
+}
+  
+span#loading::after {
+    content: '...';
+    position: absolute;
+    width: 0;
+    overflow: hidden;
+    animation: ellipsis 3s infinite;
+}
+
+@keyframes ellipsis {
+    0% { width: 0; }
+    33% { width: 1ch; }
+    66% { width: 2ch; }
+    100% { width: 3ch; }
+}
+  
+#search {
+    border-radius: 10px;
+    padding: 10px;
+    margin-right: 5px;
+    background-color: #fafafa;
 }

@@ -138,9 +138,9 @@ export class AfterSalesComponent {
 
   getPhones() {
     this.isFetching = true;
-    let countryCode = this.user.roleModel.roleName.toLowerCase().includes('director') ? null : this.user.userCountryCode;
+    // let countryCode = this.user.roleModel.roleName.toLowerCase().includes('director') ? null : this.user.userCountryCode;
 
-    const endpoint: string = `${ENVIRONMENT.endpoints.stock.phone.getAllStockDetails}?companyCode=${this.user.userCompanyCode}&stockCountryCode=${countryCode}&stockRegionCode=${this.user.userRegionCode}&stockBranchCode=${this.user.userBrnCode}&stockClusterCode=${this.user.userClusterCode}&stockDateFrom=${this.startDate}&stockDateTo=${this.endDate}&page=${this.page}&size=${this.size}`;
+    const endpoint: string = `${ENVIRONMENT.endpoints.stock.phone.getAllStockDetails}?companyCode=${this.user.userCompanyCode}&stockCountryCode=${this.user.userCountryCode}&stockRegionCode=${this.user.userRegionCode}&stockBranchCode=${this.user.userBrnCode}&stockClusterCode=${this.user.userClusterCode}&stockDateFrom=${this.startDate}&stockDateTo=${this.endDate}&page=${this.page}&size=${this.size}`;
     this.data.get(ENVIRONMENT.baseUrl + endpoint).subscribe(
       (res: any) => {
         this.isFetching = false;

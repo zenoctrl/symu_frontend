@@ -78,7 +78,7 @@ export class RegionsComponent {
         this.isFetching = false;
         if (res.statusCode == 0) {
           sessionStorage.setItem('regions', JSON.stringify(res.data));
-          this.dataSource.data = res.data;
+          this.dataSource.data = res.data.filter((r: any) => r.regionCountryCode == this.user.userCountryCode);
         } else {
         }
       },
@@ -118,5 +118,10 @@ export class RegionsComponent {
 
   getUser() {
     this.user = JSON.parse(sessionStorage.getItem('user') || '{}');
+  }
+
+  search(event: Event) {
+    const text = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = text.trim().toLowerCase();
   }
 }

@@ -98,6 +98,7 @@ export class DealershipModalComponent {
 
   getUser() {
     this.user = JSON.parse(sessionStorage.getItem('user') || '{}');
+    this.data.dealership.dealerCountryCode = this.user.userCountryCode;
   }
 
   getCountries() {

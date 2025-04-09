@@ -24,10 +24,13 @@ export class BranchModalComponent {
     public dialogRef: MatDialogRef<BranchModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private _data: DataService
-  ) {
+  ) {}
+    
+
+  ngOnInit() {
     this.getUser();
     this.getCountries();
-    this.getRegions();
+    // this.getRegions();
   }
 
   save() {
@@ -71,7 +74,7 @@ export class BranchModalComponent {
   updateBranch(branch: Branch) {
     this.loading = true;
     const endpoint: string = ENVIRONMENT.endpoints.branches.update;
-    this._data.put(ENVIRONMENT.baseUrl + endpoint, branch).subscribe(
+    this._data.post(ENVIRONMENT.baseUrl + endpoint, branch).subscribe(
       (res: any) => {
         this.loading = false;
         if (res.statusCode == 0) {
@@ -108,6 +111,7 @@ export class BranchModalComponent {
 
   getRegions() {
     this.regions = JSON.parse(sessionStorage.getItem('regions') || '{}');
+    this.filterRegions();
   }
 
   getCountries() {
@@ -116,6 +120,8 @@ export class BranchModalComponent {
 
   getUser() {
     this.user = JSON.parse(sessionStorage.getItem('user') || '{}');
+    this.data.branch.countryCode = this.user.userCountryCode;
+    this.getRegions();
   }
 
 }

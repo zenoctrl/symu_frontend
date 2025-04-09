@@ -17,13 +17,19 @@ export class RegionModalComponent {
   errorMessage!: string;
   countries: Country[] = [];
   statuses: string[] = ['ACTIVE', 'INACTIVE'];
+  user: any;
 
   constructor(
     public dialogRef: MatDialogRef<RegionModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private _data: DataService
   ) {
-    this.getCountries();
+    // this.getCountries();
+  }
+
+  ngOnInit() {
+    this.user = JSON.parse(sessionStorage.getItem('user') || '{}')
+    this.data.region.regionCountryCode = this.user.userCountryCode;
   }
 
   save() {

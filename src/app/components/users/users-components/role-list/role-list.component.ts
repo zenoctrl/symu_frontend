@@ -142,4 +142,9 @@ export class RoleListComponent {
       duration: 2000,
     });
   }
+
+  search(event: Event) {
+    const text = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = text.trim().toLowerCase();
+  }
 }

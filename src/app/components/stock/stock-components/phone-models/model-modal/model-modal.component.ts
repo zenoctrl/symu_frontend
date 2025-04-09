@@ -21,7 +21,9 @@ export class ModelModalComponent {
     public dialogRef: MatDialogRef<ModelModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private _data: DataService
-  ) {
+  ) {}
+
+  ngOnInit() {
     this.getCountries();
     this.getUser();
   }
@@ -99,27 +101,17 @@ export class ModelModalComponent {
 
   getUser() {
     this.user = JSON.parse(sessionStorage.getItem('user') || '{}');
-    if (this.user.roleModel.roleName.toLowerCase().includes('admin')) {
-      this.data.deviceModel.modelCountryCode = this.user.countryEntity.code;
-      this.data.deviceModel.modelCurrencyCode =
-        this.user.countryEntity.countryCurrencyCode;
-    }
+    // if (this.user.roleModel.roleName.toLowerCase().includes('admin')) {
+    //   this.data.deviceModel.modelCountryCode = this.user.countryEntity.code;
+    //   this.data.deviceModel.modelCurrencyCode =
+    //     this.user.countryEntity.countryCurrencyCode;
+    // }
+    this.data.deviceModel.modelCountryCode = this.user.userCountryCode;
+    this.data.deviceModel.modelCurrencyCode = this.countries.find(c => c.code == this.user.userCountryCode)?.countryCurrencyCode;
   }
 
   getCountries() {
-    const endpoint: string = `${ENVIRONMENT.endpoints.countries.getAll}`;
-    this._data.get(ENVIRONMENT.baseUrl + endpoint).subscribe(
-      (res: any) => {
-        if (res.statusCode == 0) {
-          this.countries = res.data;
-        } else {
-          this.getCountries();
-        }
-      },
-      (error: any) => {
-        this.getCountries();
-      }
-    );
+    this.countries = JSON.parse(sessionStorage.getItem('countries') || '[]');
   }
 
   selectCountry() {

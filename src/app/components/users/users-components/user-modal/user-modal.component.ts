@@ -44,7 +44,7 @@ export class UserModalComponent {
   ngOnInit() {
     this.getUser();
     this.getRoles();
-    this.getLocations();
+    // this.getLocations();
   }
 
   onClose() {
@@ -253,6 +253,9 @@ export class UserModalComponent {
 
   getUser() {
     this.user = JSON.parse(sessionStorage.getItem('user') || '{}');
+    this.data.user.userCountryCode = this.user.userCountryCode;
+    this.getLocations();
+    this.selectCountry();
   }
 
   selectRole(roleCode: number) {
@@ -266,8 +269,8 @@ export class UserModalComponent {
       this.userMustBelongToBranch =
       this.userMustBelongToCluster =
         false;
-    this.data.user.userCountryCode =
-      this.data.user.userRegionCode =
+    // this.data.user.userCountryCode =
+    this.data.user.userRegionCode =
       this.data.user.userBrnCode =
       this.data.user.userClusterCode =
         null;

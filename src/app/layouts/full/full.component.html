@@ -5,10 +5,14 @@
     [mode]="(isHandset$ | async) ? 'over' : 'side'" [opened]="(isHandset$ | async) === false">
 
     <div class="p-16">
-      <div class="mb-16">
+      <div id="logo" class="mb-16 d-flex">
         <a href="javascript:void(0)" class="d-flex align-items-center">
           <img class="logo-img" src="assets/images/logo.png" alt=""> <span class="ms-16 fw-medium fs-26">Symu</span>
         </a>
+
+        <select *ngIf="isDirector" [(ngModel)]="countryCode" (change)="selectCountry()">
+          <option [value]="country.code" *ngFor="let country of countries">{{ country.countryName }}</option>
+        </select>
 
       </div>
 

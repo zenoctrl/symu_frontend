@@ -76,7 +76,7 @@ export class UserListComponent {
         if (res.statusCode == 0) {
           sessionStorage.setItem('users', JSON.stringify(res.data));
           this.dataSource.data = res.data.filter(
-            (user: any) => user.userStatus.toUpperCase() == 'ACTIVE'
+            (user: any) => user.userStatus.toUpperCase() == 'ACTIVE' && user.userCountryCode == this.user.userCountryCode
           );
         } else {
         }
@@ -169,5 +169,10 @@ export class UserListComponent {
         this.getRoles();
       }
     );
+  }
+
+  search(event: Event) {
+    const text = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = text.trim().toLowerCase();
   }
 }
