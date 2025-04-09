@@ -92,7 +92,7 @@ export class DealershipsComponent {
         this.isFetching = false;
         if (res.statusCode == 0) {
           sessionStorage.setItem('dealerships', JSON.stringify(res.data));
-          this.dataSource.data = res.data;
+          this.dataSource.data = res.data.filter((d: any) => d.dealerCountryCode == this.user.userCountryCode);
         } else {
           this.getDealerships();
         }
@@ -102,5 +102,10 @@ export class DealershipsComponent {
         this.getDealerships();
       }
     );
+  }
+
+  search(event: Event) {
+    const text = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = text.trim().toLowerCase();
   }
 }

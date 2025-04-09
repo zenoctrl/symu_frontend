@@ -7,6 +7,7 @@ import { ENVIRONMENT } from 'src/app/environments/environments';
 import { DataService } from 'src/app/services/data.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog';
+import { Country } from 'src/app/components/setups/setups-components/countries/countries.component';
 
 interface sidebarMenu {
   link: string;
@@ -31,6 +32,10 @@ export class FullComponent {
       map((result) => result.matches),
       shareReplay()
     );
+
+  countries: Country[] = [];
+  isDirector!: boolean;
+  countryCode!: number;
 
   private timeoutId: any;
 
@@ -93,8 +98,10 @@ export class FullComponent {
   getUser() {
     this.user = JSON.parse(sessionStorage.getItem('user') || '{}');
     const role = this.user.roleModel.roleName;
+    this.isDirector = role.toLowerCase().includes('director');
+    this.countryCode = this.user.userCountryCode;
 
-    if (!role.toLowerCase().includes('director')) {
+    if (!this.isDirector) {
       this.sidebarMenu = this.sidebarMenu.filter(
         (menu: sidebarMenu) =>
           !menu.link.includes('admin') && !menu.link.includes('users')
@@ -110,6 +117,8 @@ export class FullComponent {
 
     if (sessionStorage.getItem('countries') == null) {
       this.getCountries();
+    } else {
+      this.countries = JSON.parse(sessionStorage.getItem('countries') || '[]');
     }
 
     if (sessionStorage.getItem('regions') == null) {
@@ -133,6 +142,12 @@ export class FullComponent {
     }
   }
 
+  selectCountry() {
+    this.user.userCountryCode = Number(this.countryCode);
+    sessionStorage.setItem('user', JSON.stringify(this.user));
+    window.location.reload();
+  }
+
   logout() {
     sessionStorage.clear();
     this.route.navigate(['/login']);
@@ -143,6 +158,7 @@ export class FullComponent {
     this.data.get(ENVIRONMENT.baseUrl + endpoint).subscribe(
       (res: any) => {
         if (res.statusCode == 0) {
+          this.countries = res.data;
           sessionStorage.setItem('countries', JSON.stringify(res.data));
         } else {
           this.getCountries();

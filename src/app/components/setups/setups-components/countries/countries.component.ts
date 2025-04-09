@@ -113,4 +113,9 @@ export class CountriesComponent {
   getUser() {
     this.user = JSON.parse(sessionStorage.getItem('user') || '{}');
   }
+
+  search(event: Event) {
+    const text = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = text.trim().toLowerCase();
+  }
 }

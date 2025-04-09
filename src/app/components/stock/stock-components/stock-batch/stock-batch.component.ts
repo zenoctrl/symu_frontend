@@ -84,14 +84,18 @@ export class StockBatchComponent {
           sessionStorage.setItem('stock-batches', JSON.stringify(res.data));
           const role = this.user.roleModel.roleName;
           const batches = res.data.reverse();
-          if (role.toLowerCase().includes('director')) {
-            this.dataSource.data = batches;
-          } else {
-            this.dataSource.data = batches.filter(
-              (batch: any) =>
-                batch.stockBatchCountryCode == this.user.userCountryCode
-            );
-          }
+          // if (role.toLowerCase().includes('director')) {
+          //   this.dataSource.data = batches;
+          // } else {
+          //   this.dataSource.data = batches.filter(
+          //     (batch: any) =>
+          //       batch.stockBatchCountryCode == this.user.userCountryCode
+          //   );
+          // }
+          this.dataSource.data = batches.filter(
+            (batch: any) =>
+              batch.stockBatchCountryCode == this.user.userCountryCode
+          );
           this.dataSource.paginator = this.paginator;
         } else {
         }
