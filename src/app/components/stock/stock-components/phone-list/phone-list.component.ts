@@ -82,16 +82,16 @@ export class PhoneListComponent {
       field: 'stockClusterName',
       filter: true,
     },
-    {
-      headerName: 'Country',
-      field: 'stockCountryName',
-      filter: true,
-    },
-    {
-      headerName: 'Status',
-      field: 'stockStatusName',
-      cellRenderer: (params: any) => params.value.toUpperCase(),
-    },
+    // {
+    //   headerName: 'Country',
+    //   field: 'stockCountryName',
+    //   filter: true,
+    // },
+    // {
+    //   headerName: 'Status',
+    //   field: 'stockStatusName',
+    //   cellRenderer: (params: any) => params.value.toUpperCase(),
+    // },
     {
       headerName: 'Date',
       field: 'stockCreatedOn',
@@ -152,8 +152,8 @@ export class PhoneListComponent {
 
   getPhones() {
     this.isFetching = true;
-    let countryCode = this.user.roleModel.roleName.toLowerCase().includes('director') ? null : this.user.userCountryCode;
-    const endpoint: string = `${ENVIRONMENT.endpoints.stock.phone.getAll}?companyCode=${this.user.userCompanyCode}&stockCountryCode=${countryCode}&stockRegionCode=${this.user.userRegionCode}&stockBranchCode=${this.user.userBrnCode}&stockClusterCode=${this.user.userClusterCode}&statusShortDesc=AVAILABLE&page=${this.page}&size=${this.size}`;
+    // let countryCode = this.user.roleModel.roleName.toLowerCase().includes('director') ? null : this.user.userCountryCode;
+    const endpoint: string = `${ENVIRONMENT.endpoints.stock.phone.getAll}?companyCode=${this.user.userCompanyCode}&stockCountryCode=${this.user.userCountryCode}&stockRegionCode=${this.user.userRegionCode}&stockBranchCode=${this.user.userBrnCode}&stockClusterCode=${this.user.userClusterCode}&statusShortDesc=AVAILABLE&stockBatchCode=null&page=${this.page}&size=${this.size}`;
     this.data.get(ENVIRONMENT.baseUrl + endpoint).subscribe(
       (res: any) => {
         this.isFetching = false;

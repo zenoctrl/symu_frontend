@@ -11,7 +11,9 @@
             {{ successMessage }}
           </div>
         </div>
-        <div class="mt-20" *ngIf="!successMessage">
+
+        <!-- ADD or EDIT BATCH -->
+        <div id="form" class="mt-20" *ngIf="!successMessage && !data.title.toLowerCase().includes('details')">
 
             <mat-form-field class="me-24 fs-16" appearance="outline">
                 <mat-label>Batch Number</mat-label>
@@ -28,14 +30,14 @@
             </mat-form-field>
             
 
-            <mat-form-field class="me-24 fs-16" appearance="outline" *ngIf="user.roleModel.roleName.toLowerCase().includes('director')">
+            <!-- <mat-form-field class="me-24 fs-16" appearance="outline" *ngIf="user.roleModel.roleName.toLowerCase().includes('director')">
                 <mat-label>Country</mat-label>
                 <mat-select [(ngModel)]="data.stockBatch.stockBatchCountryCode" (selectionChange)="selectCountry()">
                   <mat-option *ngFor="let country of countries" [value]="country.code">
                     {{ country.countryName }}
                   </mat-option>
                 </mat-select>
-            </mat-form-field>
+            </mat-form-field> -->
 
             <mat-form-field class="me-24 fs-16" appearance="outline">
                 <mat-label>Phone Model</mat-label>
@@ -58,10 +60,97 @@
 
         </div>
     </div>
-    <div mat-dialog-actions align="center" *ngIf="!successMessage">
+    <div mat-dialog-actions align="center" *ngIf="!successMessage && !data.title.toLowerCase().includes('details')">
         <button id="cancel" mat-button (click)="onClose()">Cancel</button>
         <button id="save" mat-button *ngIf="loading"><mat-progress-spinner mode="indeterminate" diameter="25"></mat-progress-spinner></button>
         <button id="save" mat-button disabled *ngIf="!loading && (!data.stockBatch.batchNo || !data.stockBatch.batchStatus || !data.stockBatch.stockBatchCountryCode || !data.stockBatch.stockModelCode || !data.stockBatch.batchBuyingPrice || !data.stockBatch.batchTotalNumber)">Save</button>
         <button id="save" mat-button *ngIf="!loading && (data.stockBatch.batchNo && data.stockBatch.batchStatus && data.stockBatch.stockBatchCountryCode && data.stockBatch.stockModelCode && data.stockBatch.batchBuyingPrice && data.stockBatch.batchTotalNumber)" (click)="save()" cdkFocusInitial>Save</button>
+    </div>
+
+    <!-- VIEW BATCH DETAILS -->
+    <div id="batch-details"  *ngIf="data.title.toLowerCase().includes('details')">
+      <table *ngIf="!viewStock">
+        <tr>
+          <td>Batch Number</td>
+          <td>{{ data.stockBatch.batchNo }}</td>
+        </tr>
+        <tr>
+          <td>Date Created</td>
+          <td>{{ transformDate(data.stockBatch.batchDate) }}</td>
+        </tr>
+        <tr>
+          <td>Model</td>
+          <td>{{ data.stockBatch.stockModelEntity.modelName }}</td>
+        </tr>
+        <tr>
+          <td>Buying Price</td>
+          <td>{{ data.stockBatch.countryEntity.countryCurrencyCode + ' ' + data.stockBatch.batchBuyingPrice }} </td>
+        </tr>
+        <tr>
+          <td>Status</td>
+          <td> 
+            <span class="mb-0 fw-medium rounded-pill badge badge-danger" *ngIf="data.stockBatch.batchStatus == 'COMPLETED'">{{ data.stockBatch.batchStatus }} </span>
+            <span class="mb-0 fw-medium rounded-pill badge badge-success" *ngIf="data.stockBatch.batchStatus == 'AVAILABLE'">{{ data.stockBatch.batchStatus }} </span>
+          </td>
+        </tr>
+        <tr *ngIf="data.stockBatch.batchTotalNumber">
+          <td>Total Number</td>
+          <td>{{ data.stockBatch.batchTotalNumber }} </td>
+        </tr>
+        <tr *ngFor="let stat of stats">
+          <td class="stock-link" (click)="getStock(stat.stockStatusName)">{{ stat.stockStatusName.toLowerCase().includes('pending') ? 'Pending Approval' : stat.stockStatusName }}</td>
+          <td>{{ stat.stockStatusCount }}</td>
+        </tr>
+      </table>
+      <div *ngIf="viewStock">
+        <!-- <h5 *ngIf="fetchingStock"><span id="loading">{{ stockStatus?.statusName.toLowerCase().includes('pending') ? 'Pending Approval' : stockStatus?.statusName }}</span><span>{{ data.stockBatch.stockModelEntity.modelName }}</span></h5>
+        <h5 *ngIf="!fetchingStock"><span>{{ stockStatus?.statusName.toLowerCase().includes('pending') ? 'Pending Approval' : stockStatus?.statusName }}</span><span>{{ data.stockBatch.stockModelEntity.modelName }}</span></h5> -->
+        <div class="d-flex justify-content-end">
+          <input type="text" name="" id="search" placeholder="Seach ..." (keyup)="search($event)">
+        </div>
+        <div class="table-responsive">
+          <table mat-table [dataSource]="dataSource" class="text-nowrap w-100">
+    
+            <!-- Id Column -->
+            <ng-container matColumnDef="id">
+              <th mat-header-cell *matHeaderCellDef> # </th>
+              <td mat-cell class="fw-medium" *matCellDef="let stock, index as i"> {{ i + 1 }} </td>
+            </ng-container>
+    
+            <!-- IMEI Column -->
+            <ng-container matColumnDef="imei">
+              <th mat-header-cell *matHeaderCellDef> IMEI </th>
+              <td mat-cell *matCellDef="let stock">
+                <p class="mb-0 fw-medium">{{ stock.stockImei }}</p>
+              </td>
+            </ng-container>
+  
+            <!-- Cluster Column -->
+            <ng-container matColumnDef="cluster">
+              <th mat-header-cell *matHeaderCellDef> Cluster </th>
+              <td mat-cell *matCellDef="let stock">
+                <p class="mb-0 fw-medium">{{ stock.stockClusterName }}</p>
+              </td>
+            </ng-container>
+
+            <!-- Branch Column -->
+            <ng-container matColumnDef="branch">
+              <th mat-header-cell *matHeaderCellDef> Branch </th>
+              <td mat-cell *matCellDef="let stock">
+                <p class="mb-0 fw-medium">{{ stock.stockBranchName }}</p>
+              </td>
+            </ng-container>
+            
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+          </table>
+          <mat-paginator #paginator [pageSize]="10" showFirstLastButtons aria-label="Select page"></mat-paginator>
+        </div>
+      </div>
+    </div>
+    <div mat-dialog-actions align="center" *ngIf="data.title.toLowerCase().includes('details')">
+      <button id="cancel" *ngIf="!viewStock" mat-button (click)="onClose()">Close</button>
+      <button id="cancel" *ngIf="viewStock" mat-button (click)="back()">Back</button>
     </div>
 </main>

@@ -18,6 +18,10 @@
     cursor: pointer;
 }
 
+.action a:hover {
+    text-decoration: underline;
+}
+
 .action .edit {
     color: #00c292;
 }

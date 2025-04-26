@@ -21,7 +21,6 @@
     "@angular/platform-browser": "^16.0.0",
     "@angular/platform-browser-dynamic": "^16.0.0",
     "@angular/router": "^16.0.0",
-    "@zxing/ngx-scanner": "^16.0.0",
     "ag-grid-angular": "^32.1.0",
     "angular-feather": "^6.5.0",
     "apexcharts": "^3.40.0",

@@ -18,14 +18,14 @@
                 <input type="text" matInput [(ngModel)]="data.branch.name">
             </mat-form-field>
 
-            <mat-form-field class="me-24 fs-16" appearance="outline">
+            <!-- <mat-form-field class="me-24 fs-16" appearance="outline">
                 <mat-label>Country</mat-label>
                 <mat-select [(ngModel)]="data.branch.countryCode" (selectionChange)="filterRegions()">
                   <mat-option *ngFor="let country of countries" [value]="country.code">
                     {{ country.countryName }}
                   </mat-option>
                 </mat-select>
-            </mat-form-field>
+            </mat-form-field> -->
 
             <mat-form-field class="me-24 fs-16" appearance="outline" *ngIf="data.branch.countryCode">
                 <mat-label>Region</mat-label>

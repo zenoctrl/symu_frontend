@@ -22,3 +22,14 @@
 #delete-btn {
     background-color: #ff0000;
 }
+
+@media only screen and (max-width: 576px) {
+    mat-card {
+        overflow: scroll;
+    }
+    
+    mat-card-content {
+        width: max-content;
+        overflow-y: scroll;
+    }
+}

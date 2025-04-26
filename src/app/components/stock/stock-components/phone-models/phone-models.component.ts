@@ -76,14 +76,18 @@ export class PhoneModelsComponent {
             if (a.modelName.toLowerCase() > b.modelName.toLowerCase()) return 1;
             return 0;
           });
-          if (role.toLowerCase().includes('director')) {
-            this.dataSource.data = models;
-          } else {
-            this.dataSource.data = models.filter(
-              (model: any) =>
-                model.modelCountryCode == this.user.userCountryCode
-            );
-          }
+          // if (role.toLowerCase().includes('director')) {
+          //   this.dataSource.data = models;
+          // } else {
+          //   this.dataSource.data = models.filter(
+          //     (model: any) =>
+          //       model.modelCountryCode == this.user.userCountryCode
+          //   );
+          // }
+          this.dataSource.data = models.filter(
+            (model: any) =>
+              model.modelCountryCode == this.user.userCountryCode
+          );
           this.dataSource.paginator = this.paginator;
         } else {
         }
