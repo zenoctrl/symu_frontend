@@ -165,6 +165,7 @@ export class InventoryModalComponent {
                 this.CAPTURED_IMEI = [];
             setTimeout(() => {
               this.successMessage = '';
+              this.onClose('success');
             }, 3000);
           }
 
@@ -183,6 +184,10 @@ export class InventoryModalComponent {
               (error: any) => `${error.statusDesc} -  ${error.statusMessage}`
             );
           }
+        } else {
+          this.errorMessage = res.symuErrorInfoList.map(
+            (error: any) => `${error.statusDesc} - ${error.statusMessage}`
+          );
         }
       },
       (error: any) => {
@@ -273,5 +278,9 @@ export class InventoryModalComponent {
     });
 
     return csvRows.join('\n');
+  }
+
+  removeIMEI(IMEI: string) {
+    this.CAPTURED_IMEI = this.CAPTURED_IMEI.filter((imei: string) => imei != IMEI);
   }
 }

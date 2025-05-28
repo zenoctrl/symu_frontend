@@ -75,7 +75,10 @@
                 <input  type="text" matInput [(ngModel)]="IMEI" maxlength="15" (keyup)="capture()">
               </mat-form-field>
               
-              <p *ngFor="let IMEI of CAPTURED_IMEI">{{ (CAPTURED_IMEI.indexOf(IMEI) + 1) + '. ' + IMEI}} </p>
+              <p *ngFor="let IMEI of CAPTURED_IMEI" class="scanned-imei">
+                {{ (CAPTURED_IMEI.indexOf(IMEI) + 1) + '. ' + IMEI}} 
+                <img src="assets/images/remove.png" alt="" title="Remove IMEI" (click)="removeIMEI(IMEI)">
+              </p>
             </div>
 
         </div>
