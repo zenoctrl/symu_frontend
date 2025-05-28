@@ -1,5 +1,5 @@
 main {
-  max-width: 400px;
+  width: 400px;
 }
 
 main>div {
@@ -38,4 +38,17 @@ button {
 #save {
   background-color: #03c9d7;
   color: #fff;
+}
+
+
+.scanned-imei {
+  display: flex;
+  align-items: center;
+}
+
+.scanned-imei img {
+  margin-left: 5px;
+  cursor: pointer;
+  height: 16px;
+  width: 16px;
 }
