@@ -14,14 +14,14 @@
 
         <div class="mt-20" *ngIf="!successMessage">            
 
-            <div *ngIf="data.title == 'Add Phone' || data.title == 'Edit Phone'">
+            <div *ngIf="data.title == 'Edit Phone'">
 
               <mat-form-field class="me-24 fs-16" appearance="outline">
                 <mat-label>IMEI</mat-label>
                 <input  type="text" matInput [(ngModel)]="data.phone.stockImei" maxlength="15" (keyup)="checkInput(data.phone.stockImei)" readonly>
               </mat-form-field>
 
-              <mat-form-field class="me-24 fs-16" appearance="outline" *ngIf="!userAssignedToBranch && user.roleModel.roleName.toLowerCase().includes('director')">
+              <!-- <mat-form-field class="me-24 fs-16" appearance="outline" *ngIf="!userAssignedToBranch && user.roleModel.roleName.toLowerCase().includes('director')">
                 <mat-label>Country</mat-label>
                 <mat-select [(ngModel)]="data.phone.stockCountryCode" (selectionChange)="selectCountry()">
                   <mat-option *ngFor="let country of countries" [value]="country.code">
@@ -55,9 +55,9 @@
                     {{ cluster.clusterName }}
                   </mat-option>
                 </mat-select>
-              </mat-form-field>
+              </mat-form-field> -->
 
-              <mat-form-field class="me-24 fs-16" appearance="outline" *ngIf="data.phone.stockRegionCode && data.phone.stockBranchCode">
+              <!-- <mat-form-field class="me-24 fs-16" appearance="outline" *ngIf="data.phone.stockRegionCode && data.phone.stockBranchCode">
                   <mat-label>Model</mat-label>
                   <mat-select [(ngModel)]="data.phone.stockMemory" (selectionChange)="selectModel()">
                     <mat-option *ngFor="let model of models" [value]="model.modelName">
@@ -73,7 +73,7 @@
                       {{ batch.batchNo }}
                     </mat-option>
                   </mat-select>
-              </mat-form-field>
+              </mat-form-field> -->
 
               <mat-form-field class="me-24 fs-16" appearance="outline" *ngIf="data.phone.stockBatchCode">
                 <mat-label>Stock Status</mat-label>
