@@ -103,6 +103,11 @@ export class PhoneListComponent {
       },
     },
     {
+      headerName: 'Age',
+      field: 'stockCreatedOn',
+      cellRenderer: (params: any) => this.getDaysFromToday((new Date(params.data.stockCreatedOn)).toLocaleDateString()),
+    },
+    {
       headerName: 'Actions',
       cellRenderer: StockActionsComponent,
       cellRendererParams: {
@@ -321,5 +326,22 @@ export class PhoneListComponent {
 
   onGridReady(params: GridReadyEvent) {
     this.gridApi = params.api;
+  }
+
+  getDaysFromToday(dateStr: string) {
+    const inputDate = new Date(dateStr);
+    const today = new Date();
+
+    // Reset both dates to midnight to ignore time differences
+    inputDate.setHours(0, 0, 0, 0);
+    today.setHours(0, 0, 0, 0);
+
+    // Calculate difference in milliseconds
+    const diffTime = Math.abs(today.getTime() - inputDate.getTime());
+
+    // Convert to days
+    const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
+
+    return diffDays == 1 ? `${diffDays} day` : `${diffDays} days`;
   }
 }
