@@ -41,7 +41,7 @@
 
               <mat-form-field class="me-24 fs-16" appearance="outline" *ngIf="data.phone.stockRegionCode && !userAssignedToBranch">
                   <mat-label>Branch</mat-label>
-                  <mat-select [(ngModel)]="data.phone.stockBranchCode" (selectionChange)="getClusters()">
+                  <mat-select [(ngModel)]="data.phone.stockBranchCode" (selectionChange)="getClusters(data.phone.stockBranchCode)">
                     <mat-option *ngFor="let branch of branches" [value]="branch.code">
                       {{ branch.name }}
                     </mat-option>
@@ -84,6 +84,35 @@
                   </mat-select>
               </mat-form-field>
 
+            </div>
+
+            <div *ngIf="data.title.toLowerCase().includes('transfer')">
+              <mat-form-field class="me-24 fs-16" appearance="outline">
+                <mat-label>Source Cluster</mat-label>
+                <mat-select [(ngModel)]="data.phone.stockClusterCode">
+                  <mat-option [value]="data.phone.stockClusterCode">
+                    {{ data.phone.stockClusterName }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+
+              <mat-form-field class="me-24 fs-16" appearance="outline">
+                <mat-label>Destination Branch</mat-label>
+                <mat-select [(ngModel)]="data.phone.newStockBranchCode" (selectionChange)="getClusters(data.phone.newStockBranchCode)">
+                  <mat-option *ngFor="let branch of branches" [value]="branch.code">
+                    {{ branch.name }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+
+              <mat-form-field class="me-24 fs-16" appearance="outline" *ngIf="data.phone.newStockBranchCode">
+                <mat-label>Destination Cluster</mat-label>
+                <mat-select [(ngModel)]="data.phone.newStockClusterCode">
+                  <mat-option *ngFor="let cluster of clusters" [value]="cluster.code">
+                    {{ cluster.clusterName }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
             </div>
 
             <div *ngIf="data.title === 'Post Sale'">
@@ -219,4 +248,10 @@
         <button id="save" mat-button disabled *ngIf="!loading && (!data.phone.agentName || !data.phone.agentPhoneNumber)">Save</button>
         <button id="save" mat-button *ngIf="!loading && ((data.phone.agentName && data.phone.agentPhoneNumber))" (click)="save()" cdkFocusInitial>Save</button>
     </div>
+    <div mat-dialog-actions align="center" *ngIf="!successMessage && data.title.toLowerCase().includes('transfer')">
+      <button id="cancel" mat-button (click)="onClose()">Cancel</button>
+      <button id="save" mat-button *ngIf="loading"><mat-progress-spinner mode="indeterminate" diameter="25"></mat-progress-spinner></button>
+      <button id="save" mat-button disabled *ngIf="!loading && (!data.phone.newStockBranchCode || !data.phone.newStockClusterCode)" cdkFocusInitial>Save</button>
+      <button id="save" mat-button *ngIf="!loading && (data.phone.newStockBranchCode && data.phone.newStockClusterCode)" (click)="transfer()" cdkFocusInitial>Save</button>
+  </div>
 </main>
