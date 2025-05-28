@@ -2,8 +2,8 @@
     <mat-card-content>
 
       <div class="d-flex justify-content-end">
-        <input type="text" name="" id="search" placeholder="Seach ..." (keyup)="search($event)">
-        <a id="add-btn" (click)="addStockBatch()" *ngIf="user.roleModel.roleName.toLowerCase().includes('director') || user.roleModel.roleName.toLowerCase().includes('admin')">+ Add Batch</a>
+        <input type="text" class="input" name="" id="search" placeholder="Seach ..." (keyup)="search($event)">
+        <a id="add-btn" class="btn" (click)="addStockBatch()" *ngIf="user.roleModel.roleName.toLowerCase().includes('director') || user.roleModel.roleName.toLowerCase().includes('admin')">+ Add Batch</a>
       </div>
 
       <br>

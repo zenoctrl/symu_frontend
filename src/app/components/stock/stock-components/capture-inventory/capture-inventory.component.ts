@@ -6,6 +6,7 @@ import { DataService } from 'src/app/services/data.service';
 import { InventoryModalComponent } from './inventory-modal/inventory-modal.component';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
+import { MatTabChangeEvent } from '@angular/material/tabs';
 
 @Component({
   selector: 'app-capture-inventory',
@@ -17,6 +18,7 @@ export class CaptureInventoryComponent {
   user: any;
   errorMessage!: string;
   dataSource = new MatTableDataSource<any[]>();
+  dataSourceForTransferredStock = new MatTableDataSource<any[]>();
   displayedColumns: string[] = [];
   loading!: boolean;
   page: number = 0; size: number = 2000;
@@ -32,6 +34,7 @@ export class CaptureInventoryComponent {
   stockStatuses: any[] = [];
 
   @ViewChild('paginator') paginator!: MatPaginator;
+  @ViewChild('paginatorForTransferredStock') paginatorForTransferredStock!: MatPaginator;
 
   constructor(
     public dialog: MatDialog,
@@ -42,6 +45,7 @@ export class CaptureInventoryComponent {
   ngOnInit() {
     this.getUser();
     this.getPhones();
+    this.getTransferredPhones()
     this.getDimensions();
     this.getStockStatuses();
   }
@@ -92,7 +96,6 @@ export class CaptureInventoryComponent {
 
   getPhones() {
     this.loading = true;
-    // let countryCode = this.user.roleModel.roleName.toLowerCase().includes('director') ? null : this.user.userCountryCode;
     const endpoint: string = `${ENVIRONMENT.endpoints.stock.phone.getAll}?companyCode=${this.user.userCompanyCode}&stockCountryCode=${this.user.userCountryCode}&stockRegionCode=${this.user.userRegionCode}&stockBranchCode=${this.user.userBrnCode}&stockClusterCode=${this.user.userClusterCode}&statusShortDesc=PRICES&stockBatchCode=null&page=${this.page}&size=${this.size}`;
     this.data.get(ENVIRONMENT.baseUrl + endpoint).subscribe(
       (res: any) => {
@@ -172,7 +175,7 @@ export class CaptureInventoryComponent {
     }
   }
 
-  updateStockStatus(status: string) {
+  updateStockStatus(status: string, stock: string) {
 
     if (this.checkedStockCodes.length == 0 || this.loading) return;
 
@@ -217,8 +220,19 @@ export class CaptureInventoryComponent {
           this.loading = false;
           if (res.statusCode == 0) {
             this.page = 0;
-            this.dataSource.data = [];
-            this.getPhones();
+
+            if (stock == 'new') {
+              this.dataSource.data = [];
+              this.getPhones();
+              return;
+            }
+
+            if (stock == 'transferred') {
+              this.dataSourceForTransferredStock.data = [];
+              this.getTransferredPhones();
+              return;
+            }
+            
           } 
         },
         (error: any) => {
@@ -235,9 +249,19 @@ export class CaptureInventoryComponent {
 
   }
 
-  search(event: Event) {
+  filterStock(event: Event, stock: string) {
     const text = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = text.trim().toLowerCase();
+
+    if (stock == 'new') {
+      this.dataSource.filter = text.trim().toLowerCase();
+      return;
+    }
+
+    if (stock == 'transferred') {
+      this.dataSourceForTransferredStock.filter = text.trim().toLowerCase();
+      return;
+    }
+    
   }
 
   getStockStatuses() {
@@ -257,5 +281,52 @@ export class CaptureInventoryComponent {
     );
   }
 
+  getTransferredPhones() {
+    this.loading = true;
+    const endpoint: string = `${ENVIRONMENT.endpoints.stock.phone.getAll}?companyCode=${this.user.userCompanyCode}&stockCountryCode=${this.user.userCountryCode}&stockRegionCode=${this.user.userRegionCode}&stockBranchCode=${this.user.userBrnCode}&stockClusterCode=${this.user.userClusterCode}&statusShortDesc=TRANSFERRED&stockBatchCode=null&page=${this.page}&size=${this.size}`;
+    this.data.get(ENVIRONMENT.baseUrl + endpoint).subscribe(
+      (res: any) => {
+        this.loading = false;
+        if (res.statusCode == 0) {
+
+          this.dataSourceForTransferredStock.paginator = this.paginatorForTransferredStock;
+          this.dataSourceForTransferredStock.data = this.dataSourceForTransferredStock.data.concat(res.data.content);
+
+          // fetch some more if page is not last
+          if (!res.data.last) {
+            this.page++;
+            this.getTransferredPhones();
+          } 
+
+        } else {
+          if (this.RETRY_COUNT > 0) {
+            setTimeout(() => {
+              this.getTransferredPhones();
+              this.RETRY_COUNT--;
+            }, 3000);
+          } else {
+            this.openSnackBar('Failed to fetch resources. Please refresh page.', 'Close');
+          }
+        }
+      },
+      (error: any) => {
+        if (this.RETRY_COUNT > 0) {
+          setTimeout(() => {
+            this.getPhones();
+            this.RETRY_COUNT--;
+          }, 3000);
+        } else {
+          this.openSnackBar('Failed to fetch resources. Please refresh page.', 'Close');
+        }
+      }
+    );
+  }
+
+  // uncheck all check-boxes when tab is switched
+  switchTab(event: MatTabChangeEvent) {
+    const checkBoxes = Array.from(document.querySelectorAll('.check-imei') as unknown as HTMLCollectionOf<HTMLInputElement>);
+    checkBoxes.forEach(checkbox => { checkbox.checked = false;});
+    this.checkedStockCodes = [];
+  }
 
 }

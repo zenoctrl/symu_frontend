@@ -2,7 +2,7 @@
     <mat-card-content>
 
       <div class="d-flex justify-content-end">
-        <input type="text" name="" id="search" placeholder="Seach ..." (keyup)="search($event)">
+        <input type="text" class="input" name="" id="search" placeholder="Seach ..." (keyup)="search($event)">
       </div>
 
       <mat-progress-bar *ngIf="isFetching" mode="indeterminate"></mat-progress-bar>

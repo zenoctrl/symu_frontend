@@ -82,16 +82,6 @@ export class PhoneListComponent {
       field: 'stockClusterName',
       filter: true,
     },
-    // {
-    //   headerName: 'Country',
-    //   field: 'stockCountryName',
-    //   filter: true,
-    // },
-    // {
-    //   headerName: 'Status',
-    //   field: 'stockStatusName',
-    //   cellRenderer: (params: any) => params.value.toUpperCase(),
-    // },
     {
       headerName: 'Date',
       field: 'stockCreatedOn',
@@ -111,6 +101,11 @@ export class PhoneListComponent {
           return 0;
         },
       },
+    },
+    {
+      headerName: 'Age',
+      field: 'stockCreatedOn',
+      cellRenderer: (params: any) => this.getDaysFromToday((new Date(params.data.stockCreatedOn)).toLocaleDateString()),
     },
     {
       headerName: 'Actions',
@@ -152,50 +147,11 @@ export class PhoneListComponent {
 
   getPhones() {
     this.isFetching = true;
-    // let countryCode = this.user.roleModel.roleName.toLowerCase().includes('director') ? null : this.user.userCountryCode;
     const endpoint: string = `${ENVIRONMENT.endpoints.stock.phone.getAll}?companyCode=${this.user.userCompanyCode}&stockCountryCode=${this.user.userCountryCode}&stockRegionCode=${this.user.userRegionCode}&stockBranchCode=${this.user.userBrnCode}&stockClusterCode=${this.user.userClusterCode}&statusShortDesc=AVAILABLE&stockBatchCode=null&page=${this.page}&size=${this.size}`;
     this.data.get(ENVIRONMENT.baseUrl + endpoint).subscribe(
       (res: any) => {
         this.isFetching = false;
-        if (res.statusCode == 0) {
-          // const role = this.user.roleModel.roleName;
-          // if (role.toLowerCase().includes('director')) {
-          //   this.dataSource = this.dataSource.concat(res.data.content);
-          // } else if (
-          //   role.toLowerCase().includes('admin') ||
-          //   role.toLowerCase() == 'sales manager'
-          // ) {
-          //   this.dataSource = this.dataSource.concat(
-          //     res.data.content.filter(
-          //       (phone: any) =>
-          //         phone.stockCountryCode == this.user.userCountryCode
-          //     )
-          //   );
-          // } else if (role.toLowerCase().includes('region')) {
-          //   this.dataSource = this.dataSource.concat(
-          //     res.data.content.filter(
-          //       (phone: any) =>
-          //         phone.stockRegionCode == this.user.userRegionCode
-          //     )
-          //   );
-          // } else if (
-          //   role.toLowerCase().includes('shop') ||
-          //   role.toLowerCase().includes('field')
-          // ) {
-          //   this.dataSource = this.dataSource.concat(
-          //     res.data.content.filter(
-          //       (phone: any) => phone.stockBranchCode == this.user.userBrnCode
-          //     )
-          //   );
-          // } else {
-          //   this.dataSource = this.dataSource.concat(
-          //     res.data.content.filter(
-          //       (phone: any) =>
-          //         phone.stockClusterCode == this.user.userClusterCode
-          //     )
-          //   );
-          // }
-          // this.rowData = this.dataSource;
+        if (res.statusCode == 0) {         
           this.dataSource = this.dataSource.concat(res.data.content);
           this.rowData = this.dataSource;
           this.totalPhonesAvailableForSale = res.data.totalElements;
@@ -370,5 +326,22 @@ export class PhoneListComponent {
 
   onGridReady(params: GridReadyEvent) {
     this.gridApi = params.api;
+  }
+
+  getDaysFromToday(dateStr: string) {
+    const inputDate = new Date(dateStr);
+    const today = new Date();
+
+    // Reset both dates to midnight to ignore time differences
+    inputDate.setHours(0, 0, 0, 0);
+    today.setHours(0, 0, 0, 0);
+
+    // Calculate difference in milliseconds
+    const diffTime = Math.abs(today.getTime() - inputDate.getTime());
+
+    // Convert to days
+    const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
+
+    return diffDays == 1 ? `${diffDays} day` : `${diffDays} days`;
   }
 }

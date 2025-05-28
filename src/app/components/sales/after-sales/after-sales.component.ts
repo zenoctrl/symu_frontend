@@ -9,6 +9,8 @@ import { ColDef, GridApi, GridReadyEvent } from 'ag-grid-community';
 import { CommonModule } from '@angular/common';
 import { AfterSaleActionsComponent } from './after-sale-actions/after-sale-actions.component';
 import { StockBatch } from '../../stock/stock-components/stock-batch/stock-batch.component';
+import { PhoneModalComponent } from '../../stock/stock-components/phone-list/phone-modal/phone-modal.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-after-sales',
@@ -53,10 +55,10 @@ export class AfterSalesComponent {
     { headerName: 'IMEI', field: 'stockImei', filter: true },
     { headerName: 'Model', field: 'stockModelName', filter: true },
     { headerName: 'Batch Number', field: 'stockBatchNo', filter: true },
-    { headerName: 'Currency', field: 'stockCurrencyCode', filter: true },
     {
       headerName: 'Price',
       field: 'stockSellingPrice',
+      cellRenderer: (params: any) => `${params.data.stockCurrencyCode} ${params.value}`
     },
     { headerName: 'Customer Name', field: 'stockCustomerName', filter: true },
     {
@@ -128,7 +130,7 @@ export class AfterSalesComponent {
   startDate: any = null; endDate: any = null;
   searchOn!: boolean; clearButtonValue!: string;
 
-  constructor(private data: DataService, public snackBar: MatSnackBar) {}
+  constructor(private data: DataService, public snackBar: MatSnackBar, public dialog: MatDialog,) {}
 
   ngOnInit() {
     this.getUser();
@@ -225,6 +227,15 @@ export class AfterSalesComponent {
 
     if (event.title.toLowerCase().includes('revert')) {
       this.updateStockStatus(event.phone, 'posted');
+      return;
+    }
+
+    if(event.title.toLowerCase().includes('receipt')) {
+      const phone = {
+        code: event.phone.stockCode,
+        stockBaseCurrency: event.phone.stockCurrencyCode
+      }
+      this.viewReceipt(phone);
       return;
     }
   }
@@ -441,6 +452,17 @@ export class AfterSalesComponent {
         }
       }
     );
+  }
+
+  viewReceipt(phone: any) {
+    const dialogRef = this.dialog.open(PhoneModalComponent, {
+      data: {
+        phone: phone,
+        title: 'Receipt',
+        user: this.user,
+      },
+      disableClose: true,
+    });
   }
 
 }
