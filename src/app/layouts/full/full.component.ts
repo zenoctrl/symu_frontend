@@ -321,7 +321,6 @@ export class FullComponent {
     @HostListener('mouseover', ['$event'])
     @HostListener('click', ['$event'])
     resetTimer(event?: Event) {
-      console.log('reset timer');
       clearTimeout(this.timeoutId);
       this.timeoutId = setTimeout(() => {
         this.openSnackBar('You were logged out due to inactivity.', 'Close');

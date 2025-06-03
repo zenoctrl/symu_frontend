@@ -41,10 +41,10 @@ export class PhoneModalComponent {
   ngOnInit() {
     this.getUser();
 
-    if (this.data.title === 'Edit Phone' || this.data.title === 'Post Sale') {
+    if (this.data.title.toLowerCase().includes('edit') || this.data.title.toLowerCase().includes('post') || this.data.title.toLowerCase().includes('transfer')) {
       this.getRegions();
       this.getBranches();
-      this.getClusters();
+      this.getClusters(this.data.phone.stockBranchCode);
       this.getModels();
       this.getBatch();
       this.getStatuses();
@@ -56,6 +56,7 @@ export class PhoneModalComponent {
 
       if (this.data.title.toLowerCase().includes('post'))
         this.data.phone.customerPhoneNumber = `+${country?.countryCountryCode}`;
+
     }
 
     if (this.data.title === 'Receipt') {
@@ -430,15 +431,18 @@ export class PhoneModalComponent {
     );
   }
 
-  getClusters() {
-    const endpoint: string = `${ENVIRONMENT.endpoints.clusters.getAll}?clusterBranchCode=${this.data.phone.stockBranchCode}`;
+  getClusters(branchCode: number) {
+    const endpoint: string = `${ENVIRONMENT.endpoints.clusters.getAll}?clusterBranchCode=${branchCode}`;
     this._data.get(ENVIRONMENT.baseUrl + endpoint).subscribe(
       (res: any) => {
         if (res.statusCode == 0) {
           this.clusters = res.data.filter(
             (cluster: Cluster | any) =>
-              cluster.clusterStatus.toUpperCase() == 'ACTIVE'
+              cluster.clusterStatus.toUpperCase() == 'ACTIVE' && cluster.code != this.data.phone.stockClusterCode
           );
+
+          const stockCluster = this.clusters.find((c: any) => c.code == this.data.phone.stockClusterCode);
+
         } else {
           this.errorMessage = res.message;
         }
@@ -451,5 +455,19 @@ export class PhoneModalComponent {
         }
       }
     );
+  }
+
+  transfer() {
+
+    // update location data
+    const destinationCluster = this.clusters.find((c: any) => c.code == this.data.phone.newStockClusterCode);
+    this.data.phone.stockClusterCode = destinationCluster.code;
+    this.data.phone.stockBranchCode = destinationCluster.clusterBranchCode;
+    this.data.phone.stockRegionCode = destinationCluster.clusterRegionCode;
+    this.data.phone.stockCountryCode = destinationCluster.clusterCountryCode;
+
+    // update status code to TRANSFERRED
+    this.data.phone.stockStatusCode = JSON.parse(sessionStorage.getItem('stock-statuses') || '[]').find((s: any) => s.statusName.toLowerCase().includes('transfer'))?.statusCode;
+    this.updatePhone(this.data.phone);
   }
 }
