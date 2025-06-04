@@ -91,7 +91,7 @@
                 <mat-label>Source Cluster</mat-label>
                 <mat-select [(ngModel)]="data.phone.stockClusterCode">
                   <mat-option [value]="data.phone.stockClusterCode">
-                    {{ data.phone.stockClusterName }}
+                    {{ data.phone.stockClusterName?.toUpperCase() }}
                   </mat-option>
                 </mat-select>
               </mat-form-field>
@@ -100,7 +100,7 @@
                 <mat-label>Destination Branch</mat-label>
                 <mat-select [(ngModel)]="data.phone.newStockBranchCode" (selectionChange)="getClusters(data.phone.newStockBranchCode)">
                   <mat-option *ngFor="let branch of branches" [value]="branch.code">
-                    {{ branch.name }}
+                    {{ branch.name?.toUpperCase() }}
                   </mat-option>
                 </mat-select>
               </mat-form-field>
@@ -109,7 +109,7 @@
                 <mat-label>Destination Cluster</mat-label>
                 <mat-select [(ngModel)]="data.phone.newStockClusterCode">
                   <mat-option *ngFor="let cluster of clusters" [value]="cluster.code">
-                    {{ cluster.clusterName }}
+                    {{ cluster.clusterName?.toUpperCase() }}
                   </mat-option>
                 </mat-select>
               </mat-form-field>
