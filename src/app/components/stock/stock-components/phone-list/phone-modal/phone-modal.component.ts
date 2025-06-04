@@ -42,11 +42,11 @@ export class PhoneModalComponent {
     this.getUser();
 
     if (this.data.title.toLowerCase().includes('edit') || this.data.title.toLowerCase().includes('post') || this.data.title.toLowerCase().includes('transfer')) {
-      this.getRegions();
+      // this.getRegions();
       this.getBranches();
       this.getClusters(this.data.phone.stockBranchCode);
-      this.getModels();
-      this.getBatch();
+      // this.getModels();
+      // this.getBatch();
       this.getStatuses();
       
 
@@ -372,8 +372,12 @@ export class PhoneModalComponent {
     this.branches = JSON.parse(
       sessionStorage.getItem('branches') || '[]'
     ).filter(
-      (branch: Branch) => branch.regionCode === this.data.phone.stockRegionCode
-    );
+      (branch: Branch) => branch.countryCode === this.data.phone.stockCountryCode
+    ).sort((a: any, b: any) => {
+      if (a.name.toLowerCase() < b.name.toLowerCase()) return -1;
+      if (a.name.toLowerCase() > b.name.toLowerCase()) return 1;
+      return 0;
+    });
     this.clusters = [];
   }
 
@@ -439,9 +443,11 @@ export class PhoneModalComponent {
           this.clusters = res.data.filter(
             (cluster: Cluster | any) =>
               cluster.clusterStatus.toUpperCase() == 'ACTIVE' && cluster.code != this.data.phone.stockClusterCode
-          );
-
-          const stockCluster = this.clusters.find((c: any) => c.code == this.data.phone.stockClusterCode);
+          ).sort((a: any, b: any) => {
+            if (a.clusterName.toLowerCase() < b.clusterName.toLowerCase()) return -1;
+            if (a.clusterName.toLowerCase() > b.clusterName.toLowerCase()) return 1;
+            return 0;
+          });
 
         } else {
           this.errorMessage = res.message;
