@@ -23,8 +23,6 @@ export class PostedSalesComponent {
   displayedColumns: string[] = [
     'id',
     'imei',
-    // 'model',
-    // 'status',
     'cluster',
     'branch',
     'country',
@@ -61,7 +59,6 @@ export class PostedSalesComponent {
 
   getPhones() {
     this.isFetching = true;
-    // let countryCode = this.user.roleModel.roleName.toLowerCase().includes('director') ? null : this.user.userCountryCode;
     const endpoint: string = `${ENVIRONMENT.endpoints.stock.phone.getAll}?companyCode=${this.user.userCompanyCode}&stockCountryCode=${this.user.userCountryCode}&stockRegionCode=${this.user.userRegionCode}&stockBranchCode=${this.user.userBrnCode}&stockClusterCode=${this.user.userClusterCode}&statusShortDesc=POSTED&stockBatchCode=null&=POSTED&page=${this.page}&size=${this.size}`;
     this.data.get(ENVIRONMENT.baseUrl + endpoint).subscribe(
       (res: any) => {
@@ -151,8 +148,7 @@ export class PostedSalesComponent {
       (res: any) => {
         this.isFetching = false;
         if (res.statusCode == 0) {
-          this.page = 0;
-          this.getPhones();
+          this.refresh();
         } else {
           this.isFetching = false;
           this.openSnackBar(res.message, 'Close');

@@ -49,7 +49,6 @@ export class PhoneModalComponent {
       // this.getBatch();
       this.getStatuses();
       
-
       const country = this.countries.find(
         (country: Country) => country.code == this.data.phone.stockCountryCode
       );
@@ -206,10 +205,18 @@ export class PhoneModalComponent {
   }
 
   postSale(phone: any) {
+    this.errorMessage = '';
+
+    const receiptAmount = Number(phone.stockSellingPrice);
+    if (isNaN(receiptAmount) || receiptAmount == 0) {
+      this.errorMessage = 'Please enter a valid price.';
+      return;
+    }
+
     const payload = {
       stockCode: phone.code,
       userCode: this.user.code,
-      nextStatusCode: 3, // moved to posted a sale
+      nextStatusCode: 3, // move status to POSTED
       tradingName: phone.tradingName,
       customerNationalId: phone.customerNationalId,
       customerName: phone.customerName,
@@ -217,7 +224,7 @@ export class PhoneModalComponent {
       stockDealerCode: this.data.dealers.find(
         (d: any) => d.dealerName == phone.tradingName
       ).dealerCode,
-      receiptAmount: Number(phone.stockSellingPrice)
+      receiptAmount: receiptAmount
     };
 
     this.loading = true;

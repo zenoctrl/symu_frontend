@@ -20,61 +20,7 @@
                 <mat-label>IMEI</mat-label>
                 <input  type="text" matInput [(ngModel)]="data.phone.stockImei" maxlength="15" (keyup)="checkInput(data.phone.stockImei)" readonly>
               </mat-form-field>
-
-              <!-- <mat-form-field class="me-24 fs-16" appearance="outline" *ngIf="!userAssignedToBranch && user.roleModel.roleName.toLowerCase().includes('director')">
-                <mat-label>Country</mat-label>
-                <mat-select [(ngModel)]="data.phone.stockCountryCode" (selectionChange)="selectCountry()">
-                  <mat-option *ngFor="let country of countries" [value]="country.code">
-                    {{ country.countryName }}
-                  </mat-option>
-                </mat-select>
-              </mat-form-field>
-
-              <mat-form-field class="me-24 fs-16" appearance="outline" *ngIf="data.phone.stockCountryCode && !userAssignedToBranch && user.roleModel.roleName.toLowerCase() != 'regional manager'">
-                  <mat-label>Region</mat-label>
-                  <mat-select [(ngModel)]="data.phone.stockRegionCode" (selectionChange)="selectRegion()">
-                    <mat-option *ngFor="let region of regions" [value]="region.code">
-                      {{ region.regionName }}
-                    </mat-option>
-                  </mat-select>
-              </mat-form-field>
-
-              <mat-form-field class="me-24 fs-16" appearance="outline" *ngIf="data.phone.stockRegionCode && !userAssignedToBranch">
-                  <mat-label>Branch</mat-label>
-                  <mat-select [(ngModel)]="data.phone.stockBranchCode" (selectionChange)="getClusters(data.phone.stockBranchCode)">
-                    <mat-option *ngFor="let branch of branches" [value]="branch.code">
-                      {{ branch.name }}
-                    </mat-option>
-                  </mat-select>
-              </mat-form-field>
-
-              <mat-form-field class="me-24 fs-16" appearance="outline">
-                <mat-label>Cluster</mat-label>
-                <mat-select [(ngModel)]="data.phone.stockClusterCode">
-                  <mat-option *ngFor="let cluster of clusters" [value]="cluster.code">
-                    {{ cluster.clusterName }}
-                  </mat-option>
-                </mat-select>
-              </mat-form-field> -->
-
-              <!-- <mat-form-field class="me-24 fs-16" appearance="outline" *ngIf="data.phone.stockRegionCode && data.phone.stockBranchCode">
-                  <mat-label>Model</mat-label>
-                  <mat-select [(ngModel)]="data.phone.stockMemory" (selectionChange)="selectModel()">
-                    <mat-option *ngFor="let model of models" [value]="model.modelName">
-                      {{ model.modelName }}
-                    </mat-option>
-                  </mat-select>
-              </mat-form-field>
-
-               <mat-form-field class="me-24 fs-16" appearance="outline" *ngIf="data.phone.stockMemory && batches.length > 0">
-                <mat-label>Batch Number</mat-label>
-                <mat-select [(ngModel)]="data.phone.stockBatchCode">
-                    <mat-option *ngFor="let batch of batches" [value]="batch.code">
-                      {{ batch.batchNo }}
-                    </mat-option>
-                  </mat-select>
-              </mat-form-field> -->
-
+         
               <mat-form-field class="me-24 fs-16" appearance="outline" *ngIf="data.phone.stockBatchCode">
                 <mat-label>Stock Status</mat-label>
                 <mat-select [(ngModel)]="data.phone.stockStatusCode">
@@ -124,11 +70,7 @@
 
               <mat-form-field class="me-24 fs-16" appearance="outline">
                   <mat-label>Model</mat-label>
-                  <mat-select [(ngModel)]="data.phone.stockMemory">
-                    <mat-option [value]="data.phone.stockMemory" selected disabled>
-                      {{ data.phone.stockMemory }}
-                    </mat-option>
-                  </mat-select>
+                  <input type="text" matInput [(ngModel)]="data.phone.stockMemory" readonly>
               </mat-form-field>
 
               <mat-form-field class="me-24 fs-16" appearance="outline">
