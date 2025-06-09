@@ -132,6 +132,11 @@
               </mat-form-field>
 
               <mat-form-field class="me-24 fs-16" appearance="outline">
+                  <mat-label>Price ({{ data.phone.stockBaseCurrency }})</mat-label>
+                  <input type="text" matInput [(ngModel)]="data.phone.stockSellingPrice" >
+              </mat-form-field>
+
+              <mat-form-field class="me-24 fs-16" appearance="outline">
                   <mat-label>Dealership</mat-label>
                   <mat-select [(ngModel)]="data.phone.tradingName">
                     <mat-option *ngFor="let dealer of data.dealers" [value]="dealer.dealerName">
