@@ -217,7 +217,9 @@ export class PhoneModalComponent {
       stockDealerCode: this.data.dealers.find(
         (d: any) => d.dealerName == phone.tradingName
       ).dealerCode,
+      receiptAmount: Number(phone.stockSellingPrice)
     };
+
     this.loading = true;
     const endpoint: string = ENVIRONMENT.endpoints.stock.phone.postSale;
     this._data.post(ENVIRONMENT.baseUrl + endpoint, payload).subscribe(
